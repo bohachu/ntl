@@ -17,13 +17,11 @@
 		private const strFloorAndRoomTranslationFile:String = "data/FloorAndRoomTranslation.csv";
 		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var language:Language = Language.getInstance();
-		private var strLanguageType:String = "CHT";
 		public var dicI18n:Object = null;
 
 		public function I18n() {
 			// constructor code
 			dicI18n = new Object();
-			strLanguageType = language.getLanguageType();
 		}
 		
 		public static function getInstance():I18n {
@@ -48,9 +46,9 @@
 			var lstResult:Array = LoadCsvFile.getResult();
 			
 			for (var i:int = 1; i<lstResult.length; i++) {
-				dicI18n[lstResult[i][0] + "_CHT"] = lstResult[i][0];
-				dicI18n[lstResult[i][0] + "_ENU"] = lstResult[i][1];
-				dicI18n[lstResult[i][0] + "_JPN"] = lstResult[i][2];
+				dicI18n[lstResult[i][0] + "_CHT"] = lstResult[i][1];
+				dicI18n[lstResult[i][0] + "_ENU"] = lstResult[i][2];
+				dicI18n[lstResult[i][0] + "_JPN"] = lstResult[i][3];
 			}
 			
 			var floorAndRoomTranslationFileSource1:File = File.applicationDirectory.resolvePath(strFloorAndRoomTranslationFile);
@@ -81,7 +79,7 @@
 		}
 		
 		public function get(strKey:String):String {
-			return dicI18n[strKey + "_" + strLanguageType];
+			return dicI18n[strKey + "_" + language.getLanguageType()];
 		}
 
 	}

@@ -1,9 +1,10 @@
-中文,英文,日文
-到此一遊,Check In,到此一遊日文
-QR Code,QR Code,QR Code
-拍照,Take Photo,拍照日文
-交通指引,Traffic,交通日文
-確定,OK,確定日文
-取消,Cancel,取消日文
-回首頁,Home,回首頁日文
-進入導覽,Guide,進入導覽日文
+UI Name,中文,英文,日文
+IntoGuidance,進入導覽,Into Guidance,進入導覽日文
+CheckIn,到此一遊,Check In,到此一遊日文
+QrCode,QR Code,QR Code,QR Code
+Traffic,交通指引,Traffic,交通指引日文
+Ok,確定,OK,確定日文
+Cancel,取消,Cancel,取消日文
+Home,回首頁,Home,回首頁日文
+Message_EmptyExhibitNumber,請輸入展品編號,Please input exhibit number,請輸入展品編號日文
+Message_WrongExhibitNumber,輸入的展品編號不正確,Exhibit number is not correct,輸入的展品編號不正確日文
