@@ -16,8 +16,14 @@
     <fullScreen>false</fullScreen>
     <aspectRatio>portrait</aspectRatio>
     <renderMode>auto</renderMode>
-  </initialWindow>
+    <autoOrients>false</autoOrients></initialWindow>
   <icon/>
   <customUpdateUI>false</customUpdateUI>
   <allowBrowserInvocation>false</allowBrowserInvocation>
+  <iPhone>
+    <InfoAdditions>
+      <![CDATA[<key>UIDeviceFamily</key><array><string>1</string><string>2</string></array>]]>
+    </InfoAdditions>
+    <requestedDisplayResolution>standard</requestedDisplayResolution>
+  </iPhone>
 </application>

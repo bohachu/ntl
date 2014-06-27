@@ -12,29 +12,33 @@
 	import tw.cameo.EventChannel;
 	import tw.cameo.Navigator;
 	import Home;
+	import Titlebar;
 	import GuidanceTool;
 	import GuidanceToolEvent;
+	import Traffic;
 	
 	public class ContentController {
 		
 		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var contentContainer:Sprite = null;
-		private var guidanceToolContainer:Sprite = null;
+		private var toolsContainer:Sprite = null;
 		private var navigator:Navigator = null;
+		private var titlebar:Titlebar = null;
 		private var guidanceTool:GuidanceTool = null;
 		
 		public function ContentController(mainMovieClip:DisplayObjectContainer) {
 			// constructor code
 			contentContainer = new Sprite();
-			guidanceToolContainer = new Sprite();
+			toolsContainer = new Sprite();
 			mainMovieClip.addChild(contentContainer);
-			mainMovieClip.addChild(guidanceToolContainer);
+			mainMovieClip.addChild(toolsContainer);
 			navigator = new Navigator(contentContainer);
 			
 			NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_DOWN, keyDownEevnt);
 			
-			createHome();
+			createTitlebar();
 			createGuidanceTool();
+			createHome();
 			
 			addEventChannelListener();
 		}
@@ -46,10 +50,10 @@
 			navigator = null;
 			
 			contentContainer.parent.removeChild(contentContainer);
-			guidanceToolContainer.parent.removeChild(guidanceToolContainer);
+			toolsContainer.parent.removeChild(toolsContainer);
 			
 			contentContainer = null;
-			guidanceToolContainer = null;
+			toolsContainer = null;
 		}
 		
 		private function createHome() {
@@ -77,12 +81,29 @@
 		}
 		
 		private function onTrafficClick(e:Event) {
-			trace("ContentController.as / onTrafficClick");
+			createTrafficPage();
+		}
+		
+		private function createTrafficPage() {
+			var dicContentParameter = {
+				className: "Traffic",
+				data: null,
+				showDirection: Navigator.SHOW_LEFT,
+				hideDirection: Navigator.HIDE_RIGHT
+			};
+			
+			setupNavigator(dicContentParameter);
+		}
+		
+		private function createTitlebar() {
+			titlebar = Titlebar.getInstance();
+			titlebar.initTitleBar(toolsContainer);
 		}
 		
 		private function createGuidanceTool() {
 			guidanceTool = GuidanceTool.getInstance();
-			guidanceTool.create(guidanceToolContainer);
+			guidanceTool.create(toolsContainer);
+			guidanceTool.showGuidanceTool();
 			guidanceTool.addEventListener(GuidanceToolEvent.VIEW_GUIDANCE, onViewGuidance);
 		}
 		
@@ -124,7 +145,7 @@
 		
 		private function keyDownEevnt(ev:KeyboardEvent):void {
 			if (ev.keyCode == Keyboard.BACK) {
-				if (navigator.getContentNumber() > 0) {
+				if (navigator.getContentNumber() > 1) {
 					ev.preventDefault();
         			ev.stopImmediatePropagation();
 					
@@ -135,6 +156,7 @@
 		
 		private function forDynamicCreate() {
 			var home:Home = null;
+			var traffic:Traffic = null;
 		}
 
 	}

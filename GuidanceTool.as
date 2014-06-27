@@ -10,6 +10,8 @@
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
 	import tw.cameo.ToastMessage;
+	import com.greensock.TweenLite;
+	import com.greensock.easing.*;
 	
 	import I18n;
 	import GuidanceToolEvent;
@@ -25,6 +27,7 @@
 		private var i18n:I18n = I18n.getInstance();
 		private var container:DisplayObjectContainer = null;
 		private var guidanceButton:SimpleButton = null;
+		private var intGuidanceButtonY:int = intDefaultHeight;
 		private var guidanceInputPannel:MovieClip = null;
 
 		public function GuidanceTool() {
@@ -38,7 +41,8 @@
 		
 		public function create(containerIn:DisplayObjectContainer) {
 			guidanceButton = new GuidanceButton();
-			guidanceButton.y = intDefaultHeight - guidanceButton.height;
+			guidanceButton.y = intGuidanceButtonY = intDefaultHeight - guidanceButton.height;
+//			guidanceButton.y = intDefaultHeight;
 			guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
 			container = containerIn;
 			container.addChild(guidanceButton);
@@ -146,6 +150,14 @@
 			if (exhibitFolderSource2.exists && exhibitFileSource2.exists) isExists = true;
 			
 			return isExists;
+		}
+		
+		public function showGuidanceTool() {
+			if (guidanceButton.y != intGuidanceButtonY) TweenLite.to(guidanceButton, 0.5, {y:intGuidanceButtonY, ease:Strong.easeOut});
+		}
+		
+		public function hideGuidanceTool() {
+			if (guidanceButton.y != intDefaultHeight) TweenLite.to(guidanceButton, 0.5, {y:intDefaultHeight, ease:Strong.easeOut});
 		}
 
 	}

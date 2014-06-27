@@ -13,6 +13,7 @@
 	
 	import I18n;
 	import Language;
+	import Titlebar;
 
 	public class Home extends MovieClip {
 		
@@ -24,6 +25,7 @@
 		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var i18n:I18n = I18n.getInstance();
 		private var language:Language = Language.getInstance();
+		private var titlebar:Titlebar = Titlebar.getInstance();
 		
 		private var intDefaultWidth:Number = LayoutSettings.intDefaultWidth;
 		private var intDefaultHeight:Number = LayoutSettings.intDefaultHeight;
@@ -55,6 +57,8 @@
 		private function init(e:Event) {
 			this.removeEventListener(Event.ADDED_TO_STAGE, init);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
+			
+			titlebar.hideTitlebar();
 			
 			if (isIphone5Layout) {
 				changeLayoutForIphone5();

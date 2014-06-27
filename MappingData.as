@@ -1,6 +1,7 @@
 ﻿package  {
 	
 	import flash.filesystem.File;
+	import flash.net.URLRequest;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
@@ -12,10 +13,10 @@
 		public static var _instance:MappingData = null;
 		public static const LOAD_MAPPING_DATA_COMPLETE:String = "MappingData.LOAD_MAPPING_DATA_COMPLETE";
 		
+		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private const strFloorRoomMappingFile:String = "data/FloorRoomMapping.csv";
 		private const strRoomExhibitMappingFile:String = "data/RoomExhibitMapping.csv";
 		
-		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var lstFloor:Array = null;
 		private var dicFloorRoomMapping:Object = null;
 		private var dicRoomExhibitMapping:Object = null;
@@ -35,9 +36,11 @@
 		}
 		
 		public function loadMappingData() {
+			
 			var floorRoomMappingFileSource1:File = File.applicationDirectory.resolvePath(strFloorRoomMappingFile);
 			var floorRoomMappingFileSource2:File = File.applicationStorageDirectory.resolvePath(strFloorRoomMappingFile);
 			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadFloorRoomMappingFileComplete);
+
 			if (floorRoomMappingFileSource2.exists) {
 				LoadCsvFile.loadFile(floorRoomMappingFileSource2);
 			} else {
@@ -52,7 +55,9 @@
 			for (var i:int = 0; i<lstResult.length; i++) {
 				lstFloor.push(lstResult[i][0]);
 				dicFloorRoomMapping[lstResult[i][0]] = new Array();
+				trace(lstResult[i][0]);
 				for (var j:int = 1; j<lstResult[i].length; j++) {
+					trace(lstResult[i][j]);
 					if (lstResult[i][j] != "") dicFloorRoomMapping[lstResult[i][0]].push(lstResult[i][j]);
 				}
 			}
