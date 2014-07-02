@@ -16,10 +16,13 @@
 	import GuidanceTool;
 	import GuidanceToolEvent;
 	import Traffic;
+	import MappingData;
+	import RoomExhibitList;
 	
 	public class ContentController {
 		
 		private var eventChannel:EventChannel = EventChannel.getInstance();
+		private var mappingData:MappingData = MappingData.getInstance();
 		private var contentContainer:Sprite = null;
 		private var toolsContainer:Sprite = null;
 		private var navigator:Navigator = null;
@@ -36,8 +39,8 @@
 			
 			NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_DOWN, keyDownEevnt);
 			
-			createTitlebar();
 			createGuidanceTool();
+			createTitlebar();
 			createHome();
 			
 			addEventChannelListener();
@@ -64,12 +67,21 @@
 				hideDirection: null
 			};
 			
-			setupNavigator(dicContentParameter);
+			showContent(dicContentParameter);
 			System.gc();
 		}
 		
 		private function onIntoGuidanceClick(e:Event) {
-			trace("ContentController.as / onIntoGuidanceClick");
+			var strFloor:String = mappingData.getFloorList()[0];
+			var strRoom:String = mappingData.getRoomList(strFloor)[0];
+			var dicContentParameter = {
+				className: "RoomExhibitList",
+				data: [strFloor, strRoom],
+				showDirection: Navigator.SHOW_LEFT,
+				hideDirection: Navigator.HIDE_RIGHT
+			};
+			
+			showContent(dicContentParameter);
 		}
 		
 		private function onQrCodeClick(e:Event) {
@@ -92,12 +104,28 @@
 				hideDirection: Navigator.HIDE_RIGHT
 			};
 			
-			setupNavigator(dicContentParameter);
+			showContent(dicContentParameter);
 		}
 		
 		private function createTitlebar() {
 			titlebar = Titlebar.getInstance();
+			titlebar.addEventListener(Titlebar.CLICK_BACK, onTitlebarBackClick);
+			titlebar.addEventListener(Titlebar.CLICK_HOME, onTitlebarHomeClick);
 			titlebar.initTitleBar(toolsContainer);
+		}
+		
+		private function disposeTitlebar() {
+			titlebar.removeEventListener(Titlebar.CLICK_BACK, onTitlebarBackClick);
+			titlebar.removeEventListener(Titlebar.CLICK_HOME, onTitlebarHomeClick);
+			titlebar = null;
+		}
+		
+		private function onTitlebarHomeClick(e:Event) {
+			navigatorHomeHandler();
+		}
+		
+		private function onTitlebarBackClick(e:Event) {
+			navigatorBackHandler();
 		}
 		
 		private function createGuidanceTool() {
@@ -131,12 +159,16 @@
 			eventChannel.removeEventListener(Home.CLICK_TRAFFIC, onTrafficClick);
 		}
 		
-		private function setupNavigator(dicContentParameter:Object):void {
+		private function showContent(dicContentParameter:Object):void {
 			if (navigator == null) {
 				navigator = new Navigator(contentContainer, dicContentParameter);
 			} else {
 				navigator.pushContent(dicContentParameter);
 			}
+		}
+		
+		private function navigatorHomeHandler(e:Event = null) {
+			navigator.popContent(1);
 		}
 		
 		private function navigatorBackHandler(e:Event = null) {
@@ -157,6 +189,7 @@
 		private function forDynamicCreate() {
 			var home:Home = null;
 			var traffic:Traffic = null;
+			var roomExhibitList:RoomExhibitList = null;
 		}
 
 	}

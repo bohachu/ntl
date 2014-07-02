@@ -55,9 +55,9 @@
 			for (var i:int = 0; i<lstResult.length; i++) {
 				lstFloor.push(lstResult[i][0]);
 				dicFloorRoomMapping[lstResult[i][0]] = new Array();
-				trace(lstResult[i][0]);
+//				trace(lstResult[i][0]);
 				for (var j:int = 1; j<lstResult[i].length; j++) {
-					trace(lstResult[i][j]);
+//					trace(lstResult[i][j]);
 					if (lstResult[i][j] != "") dicFloorRoomMapping[lstResult[i][0]].push(lstResult[i][j]);
 				}
 			}

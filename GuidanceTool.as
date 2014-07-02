@@ -15,6 +15,7 @@
 	
 	import I18n;
 	import GuidanceToolEvent;
+	import flash.display.Sprite;
 	
 	public class GuidanceTool extends EventDispatcher {
 
@@ -26,8 +27,9 @@
 
 		private var i18n:I18n = I18n.getInstance();
 		private var container:DisplayObjectContainer = null;
+		private var toolContainer:Sprite = null;
 		private var guidanceButton:SimpleButton = null;
-		private var intGuidanceButtonY:int = intDefaultHeight;
+		private var intGuidanceToolY:int = intDefaultHeight;
 		private var guidanceInputPannel:MovieClip = null;
 
 		public function GuidanceTool() {
@@ -40,19 +42,24 @@
 		}
 		
 		public function create(containerIn:DisplayObjectContainer) {
+			toolContainer = new Sprite();
 			guidanceButton = new GuidanceButton();
-			guidanceButton.y = intGuidanceButtonY = intDefaultHeight - guidanceButton.height;
-//			guidanceButton.y = intDefaultHeight;
 			guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
+			toolContainer.addChild(guidanceButton);
+			toolContainer.y = intGuidanceToolY = intDefaultHeight - toolContainer.height;
+			
 			container = containerIn;
-			container.addChild(guidanceButton);
+			container.addChild(toolContainer);
 		}
 		
 		public function dispose() {
 			removeGuidanceInputPannel();
+			toolContainer.removeChild(guidanceButton);
 			guidanceButton.parent.removeChild(guidanceButton);
 			guidanceButton.removeEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
+			toolContainer.parent.removeChild(toolContainer);
 			guidanceButton = null;
+			toolContainer = null;
 		}
 		
 		private function onGuidanceButtonClick(e:MouseEvent) {
@@ -153,11 +160,16 @@
 		}
 		
 		public function showGuidanceTool() {
-			if (guidanceButton.y != intGuidanceButtonY) TweenLite.to(guidanceButton, 0.5, {y:intGuidanceButtonY, ease:Strong.easeOut});
+			toolContainer.visible = true;
+			if (toolContainer.y != intGuidanceToolY) TweenLite.to(toolContainer, 0.5, {y:intGuidanceToolY, ease:Strong.easeOut});
 		}
 		
 		public function hideGuidanceTool() {
-			if (guidanceButton.y != intDefaultHeight) TweenLite.to(guidanceButton, 0.5, {y:intDefaultHeight, ease:Strong.easeOut});
+			if (toolContainer.y != intDefaultHeight) TweenLite.to(toolContainer, 0.5, {y:intDefaultHeight, ease:Strong.easeOut, onComplete:invisibleGuidanceTool});
+		}
+		
+		private function invisibleGuidanceTool() {
+			toolContainer.visible = false;
 		}
 
 	}
