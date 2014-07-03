@@ -31,6 +31,8 @@
 		private var guidanceButton:SimpleButton = null;
 		private var intGuidanceToolY:int = intDefaultHeight;
 		private var guidanceInputPannel:MovieClip = null;
+		
+		public var intGuidanceToolHeight:int = 0;
 
 		public function GuidanceTool() {
 			// constructor code
@@ -47,6 +49,7 @@
 			guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
 			toolContainer.addChild(guidanceButton);
 			toolContainer.y = intGuidanceToolY = intDefaultHeight - toolContainer.height;
+			intGuidanceToolHeight = toolContainer.height;
 			
 			container = containerIn;
 			container.addChild(toolContainer);

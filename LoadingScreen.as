@@ -8,7 +8,7 @@
 		private var container:DisplayObjectContainer = null;
 		private var loadingMovieClip:MovieClip = null;
 
-		public function LoadingScreen(containerIn:DisplayObjectContainer, strType:String = "Type01") {
+		public function LoadingScreen(containerIn:DisplayObjectContainer, strType:String = "Type02") {
 			// constructor code
 			container = containerIn;
 			switch (strType) {

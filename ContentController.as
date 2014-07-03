@@ -1,6 +1,7 @@
 ﻿package  {
 	
 	import flash.display.DisplayObjectContainer;
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.system.System;
 	import flash.system.Capabilities;
@@ -18,6 +19,8 @@
 	import Traffic;
 	import MappingData;
 	import RoomExhibitList;
+	import GuideEvent;
+	import Guide;
 	
 	public class ContentController {
 		
@@ -93,10 +96,6 @@
 		}
 		
 		private function onTrafficClick(e:Event) {
-			createTrafficPage();
-		}
-		
-		private function createTrafficPage() {
 			var dicContentParameter = {
 				className: "Traffic",
 				data: null,
@@ -111,12 +110,14 @@
 			titlebar = Titlebar.getInstance();
 			titlebar.addEventListener(Titlebar.CLICK_BACK, onTitlebarBackClick);
 			titlebar.addEventListener(Titlebar.CLICK_HOME, onTitlebarHomeClick);
+			titlebar.addEventListener(Titlebar.CLICK_SIDE_MENU_COLUMN, onSideMenuColumnClick);
 			titlebar.initTitleBar(toolsContainer);
 		}
 		
 		private function disposeTitlebar() {
 			titlebar.removeEventListener(Titlebar.CLICK_BACK, onTitlebarBackClick);
 			titlebar.removeEventListener(Titlebar.CLICK_HOME, onTitlebarHomeClick);
+			titlebar.removeEventListener(Titlebar.CLICK_SIDE_MENU_COLUMN, onSideMenuColumnClick);
 			titlebar = null;
 		}
 		
@@ -128,21 +129,62 @@
 			navigatorBackHandler();
 		}
 		
+		private function onSideMenuColumnClick(e:Event) {
+			var currentContent:MovieClip = navigator.getCurrentContent();
+			
+			if (navigator.getContentNumber() == 3) { //In Guide page
+			}
+			
+			if (navigator.getContentNumber() == 2) { // In Room Exhibit List page
+				var roomExhibitList:RoomExhibitList = navigator.getCurrentContent() as RoomExhibitList;
+				var strClickColumnName:String = titlebar.getClickSideMenuColumn();
+				if (strClickColumnName != roomExhibitList.strFloor + "-" + roomExhibitList.strRoom) {
+					var intIndexOfDashLine:int = strClickColumnName.indexOf("-");
+					var strFloor:String = strClickColumnName.slice(0, intIndexOfDashLine);
+					var strRoom:String = strClickColumnName.slice(intIndexOfDashLine+1);
+					roomExhibitList.resetExhibitList(strFloor, strRoom);
+					eventChannel.addEventListener(Titlebar.SIDEMENU_CLOSE, reloadRoomExhibitList);
+				}
+			}
+		}
+		
+		private function reloadRoomExhibitList(e:Event) {
+			eventChannel.removeEventListener(Titlebar.SIDEMENU_CLOSE, reloadRoomExhibitList);
+			var roomExhibitList:RoomExhibitList = navigator.getCurrentContent() as RoomExhibitList;
+			roomExhibitList.reloadExhibitList();
+		}
+		
 		private function createGuidanceTool() {
 			guidanceTool = GuidanceTool.getInstance();
 			guidanceTool.create(toolsContainer);
 			guidanceTool.showGuidanceTool();
-			guidanceTool.addEventListener(GuidanceToolEvent.VIEW_GUIDANCE, onViewGuidance);
+			guidanceTool.addEventListener(GuidanceToolEvent.VIEW_GUIDANCE, onStartGuideToolEvent);
 		}
 		
 		private function disposeGuidanceTool() {
-			guidanceTool.removeEventListener(GuidanceToolEvent.VIEW_GUIDANCE, onViewGuidance);
+			guidanceTool.removeEventListener(GuidanceToolEvent.VIEW_GUIDANCE, onStartGuideToolEvent);
 			guidanceTool.dispose();
 			guidanceTool = null;
 		}
 		
-		private function onViewGuidance(e:GuidanceToolEvent) {
-			trace("ContentController.as / onViewGuidance: Exhibit no.", e.getInputExhibitNumber());
+		private function onStartGuideToolEvent(e:GuidanceToolEvent) {
+			trace("ContentController.as / onStartGuideToolEvent: Exhibit no.", e.getInputExhibitNumber());
+		}
+		
+		private function onStartGuideEvent(e:GuideEvent) {
+			var lstExhibitFolder:Array = e.lstExhibitFolder;
+			startGuide(lstExhibitFolder);
+		}
+		
+		private function startGuide(lstExhibitFolder:Array) {
+			var dicContentParameter = {
+				className: "Guide",
+				data: lstExhibitFolder,
+				showDirection: Navigator.SHOW_UP,
+				hideDirection: Navigator.HIDE_DOWN
+			};
+			
+			showContent(dicContentParameter);
 		}
 		
 		private function addEventChannelListener() {
@@ -150,6 +192,7 @@
 			eventChannel.addEventListener(Home.CLICK_QRCODE, onQrCodeClick);
 			eventChannel.addEventListener(Home.CLICK_CHECK_IN, onCheckInClick);
 			eventChannel.addEventListener(Home.CLICK_TRAFFIC, onTrafficClick);
+			eventChannel.addEventListener(GuideEvent.START_GUIDANCE, onStartGuideEvent);
 		}
 		
 		private function removeEventChannelListener() {
@@ -157,6 +200,7 @@
 			eventChannel.removeEventListener(Home.CLICK_QRCODE, onQrCodeClick);
 			eventChannel.removeEventListener(Home.CLICK_CHECK_IN, onCheckInClick);
 			eventChannel.removeEventListener(Home.CLICK_TRAFFIC, onTrafficClick);
+			eventChannel.removeEventListener(GuideEvent.START_GUIDANCE, onStartGuideEvent);
 		}
 		
 		private function showContent(dicContentParameter:Object):void {
@@ -190,6 +234,7 @@
 			var home:Home = null;
 			var traffic:Traffic = null;
 			var roomExhibitList:RoomExhibitList = null;
+			var guide:Guide = null;
 		}
 
 	}

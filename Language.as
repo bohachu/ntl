@@ -7,6 +7,7 @@
 	import flash.events.Event;
 	import flash.net.SharedObject;
 	
+	import tw.cameo.EventChannel;
 	import tw.cameo.LayoutManager;
 	import Config;
 	
@@ -15,6 +16,7 @@
 		public static const SET_LANGUAGE_COMPLETE:String = "Language.SET_LANGUAGE_COMPLETE";
 		public static var _instance:Language = null;
 		
+		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var sharedObjectSavedStatus:SharedObject = SharedObject.getLocal("SavedStatus");
 		private var selectLanguageScreen:MovieClip = null;
 
@@ -64,6 +66,7 @@
 		public function setLanguage(strType:String) {
 			sharedObjectSavedStatus.data["strLanguage"] = strType;
 			sharedObjectSavedStatus.flush();
+			eventChannel.writeEvent(new Event(Language.SET_LANGUAGE_COMPLETE));
 			this.dispatchEvent(new Event(Language.SET_LANGUAGE_COMPLETE));
 		}
 		

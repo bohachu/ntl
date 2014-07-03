@@ -10,6 +10,7 @@
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
 	import tw.cameo.EventChannel;
+	import com.greensock.TweenLite;
 	
 	import I18n;
 	import Language;
@@ -34,20 +35,23 @@
 
 		private var bg:Sprite = null;
 		
+		private var paintingAnimation:MovieClip = null;
+		private var pointPaintingAnimation:Point = new Point(39, (isIphone5Layout) ? 0 : -170);
+		
 		private var btnChangeLanguage:MovieClip = null;
-		private var pointBtnChangeLanguage:Point = new Point(528, 30);
+		private var pointBtnChangeLanguage:Point = new Point(444, 17);
 		
 		private var btnIntoGuidance:MovieClip = null;
-		private var pointBtnIntoGuidance:Point = new Point(178, (isIphone5Layout) ? 282 : 282);
+		private var pointBtnIntoGuidance:Point = new Point(215, (isIphone5Layout) ? 315 : 205);
 		
 		private var btnQrCode:MovieClip = null;
-		private var pointBtnQrCode:Point = new Point(471, (isIphone5Layout) ? 282 : 282);
+		private var pointBtnQrCode:Point = new Point(412, (isIphone5Layout) ? 315 : 205);
 		
 		private var btnTakePhoto:MovieClip = null;
-		private var pointBtnTakePhoto:Point = new Point(178, (isIphone5Layout) ? 594 : 594);
+		private var pointBtnTakePhoto:Point = new Point(215, (isIphone5Layout) ? 545 : 415);
 		
 		private var btnTraffic:MovieClip = null;
-		private var pointBtnTraffic:Point = new Point(471, (isIphone5Layout) ? 594 : 594);
+		private var pointBtnTraffic:Point = new Point(412, (isIphone5Layout) ? 545 : 415);
 		
 		public function Home(... args) {
 			// constructor code
@@ -64,12 +68,13 @@
 				changeLayoutForIphone5();
 			}
 			createBackground();
-			createButton();
+			createPaintingAnimation();
 		}
 		
 		private function destructor(e:Event) {
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destructor);
 			removeButton();
+			removePaintingAnimation();
 			removeBackground();
 		}
 		
@@ -84,6 +89,26 @@
 		private function removeBackground() {
 			if (bg) this.removeChild(bg);
 			bg = null;
+		}
+		
+		private function createPaintingAnimation() {
+			paintingAnimation = new HomePaintingAnimation();
+			paintingAnimation.x = pointPaintingAnimation.x;
+			paintingAnimation.y = pointPaintingAnimation.y;
+			paintingAnimation.addEventListener("ANIMATION_PLAY_END", onAnimationPlayEnd);
+			this.addChild(paintingAnimation);
+		}
+		
+		private function removePaintingAnimation() {
+			paintingAnimation.removeEventListener("ANIMATION_PLAY_END", onAnimationPlayEnd);
+			this.removeChild(paintingAnimation);
+			paintingAnimation = null;
+			pointPaintingAnimation = null;
+		}
+		
+		private function onAnimationPlayEnd(e:Event) {
+			paintingAnimation.removeEventListener("ANIMATION_PLAY_END", onAnimationPlayEnd);
+			createButton();
 		}
 		
 		private function createButton() {
@@ -121,11 +146,22 @@
 		}
 		
 		private function addButtonToStage() {
+			btnChangeLanguage.alpha = 0;
+			btnIntoGuidance.alpha = 0;
+			btnQrCode.alpha = 0;
+			btnTakePhoto.alpha = 0;
+			btnTraffic.alpha = 0;
 			this.addChild(btnChangeLanguage);
 			this.addChild(btnIntoGuidance);
 			this.addChild(btnQrCode);
 			this.addChild(btnTakePhoto);
 			this.addChild(btnTraffic);
+			
+			TweenLite.to(btnChangeLanguage, 1, {alpha:1});
+			TweenLite.to(btnIntoGuidance, 1, {alpha:1});
+			TweenLite.to(btnQrCode, 1, {alpha:1});
+			TweenLite.to(btnTakePhoto, 1, {alpha:1});
+			TweenLite.to(btnTraffic, 1, {alpha:1});
 		}
 		
 		private function removeButtonFromStage() {

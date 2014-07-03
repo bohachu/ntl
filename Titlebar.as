@@ -34,6 +34,8 @@
 		public static const TITLE_BUTTON_LOCATION_RIGHT : String = "Titlebar.TITLE_BUTTON_LOCATION_RIGHT";
 		public static const CLICK_BACK:String = "Titlebar.CLIC_BACK";
 		public static const CLICK_HOME:String = "Titlebar.CLICK_HOME";
+		public static const CLICK_SIDE_MENU_COLUMN:String = "Titlebar.CLICK_SIDE_MENU_COLUMN";
+		public static const SIDEMENU_CLOSE:String = "Titlebar.SIDEMENU_CLOSE";
 		private static var _instance:Titlebar = null;
 		
 		private const intDefaultWidth:int = LayoutSettings.intDefaultWidth;
@@ -49,6 +51,7 @@
 		private var titleBarContainer:Sprite = null;
 		private var sideMenuContainer:Sprite = null;
 		private var titlebarBanner:MovieClip = null;
+		public var intTitlebarHeight:int = 0;
 		private var intTitlebarMoveY:int = 0;
 		private var btnLeft:SimpleButton = null;
 		private var btnRight:SimpleButton = null;
@@ -78,7 +81,7 @@
 		
 		private function createBanner() {
 			titlebarBanner = new TitlebarBanner();
-			intTitlebarMoveY = titlebarBanner.height;
+			intTitlebarMoveY = intTitlebarHeight = titlebarBanner.height;
 			titleBarContainer.addChild(titlebarBanner);
 		}
 		
@@ -218,6 +221,7 @@
 		
 		private function onItemChanged(e:Event) {
 			TweenLite.to(snapShotContainer, 0.6, {x:0, ease:Strong.easeOut, onComplete:closeWithItemChanged});
+			this.dispatchEvent(new Event(Titlebar.CLICK_SIDE_MENU_COLUMN));
 		}
 		
 		private function closeWithClickHome() {
@@ -227,6 +231,7 @@
 		
 		private function closeWithItemChanged() {
 			removeShapShot();
+			eventChannel.writeEvent(new Event(Titlebar.SIDEMENU_CLOSE));
 		}
 		
 		public function showTitlebar() {
@@ -236,6 +241,10 @@
 		
 		public function hideTitlebar() {
 			if (titleBarContainer.y != -intTitlebarMoveY) TweenLite.to(titleBarContainer, 0.5, {y:-intTitlebarMoveY, ease:Strong.easeOut, onComplete:invisibleTitlebar});
+		}
+		
+		public function getClickSideMenuColumn():String {
+			return sideMenu.getCurrentSelectedColumnName();
 		}
 		
 		private function invisibleTitlebar() {
