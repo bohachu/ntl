@@ -106,6 +106,16 @@
 		public function getExhibitList(strKey:String):Array {
 			return dicRoomExhibitMapping[strKey];
 		}
+		
+		public function getFloorAndRoomFromExhibitNumber(strExhibitNumber:String):Array {
+			var lstResult:Array = new Array();
+			var strFloorAndRoom:String = lstExhibitCategory[int(strExhibitNumber)];
+			var intIndexOfDashLine:int = strFloorAndRoom.indexOf("-");
+			lstResult[0] = strFloorAndRoom.slice(0, intIndexOfDashLine);
+			lstResult[1] = strFloorAndRoom.slice(intIndexOfDashLine+1);
+			
+			return lstResult;
+		}
 
 	}
 	

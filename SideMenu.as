@@ -220,6 +220,12 @@
 			}
 			adjustLayout();
 		}
+		
+		public function setSelectColumn(strColumnName:String) {
+			if (strColumnName != strCurrentSelectedColumnName) {
+				changeColumnStatus(strColumnName);
+			}
+		}
 
 	}
 	

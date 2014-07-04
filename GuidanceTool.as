@@ -120,10 +120,12 @@
 		private function onOkClick(e:MouseEvent) {
 			if (guidanceInputPannel.numberTextTield.text != "") {
 				if (checkExhibitExist(int(guidanceInputPannel.numberTextTield.text))) {
-					this.dispatchEvent(new GuidanceToolEvent(GuidanceToolEvent.VIEW_GUIDANCE, guidanceInputPannel.numberTextTield.text));
+					var strInputNumber:String = guidanceInputPannel.numberTextTield.text;
+					removeGuidanceInputPannel();
+					this.dispatchEvent(new GuidanceToolEvent(GuidanceToolEvent.VIEW_GUIDANCE, strInputNumber));
 				} else {
-					this.dispatchEvent(new GuidanceToolEvent(GuidanceToolEvent.VIEW_GUIDANCE, guidanceInputPannel.numberTextTield.text));
-//					ToastMessage.showToastMessage(container, i18n.get("Message_WrongExhibitNumber"));
+//					this.dispatchEvent(new GuidanceToolEvent(GuidanceToolEvent.VIEW_GUIDANCE, guidanceInputPannel.numberTextTield.text));
+					ToastMessage.showToastMessage(container, i18n.get("Message_WrongExhibitNumber"));
 				}
 			} else {
 				ToastMessage.showToastMessage(container, i18n.get("Message_EmptyExhibitNumber"));

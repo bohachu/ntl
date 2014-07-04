@@ -77,14 +77,19 @@
 		private function onIntoGuidanceClick(e:Event) {
 			var strFloor:String = mappingData.getFloorList()[0];
 			var strRoom:String = mappingData.getRoomList(strFloor)[0];
-			var dicContentParameter = {
+			
+			showContent(getExhibitListPageParameter(strFloor, strRoom));
+		}
+		
+		private function getExhibitListPageParameter(strFloor:String, strRoom:String):Object {
+			var dicContentParameter:Object = {
 				className: "RoomExhibitList",
 				data: [strFloor, strRoom],
 				showDirection: Navigator.SHOW_LEFT,
 				hideDirection: Navigator.HIDE_RIGHT
 			};
 			
-			showContent(dicContentParameter);
+			return dicContentParameter;
 		}
 		
 		private function onQrCodeClick(e:Event) {
@@ -131,17 +136,30 @@
 		
 		private function onSideMenuColumnClick(e:Event) {
 			var currentContent:MovieClip = navigator.getCurrentContent();
+			var strClickColumnName:String = titlebar.getClickSideMenuColumn();
+			var strFloor:String = "";
+			var strRoom:String = "";
 			
 			if (navigator.getContentNumber() == 3) { //In Guide page
+				var dicPreviousContentParameter:Object = navigator.getContentParameter(1);
+				strFloor = dicPreviousContentParameter.data[0];
+				strRoom = dicPreviousContentParameter.data[1];
+				if (strClickColumnName != strFloor + "-" + strRoom) {
+					var intIndexOfDashLine:int = strClickColumnName.indexOf("-");
+					dicPreviousContentParameter.data[0] = strClickColumnName.slice(0, intIndexOfDashLine);
+					dicPreviousContentParameter.data[1] = strClickColumnName.slice(intIndexOfDashLine+1);
+					
+					navigator.setContentParameter(1, dicPreviousContentParameter);
+				}
+				navigatorBackHandler();
 			}
 			
 			if (navigator.getContentNumber() == 2) { // In Room Exhibit List page
 				var roomExhibitList:RoomExhibitList = navigator.getCurrentContent() as RoomExhibitList;
-				var strClickColumnName:String = titlebar.getClickSideMenuColumn();
 				if (strClickColumnName != roomExhibitList.strFloor + "-" + roomExhibitList.strRoom) {
 					var intIndexOfDashLine:int = strClickColumnName.indexOf("-");
-					var strFloor:String = strClickColumnName.slice(0, intIndexOfDashLine);
-					var strRoom:String = strClickColumnName.slice(intIndexOfDashLine+1);
+					strFloor = strClickColumnName.slice(0, intIndexOfDashLine);
+					strRoom = strClickColumnName.slice(intIndexOfDashLine+1);
 					roomExhibitList.resetExhibitList(strFloor, strRoom);
 					eventChannel.addEventListener(Titlebar.SIDEMENU_CLOSE, reloadRoomExhibitList);
 				}
@@ -168,7 +186,8 @@
 		}
 		
 		private function onStartGuideToolEvent(e:GuidanceToolEvent) {
-			trace("ContentController.as / onStartGuideToolEvent: Exhibit no.", e.getInputExhibitNumber());
+//			trace("ContentController.as / onStartGuideToolEvent: Exhibit no.", e.getInputExhibitNumber());
+			startGuide([e.getInputExhibitNumber()]);
 		}
 		
 		private function onStartGuideEvent(e:GuideEvent) {
@@ -177,14 +196,35 @@
 		}
 		
 		private function startGuide(lstExhibitFolder:Array) {
-			var dicContentParameter = {
-				className: "Guide",
-				data: lstExhibitFolder,
-				showDirection: Navigator.SHOW_UP,
-				hideDirection: Navigator.HIDE_DOWN
-			};
+			var lstFloorAndRoom:Array = mappingData.getFloorAndRoomFromExhibitNumber(lstExhibitFolder[0]);
+			var strFloor:String = lstFloorAndRoom[0];
+			var strRoom:String = lstFloorAndRoom[1];
+			var strColumnName:String = strFloor + "-" + strRoom;
+			titlebar.setSideMenuColumn(strColumnName);
 			
-			showContent(dicContentParameter);
+			if (navigator.getContentNumber() == 3) { // Navigator has ExhibitList Page and in Guide Page
+				var guidePage:MovieClip = navigator.getCurrentContent();
+				if (String(guidePage.lstExhibitFolder) == String(lstExhibitFolder)) {
+					guidePage.replayGuide();
+				} else {
+					guidePage.lstExhibitFolder = lstExhibitFolder;
+					guidePage.reloadGuide();
+				}
+			} else {
+				if (navigator.getContentNumber() == 1) { // Navigator not have ExhibitList Page in Main
+					var dicExhibitListPageParameter:Object = getExhibitListPageParameter(strFloor, strRoom);
+					navigator.addContentParameter(dicExhibitListPageParameter);
+				}
+				
+				var dicContentParameter = {
+					className: "Guide",
+					data: lstExhibitFolder,
+					showDirection: Navigator.SHOW_UP,
+					hideDirection: Navigator.HIDE_DOWN
+				};
+			
+				showContent(dicContentParameter);
+			}
 		}
 		
 		private function addEventChannelListener() {

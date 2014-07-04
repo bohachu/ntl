@@ -16,6 +16,11 @@
 	import tw.cameo.CheckAppVersion;
 	import tw.cameo.SplashScreen;
 	
+	CAMEO::ANE {
+		import ane.lib.VideoNativeExtension;
+		import ane.lib.VideoNativeExtensionEvents;
+	}
+	
 	import Config;
 	import LoadingScreen;
 	import CheckUpdate;
@@ -35,6 +40,10 @@
 		private var checkUpdate:CheckUpdate = null;
 		private var i18n:I18n = null;
 		private var contentController:ContentController = null;
+
+		CAMEO::ANE {
+			private var ext:VideoNativeExtension;
+		}
 		
 		public function Main() {
 			// constructor code
@@ -50,6 +59,10 @@
 				var sourceFolder:File = File.applicationDirectory.resolvePath("");
 				var targetFolder:File = File.applicationStorageDirectory.resolvePath("");
 				trace(sourceFolder.nativePath, targetFolder.nativePath);
+			}
+			
+			CAMEO::ANE {
+				ext = new VideoNativeExtension();
 			}
 		}
 		
@@ -131,16 +144,25 @@
 		}
 		
 		private function loadMappingData() {
+			CAMEO::ANE {
+				ext.writeConsole("Main.as / loadMappingData");
+			}
 			mappingData.addEventListener(MappingData.LOAD_MAPPING_DATA_COMPLETE, onLoadMappingDataComplete);
 			mappingData.loadMappingData();
 		}
 		
 		private function onLoadMappingDataComplete(e:Event) {
+			CAMEO::ANE {
+				ext.writeConsole("Main.as / onLoadMappingDataComplete");
+			}
 			mappingData.removeEventListener(MappingData.LOAD_MAPPING_DATA_COMPLETE, onLoadMappingDataComplete);
 			loadingI18n();
 		}
 		
 		private function loadingI18n() {
+			CAMEO::ANE {
+				ext.writeConsole("Main.as / loadingI18n");
+			}
 			initLoadingScreen();
 			i18n = I18n.getInstance();
 			i18n.addEventListener(I18n.LOAD_TRANSLATION_COMPLETE, onLoadTranslationComplete);

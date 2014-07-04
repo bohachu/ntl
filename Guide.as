@@ -19,6 +19,7 @@
 	import LoadingScreen;
 	import GuideEvent;
 	import LoadExhibitData;
+	import SlideShow;
 	
 	public class Guide extends MovieClip {
 		
@@ -34,13 +35,17 @@
 		private const intDefaultHeightForIphone5:Number = LayoutSettings.intDefaultHeightForIphone5;
 		private var isIphone5Layout:Boolean = LayoutManager.useIphone5Layout();
 		
-		private var lstExhibitFolder:Array = null;
+		public var lstExhibitFolder:Array = null;
 		private var intCurrentExhibitIndex:int = 0;
 		private var bg:Sprite = null;
 		private var loadingScreen:LoadingScreen = null;
 		private var dicExhibitData:Object = null;
 		private var soundAudio:Sound = null;
 		private var lstPhoto:Array = null;
+		private var slideShowContainer:Sprite = null;
+		
+		private var slideShowControlTool:MovieClip = null;
+		private var pauseSprite:Sprite = null;
 
 		public function Guide(lstExhibitFolderIn:Array) {
 			// constructor code
@@ -57,12 +62,16 @@
 				changeLayoutForIphone5();
 			}
 			createBackground();
-			initLoadingScreen();
+			initSlideShowContainer();
 			loadData();
 		}
 		
 		private function destructor(e:Event) {
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destructor);
+			removePauseButton();
+			removeControlTool();
+			removeSlideShow();
+			removeSlideShowContainer();
 			removeLoadingScreen();
 			removeBackground();
 			lstExhibitFolder = null;
@@ -93,7 +102,18 @@
 			loadingScreen = null;
 		}
 		
+		private function initSlideShowContainer() {
+			slideShowContainer = new Sprite();
+			this.addChild(slideShowContainer);
+		}
+		
+		private function removeSlideShowContainer() {
+			this.removeChild(slideShowContainer);
+			slideShowContainer = null;
+		}
+		
 		private function loadData() {
+			initLoadingScreen();
 			var strFolder:String = lstExhibitFolder[intCurrentExhibitIndex];
 			var loadExhibitData:LoadExhibitData = new LoadExhibitData(strFolder);
 			loadExhibitData.addEventListener(LoadExhibitData.LOAD_EXHIBIT_DATA_COMPLETE, onLoadExhibitDataComplete);
@@ -111,8 +131,103 @@
 			
 			loadExhibitData.dispose();
 			loadExhibitData = null;
+			removeLoadingScreen();
+			
+			var slideShow:SlideShow = new SlideShow(dicExhibitData, lstPhoto, soundAudio);
+			
+			playGuide(slideShow);
+		}
+		
+		private function removeSlideShow() {
+			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
+			if (slideShow) slideShowContainer.removeChild(slideShow);
+			slideShow = null;
+		}
+		
+		private function playGuide(slideShow:SlideShow) {
+			slideShowContainer.addChild(slideShow);
+			createPauseButton();
+			titlebar.hideTitlebar();
+			guidanceTool.hideGuidanceTool();
+			slideShow.playSlideShow();
+		}
+		
+		private function createPauseButton() {
+			pauseSprite = new Sprite();
+			pauseSprite.graphics.beginFill(0, 0);
+			pauseSprite.graphics.drawRect(0, 0, 640, 1136);
+			pauseSprite.graphics.endFill();
+			this.addChild(pauseSprite);
+			pauseSprite.addEventListener(MouseEvent.CLICK, pauseSlideShow);
+		}
+		
+		private function removePauseButton() {
+			if (pauseSprite) {
+				pauseSprite.removeEventListener(MouseEvent.CLICK, pauseSlideShow);
+				this.removeChild(pauseSprite);
+			}
+			pauseSprite = null;
+		}
+		
+		private function pauseSlideShow(e:MouseEvent) {
+			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
+			removePauseButton();
+			titlebar.showTitlebar();
+			guidanceTool.showGuidanceTool();
+			showControlTool();
+			slideShow.stopSlideShow();
 		}
 
+		private function continuePlayGuide() {
+			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
+			removeControlTool();
+			createPauseButton();
+			titlebar.hideTitlebar();
+			guidanceTool.hideGuidanceTool();
+			slideShow.playSlideShow();
+		}
+		
+		private function showControlTool() {
+			slideShowControlTool = new SlideShowControlTool();
+			slideShowControlTool.y = (isIphone5Layout) ? 0 : -88;
+			this.addChild(slideShowControlTool);
+			slideShowControlTool.playButton.addEventListener(MouseEvent.CLICK, onClickPlayButton);
+			slideShowControlTool.replayButton.addEventListener(MouseEvent.CLICK, onClickReplayButton);
+		}
+		
+		private function removeControlTool() {
+			if (slideShowControlTool) {
+				slideShowControlTool.playButton.removeEventListener(MouseEvent.CLICK, onClickPlayButton);
+				slideShowControlTool.replayButton.removeEventListener(MouseEvent.CLICK, onClickReplayButton);
+				this.removeChild(slideShowControlTool);
+			}
+			slideShowControlTool = null;
+		}
+		
+		private function onClickPlayButton(e:MouseEvent) {
+			continuePlayGuide();
+		}
+		
+		private function onClickReplayButton(e:MouseEvent) {
+			replayGuide();
+		}
+		
+		public function replayGuide() {
+			trace("Guide.as / replayGuide.");
+			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
+			removeControlTool();
+			createPauseButton();
+			slideShow.resetAndPlay();
+			titlebar.hideTitlebar();
+			guidanceTool.hideGuidanceTool();
+		}
+
+		public function reloadGuide() {
+			trace("Guide.as / reloadGuide.", lstExhibitFolder);
+			removeControlTool();
+			removeSlideShow();
+			loadData();
+		}
 	}
 	
 }

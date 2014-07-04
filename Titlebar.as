@@ -247,6 +247,10 @@
 			return sideMenu.getCurrentSelectedColumnName();
 		}
 		
+		public function setSideMenuColumn(strColumnName:String) {
+			sideMenu.setSelectColumn(strColumnName);
+		}
+		
 		private function invisibleTitlebar() {
 			titleBarContainer.visible = false;
 		}
