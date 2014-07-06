@@ -51,7 +51,15 @@
 <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+<application>
+<activity android:name="com.cameo.flash2video.lib.CameraActivity"/>
+<activity android:name="com.sbhave.nativeExtension.ui.CameraActivity"/>
+</application>
 </manifest>]]>
     </manifestAdditions>
     </android>
+  <extensions>
+    <extensionID>com.cameo.flash2videoext</extensionID>
+    <extensionID>com.sbhave.nativeExtensions.zbar</extensionID>
+  </extensions>
 </application>

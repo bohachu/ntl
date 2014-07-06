@@ -21,6 +21,7 @@
 	import RoomExhibitList;
 	import GuideEvent;
 	import Guide;
+	import ScanRoomQrCode;
 	
 	public class ContentController {
 		
@@ -31,6 +32,7 @@
 		private var navigator:Navigator = null;
 		private var titlebar:Titlebar = null;
 		private var guidanceTool:GuidanceTool = null;
+		private var scanRoomQrCode:ScanRoomQrCode = null;
 		
 		public function ContentController(mainMovieClip:DisplayObjectContainer) {
 			// constructor code
@@ -51,6 +53,7 @@
 		
 		public function dispose() {
 			removeEventChannelListener();
+			removeScanRoomQrCode();
 			disposeGuidanceTool();
 			navigator.dispose();
 			navigator = null;
@@ -92,8 +95,26 @@
 			return dicContentParameter;
 		}
 		
-		private function onQrCodeClick(e:Event) {
-			trace("ContentController.as / onQrCodeClick");
+		private function onQrCodeClick(e:Event = null) {
+			if (scanRoomQrCode == null) {
+				scanRoomQrCode = new ScanRoomQrCode();
+				scanRoomQrCode.addEventListener(ScanRoomQrCode.SCAN_OK, onScanRoomQrCodeComplete);
+			}
+			scanRoomQrCode.startScan();
+		}
+		
+		private function removeScanRoomQrCode() {
+			if (scanRoomQrCode) {
+				scanRoomQrCode.dispose();
+				scanRoomQrCode.removeEventListener(ScanRoomQrCode.SCAN_OK, onScanRoomQrCodeComplete);
+			}
+			scanRoomQrCode = null;
+		}
+		
+		private function onScanRoomQrCodeComplete(e:Event) {
+			var strRoomLabel:String = scanRoomQrCode.getRoomLabel();
+			
+			startGuide(mappingData.getExhibitList(strRoomLabel));
 		}
 		
 		private function onCheckInClick(e:Event) {
@@ -115,6 +136,7 @@
 			titlebar = Titlebar.getInstance();
 			titlebar.addEventListener(Titlebar.CLICK_BACK, onTitlebarBackClick);
 			titlebar.addEventListener(Titlebar.CLICK_HOME, onTitlebarHomeClick);
+			titlebar.addEventListener(Titlebar.CLICK_QRCODE, onQrCodeClick);
 			titlebar.addEventListener(Titlebar.CLICK_SIDE_MENU_COLUMN, onSideMenuColumnClick);
 			titlebar.initTitleBar(toolsContainer);
 		}
@@ -122,6 +144,7 @@
 		private function disposeTitlebar() {
 			titlebar.removeEventListener(Titlebar.CLICK_BACK, onTitlebarBackClick);
 			titlebar.removeEventListener(Titlebar.CLICK_HOME, onTitlebarHomeClick);
+			titlebar.removeEventListener(Titlebar.CLICK_QRCODE, onQrCodeClick);
 			titlebar.removeEventListener(Titlebar.CLICK_SIDE_MENU_COLUMN, onSideMenuColumnClick);
 			titlebar = null;
 		}

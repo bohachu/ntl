@@ -108,13 +108,25 @@
 		}
 		
 		public function getFloorAndRoomFromExhibitNumber(strExhibitNumber:String):Array {
-			var lstResult:Array = new Array();
 			var strFloorAndRoom:String = lstExhibitCategory[int(strExhibitNumber)];
-			var intIndexOfDashLine:int = strFloorAndRoom.indexOf("-");
-			lstResult[0] = strFloorAndRoom.slice(0, intIndexOfDashLine);
-			lstResult[1] = strFloorAndRoom.slice(intIndexOfDashLine+1);
+			
+			return getFloorAndRoomFromLabel(strFloorAndRoom);
+		}
+		
+		public function getFloorAndRoomFromLabel(strLabelName:String):Array {
+			var lstResult:Array = new Array();
+			var intIndexOfDashLine:int = strLabelName.indexOf("-");
+			lstResult[0] = strLabelName.slice(0, intIndexOfDashLine);
+			lstResult[1] = strLabelName.slice(intIndexOfDashLine+1);
 			
 			return lstResult;
+		}
+		
+		public function checkRoomLabelExist(strRoomLabel:String):Boolean {
+			for (var strKey:String in dicRoomExhibitMapping) {
+				if (strKey == strRoomLabel) return true;
+			}
+			return false;
 		}
 
 	}

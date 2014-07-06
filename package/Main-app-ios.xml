@@ -54,4 +54,8 @@
 </Entitlements>
 -->
     </iPhone>
+  <extensions>
+    <extensionID>tw.cameo.lib.CameoNativeExtension</extensionID>
+    <extensionID>com.sbhave.nativeExtensions.zbar</extensionID>
+  </extensions>
 </application>

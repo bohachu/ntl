@@ -33,6 +33,7 @@
 		public static const TITLE_BUTTON_LOCATION_LEFT  : String = "Titlebar.TITLE_BUTTON_LOCATION_LEFT";
 		public static const TITLE_BUTTON_LOCATION_RIGHT : String = "Titlebar.TITLE_BUTTON_LOCATION_RIGHT";
 		public static const CLICK_BACK:String = "Titlebar.CLIC_BACK";
+		public static const CLICK_QRCODE:String = "Titlebar.CLICK_QRCODE";
 		public static const CLICK_HOME:String = "Titlebar.CLICK_HOME";
 		public static const CLICK_SIDE_MENU_COLUMN:String = "Titlebar.CLICK_SIDE_MENU_COLUMN";
 		public static const SIDEMENU_CLOSE:String = "Titlebar.SIDEMENU_CLOSE";
@@ -119,7 +120,7 @@
 				}
 			
 				if (strButtonLocation == TITLE_BUTTON_LOCATION_RIGHT) {
-					newButton.x = 564;
+					newButton.x = 550;
 					btnRightFunction = getTitleButtonDefaultHandler(strButtonType);
 				}
 			}
@@ -131,6 +132,11 @@
 				case TITLE_BUTTON_TYPE_BACK:
 					func = function() { 
 						this.dispatchEvent(new Event(Titlebar.CLICK_BACK));
+					};
+				break;
+				case TITLE_BUTTON_TYPE_QRCODE:
+					func = function() { 
+						this.dispatchEvent(new Event(Titlebar.CLICK_QRCODE));
 					};
 				break;
 				case TITLE_BUTTON_TYPE_SIDE_MENU:
@@ -258,6 +264,7 @@
 		private function forDynamicCreate() {
 			var backButton:TitlebarBackButton = null;
 			var sideMenuButton:TitlebarSideMenuButton = null;
+			var qrCodeButton:TitlebarQrCodeButton = null;
 		}
 	}
 	

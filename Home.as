@@ -15,6 +15,7 @@
 	import I18n;
 	import Language;
 	import Titlebar;
+	import GuidanceTool;
 
 	public class Home extends MovieClip {
 		
@@ -27,6 +28,7 @@
 		private var i18n:I18n = I18n.getInstance();
 		private var language:Language = Language.getInstance();
 		private var titlebar:Titlebar = Titlebar.getInstance();
+		private var guidanceTool:GuidanceTool = GuidanceTool.getInstance();
 		
 		private var intDefaultWidth:Number = LayoutSettings.intDefaultWidth;
 		private var intDefaultHeight:Number = LayoutSettings.intDefaultHeight;
@@ -63,6 +65,7 @@
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
 			
 			titlebar.hideTitlebar();
+			guidanceTool.showGuidanceTool();
 			
 			if (isIphone5Layout) {
 				changeLayoutForIphone5();

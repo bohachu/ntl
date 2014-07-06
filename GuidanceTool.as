@@ -120,9 +120,11 @@
 		private function onOkClick(e:MouseEvent) {
 			if (guidanceInputPannel.numberTextTield.text != "") {
 				if (checkExhibitExist(int(guidanceInputPannel.numberTextTield.text))) {
-					var strInputNumber:String = guidanceInputPannel.numberTextTield.text;
+					var intInputNumber:int = int(guidanceInputPannel.numberTextTield.text);
+//					var strInputNumber:String = guidanceInputPannel.numberTextTield.text;
+					var strFolderName:String = (intInputNumber < 10) ? "0" + String(intInputNumber) : String(intInputNumber);
 					removeGuidanceInputPannel();
-					this.dispatchEvent(new GuidanceToolEvent(GuidanceToolEvent.VIEW_GUIDANCE, strInputNumber));
+					this.dispatchEvent(new GuidanceToolEvent(GuidanceToolEvent.VIEW_GUIDANCE, strFolderName));
 				} else {
 //					this.dispatchEvent(new GuidanceToolEvent(GuidanceToolEvent.VIEW_GUIDANCE, guidanceInputPannel.numberTextTield.text));
 					ToastMessage.showToastMessage(container, i18n.get("Message_WrongExhibitNumber"));
