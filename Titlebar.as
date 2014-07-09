@@ -30,12 +30,14 @@
 		public static const TITLE_BUTTON_TYPE_BACK:String = "TitlebarBackButton";
 		public static const TITLE_BUTTON_TYPE_SIDE_MENU:String = "TitlebarSideMenuButton";
 		public static const TITLE_BUTTON_TYPE_QRCODE:String = "TitlebarQrCodeButton";
+		public static const TITLE_BUTTON_TYPE_OK:String = "TitlebarOkButton";
 		public static const TITLE_BUTTON_LOCATION_LEFT  : String = "Titlebar.TITLE_BUTTON_LOCATION_LEFT";
 		public static const TITLE_BUTTON_LOCATION_RIGHT : String = "Titlebar.TITLE_BUTTON_LOCATION_RIGHT";
 		public static const CLICK_BACK:String = "Titlebar.CLIC_BACK";
 		public static const CLICK_QRCODE:String = "Titlebar.CLICK_QRCODE";
 		public static const CLICK_HOME:String = "Titlebar.CLICK_HOME";
 		public static const CLICK_SIDE_MENU_COLUMN:String = "Titlebar.CLICK_SIDE_MENU_COLUMN";
+		public static const CLICK_OK:String = "Titlebar.CLICK_OK";
 		public static const SIDEMENU_CLOSE:String = "Titlebar.SIDEMENU_CLOSE";
 		private static var _instance:Titlebar = null;
 		
@@ -142,6 +144,11 @@
 				case TITLE_BUTTON_TYPE_SIDE_MENU:
 					func = function() { 
 						showSideMenu();
+					};
+				break;
+				case TITLE_BUTTON_TYPE_OK:
+					func = function() { 
+						this.dispatchEvent(new Event(Titlebar.CLICK_OK));
 					};
 				break;
 			}
@@ -265,6 +272,7 @@
 			var backButton:TitlebarBackButton = null;
 			var sideMenuButton:TitlebarSideMenuButton = null;
 			var qrCodeButton:TitlebarQrCodeButton = null;
+			var okButton:TitlebarOkButton = null;
 		}
 	}
 	

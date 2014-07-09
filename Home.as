@@ -44,16 +44,16 @@
 		private var pointBtnChangeLanguage:Point = new Point(444, 17);
 		
 		private var btnIntoGuidance:MovieClip = null;
-		private var pointBtnIntoGuidance:Point = new Point(215, (isIphone5Layout) ? 315 : 205);
+		private var pointBtnIntoGuidance:Point = new Point(208, (isIphone5Layout) ? 315 : 205);
 		
 		private var btnQrCode:MovieClip = null;
-		private var pointBtnQrCode:Point = new Point(412, (isIphone5Layout) ? 315 : 205);
+		private var pointBtnQrCode:Point = new Point(423, (isIphone5Layout) ? 315 : 205);
 		
 		private var btnTakePhoto:MovieClip = null;
-		private var pointBtnTakePhoto:Point = new Point(215, (isIphone5Layout) ? 545 : 415);
+		private var pointBtnTakePhoto:Point = new Point(208, (isIphone5Layout) ? 565 : 440);
 		
 		private var btnTraffic:MovieClip = null;
-		private var pointBtnTraffic:Point = new Point(412, (isIphone5Layout) ? 545 : 415);
+		private var pointBtnTraffic:Point = new Point(423, (isIphone5Layout) ? 565 : 440);
 		
 		public function Home(... args) {
 			// constructor code

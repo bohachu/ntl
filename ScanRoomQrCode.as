@@ -24,10 +24,12 @@
 
 		public function ScanRoomQrCode() {
 			// constructor code
-			qrCodeScanner = new Scanner();
-			qrCodeScanner.setTargetArea(200,"0xFF00FF00","0xFFFFFFFF"); 
-			qrCodeScanner.addEventListener(ScannerEvent.SCAN,onScaneComplete);
-			qrCodeScanner.reset();
+			CAMEO::ANE {
+				qrCodeScanner = new Scanner();
+				qrCodeScanner.setTargetArea(200,"0xFF00FF00","0xFFFFFFFF"); 
+				qrCodeScanner.addEventListener(ScannerEvent.SCAN,onScaneComplete);
+				qrCodeScanner.reset();
+			}
 		}
 		
 		public function startScan() {
@@ -44,9 +46,11 @@
 		}
 		
 		private function removeQrCodeScanner() {
-			qrCodeScanner.removeEventListener(ScannerEvent.SCAN,onScaneComplete);
-			qrCodeScanner.dispose();
-			qrCodeScanner = null;
+			CAMEO::ANE {
+				qrCodeScanner.removeEventListener(ScannerEvent.SCAN,onScaneComplete);
+				qrCodeScanner.dispose();
+				qrCodeScanner = null;
+			}
 		}
 		
 		private function onScaneComplete(e:ScannerEvent = null) {

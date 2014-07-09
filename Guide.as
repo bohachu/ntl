@@ -134,21 +134,39 @@
 			removeLoadingScreen();
 			
 			var slideShow:SlideShow = new SlideShow(dicExhibitData, lstPhoto, soundAudio);
+			slideShow.addEventListener(SlideShow.PLAY_END, onSlideShowPlayEnd);
 			
 			playGuide(slideShow);
 		}
 		
 		private function removeSlideShow() {
 			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
-			if (slideShow) slideShowContainer.removeChild(slideShow);
+			if (slideShow) {
+				slideShow.removeEventListener(SlideShow.PLAY_END, onSlideShowPlayEnd);
+				slideShowContainer.removeChild(slideShow);
+			}
 			slideShow = null;
 		}
 		
+		private function onSlideShowPlayEnd(e:Event) {
+			if (intCurrentExhibitIndex < lstExhibitFolder.length-1) {
+				intCurrentExhibitIndex++;
+				removePauseButton();
+				loadData();
+			} else {
+				showToolsAndRemovePauseButton();
+			}
+		}
+		
 		private function playGuide(slideShow:SlideShow) {
+			if (slideShowContainer.numChildren != 0) {
+				var oldSlideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
+				oldSlideShow.removeEventListener(SlideShow.PLAY_END, onSlideShowPlayEnd);
+				slideShowContainer.removeChild(oldSlideShow);
+				oldSlideShow = null;
+			}
 			slideShowContainer.addChild(slideShow);
-			createPauseButton();
-			titlebar.hideTitlebar();
-			guidanceTool.hideGuidanceTool();
+			hideToolsAndCreatePauseButton();
 			slideShow.playSlideShow();
 		}
 		
@@ -170,20 +188,14 @@
 		}
 		
 		private function pauseSlideShow(e:MouseEvent) {
+			showToolsAndRemovePauseButton();
 			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
-			removePauseButton();
-			titlebar.showTitlebar();
-			guidanceTool.showGuidanceTool();
-			showControlTool();
 			slideShow.stopSlideShow();
 		}
 
 		private function continuePlayGuide() {
+			hideToolsAndCreatePauseButton();
 			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
-			removeControlTool();
-			createPauseButton();
-			titlebar.hideTitlebar();
-			guidanceTool.hideGuidanceTool();
 			slideShow.playSlideShow();
 		}
 		
@@ -193,6 +205,20 @@
 			this.addChild(slideShowControlTool);
 			slideShowControlTool.playButton.addEventListener(MouseEvent.CLICK, onClickPlayButton);
 			slideShowControlTool.replayButton.addEventListener(MouseEvent.CLICK, onClickReplayButton);
+		}
+		
+		private function showToolsAndRemovePauseButton() {
+			removePauseButton();
+			titlebar.showTitlebar();
+			guidanceTool.showGuidanceTool();
+			showControlTool();
+		}
+		
+		private function hideToolsAndCreatePauseButton() {
+			removeControlTool();
+			createPauseButton();
+			titlebar.hideTitlebar();
+			guidanceTool.hideGuidanceTool();
 		}
 		
 		private function removeControlTool() {
@@ -214,12 +240,14 @@
 		
 		public function replayGuide() {
 			trace("Guide.as / replayGuide.");
-			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
-			removeControlTool();
-			createPauseButton();
-			slideShow.resetAndPlay();
-			titlebar.hideTitlebar();
-			guidanceTool.hideGuidanceTool();
+			if (intCurrentExhibitIndex != 0) {
+				intCurrentExhibitIndex = 0;
+				loadData();
+			} else {
+				hideToolsAndCreatePauseButton();
+				var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
+				slideShow.resetAndPlay();
+			}
 		}
 
 		public function reloadGuide() {

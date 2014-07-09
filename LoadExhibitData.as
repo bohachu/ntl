@@ -84,7 +84,7 @@
 				var strImageNumber:String = (i-2 >= 10) ? String(i-2) : "0" + String(i-2);
 				var strImageName:String = "Image" + strImageNumber;
 				var imageInfoObject:Object = new Object();
-				imageInfoObject[strImageName + "_CHI"] = lstResult[i][1];
+				imageInfoObject[strImageName + "_CHT"] = lstResult[i][1];
 				imageInfoObject[strImageName + "_ENU"] = lstResult[i][2];
 				imageInfoObject[strImageName + "_JPN"] = lstResult[i][3];
 				lstImageInfo.push(imageInfoObject);

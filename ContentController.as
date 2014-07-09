@@ -3,6 +3,7 @@
 	import flash.display.DisplayObjectContainer;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
+	import flash.display.Bitmap;
 	import flash.system.System;
 	import flash.system.Capabilities;
 	import flash.desktop.NativeApplication;
@@ -22,6 +23,8 @@
 	import GuideEvent;
 	import Guide;
 	import ScanRoomQrCode;
+	import ChosePicture;
+	import TakeAPolaroid;
 	
 	public class ContentController {
 		
@@ -119,6 +122,32 @@
 		
 		private function onCheckInClick(e:Event) {
 			trace("ContentController.as / onCheckInClick");
+			var dicContentParameter = {
+				className: "ChosePicture",
+				data: null,
+				showDirection: Navigator.SHOW_LEFT,
+				hideDirection: Navigator.HIDE_RIGHT
+			};
+			
+			showContent(dicContentParameter);
+		}
+		
+		private function onLoadPhotoComplete(e:Event) {
+			trace("ContentController.as / onLoadPhotoComplete");
+			var chosePicture:ChosePicture = navigator.getCurrentContent() as ChosePicture;
+			var photoBitmap:Bitmap = chosePicture.getBitmap();
+			var dicContentParameter = {
+				className: "TakeAPolaroid",
+				data: photoBitmap,
+				showDirection: Navigator.NONE,
+				hideDirection: Navigator.HIDE_DOWN
+			};
+			
+			showContent(dicContentParameter);
+		}
+		
+		private function onTakePictureComplete(e:Event) {
+			navigator.popContent(1);
 		}
 		
 		private function onTrafficClick(e:Event) {
@@ -256,6 +285,8 @@
 			eventChannel.addEventListener(Home.CLICK_CHECK_IN, onCheckInClick);
 			eventChannel.addEventListener(Home.CLICK_TRAFFIC, onTrafficClick);
 			eventChannel.addEventListener(GuideEvent.START_GUIDANCE, onStartGuideEvent);
+			eventChannel.addEventListener(ChosePicture.LOAD_PHOTO_COMPLETE, onLoadPhotoComplete);
+			eventChannel.addEventListener(TakeAPolaroid.TAKE_PICTURE_COMPLETE, onTakePictureComplete);
 		}
 		
 		private function removeEventChannelListener() {
@@ -264,6 +295,8 @@
 			eventChannel.removeEventListener(Home.CLICK_CHECK_IN, onCheckInClick);
 			eventChannel.removeEventListener(Home.CLICK_TRAFFIC, onTrafficClick);
 			eventChannel.removeEventListener(GuideEvent.START_GUIDANCE, onStartGuideEvent);
+			eventChannel.removeEventListener(ChosePicture.LOAD_PHOTO_COMPLETE, onLoadPhotoComplete);
+			eventChannel.removeEventListener(TakeAPolaroid.TAKE_PICTURE_COMPLETE, onTakePictureComplete);
 		}
 		
 		private function showContent(dicContentParameter:Object):void {
@@ -298,6 +331,8 @@
 			var traffic:Traffic = null;
 			var roomExhibitList:RoomExhibitList = null;
 			var guide:Guide = null;
+			var chosePicture:ChosePicture = null;
+			var takeAPolaroid:TakeAPolaroid = null;
 		}
 
 	}

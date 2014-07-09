@@ -62,7 +62,7 @@
 			splashScreen.addEventListener(SplashScreen.FINISH, onSplashScreenFinish);
 			splashScreen.init();
 			
-			if (Capabilities.os.indexOf("iPhone")) NativeApplication.nativeApplication.executeInBackground = true;
+//			if (Capabilities.os.indexOf("iPhone")) NativeApplication.nativeApplication.executeInBackground = true;
 		}
 		
 		private function destructor(e:Event) {
