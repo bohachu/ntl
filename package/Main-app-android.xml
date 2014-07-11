@@ -59,6 +59,7 @@
     </manifestAdditions>
     </android>
   <extensions>
+    <extensionID>tw.cameo.imagehandler</extensionID>
     <extensionID>com.cameo.flash2videoext</extensionID>
     <extensionID>com.sbhave.nativeExtensions.zbar</extensionID>
   </extensions>

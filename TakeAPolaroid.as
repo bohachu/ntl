@@ -12,6 +12,7 @@
 	import flash.geom.Point;
 	import flash.filesystem.File;
 	import flash.media.CameraRoll;
+	import flash.media.Sound;
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
 	import tw.cameo.EventChannel;
@@ -62,6 +63,7 @@
 		
 		private var snapShotBitmap:Bitmap = null;
 		private var cameraRoll:CameraRoll = null;
+		private var cameraSound:Sound = null;
 		
 		CAMEO::ANE {
 			private var ext:VideoNativeExtension = null;
@@ -205,7 +207,9 @@
 		}
 		
 		private function showFrame() {
-			TweenLite.to(polaroidPhotoContainer, 3, {y:0, onComplete:fadeOutPhotoMask});			
+			cameraSound = new CameraSound();
+			cameraSound.play();
+			TweenLite.to(polaroidPhotoContainer, 2, {y:0, onComplete:fadeOutPhotoMask});			
 		}
 		
 		private function fadeOutPhotoMask() {
@@ -310,11 +314,12 @@
 		
 		private function onSaveToCameraRollComplete(e:Event = null) {
 			eventChannel.addEventListener(ToastMessage.CLICK_OK, onConfirmToShare);
+			eventChannel.addEventListener(ToastMessage.CLOSE_MESSAGE, backToHome);
 			ToastMessage.showConfrim(this, i18n.get("Message_SaveToCameraRollSuccess"));
 		}
 		
 		private function onSaveToCameraRollFail(e:ErrorEvent) {
-			eventChannel.addEventListener(ToastMessage.CLICK_OK, backToHome);
+			eventChannel.addEventListener(ToastMessage.CLOSE_MESSAGE, backToHome);
 			ToastMessage.showToastMessage(this, i18n.get("Message_SaveToCameraRollFail"));
 		}
 		
@@ -329,6 +334,7 @@
 		}
 		
 		private function backToHome(e:Event = null) {
+			eventChannel.removeEventListener(ToastMessage.CLOSE_MESSAGE, backToHome);
 			eventChannel.removeEventListener(ToastMessage.CLICK_OK, backToHome);
 			eventChannel.writeEvent(new Event(TakeAPolaroid.TAKE_PICTURE_COMPLETE));
 		}
