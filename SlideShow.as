@@ -64,6 +64,7 @@
 		
 		private function destructor(e:Event) {
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destructor);
+			removePhotoShowTimer();
 			removeImageTitle();
 			removePhotoContainer();
 			audioControl.removeEventListener(AudioControl.PLAY_END, onSoundPlayEnd);
@@ -106,7 +107,7 @@
 		private function initImageTitle() {
 			imageTitleContainer = new Sprite();
 			imageTitleContainer.y = intDefaultHeight;
-			this.addChild(imageTitleContainer);
+//			this.addChild(imageTitleContainer);
 			var bg:Sprite = new Sprite();
 			bg.graphics.beginFill(0, 0.8);
 			bg.graphics.drawRect(0, 0, 640, 480);
@@ -134,7 +135,7 @@
 		}
 		
 		private function removeImageTitle() {
-			this.removeChild(imageTitleContainer);
+//			this.removeChild(imageTitleContainer);
 			imageTitleContainer.removeChild(imageTitleText);
 			imageTitleText = null;
 			imageTitleTextFormat = null;

@@ -7,6 +7,7 @@
 	import tw.cameo.file.LoadCsvFile;
 	import tw.cameo.EventChannel;
 	import Language;
+	import Utils;
 	
 	public class I18n extends EventDispatcher {
 		
@@ -46,9 +47,9 @@
 			var lstResult:Array = LoadCsvFile.getResult();
 			
 			for (var i:int = 1; i<lstResult.length; i++) {
-				dicI18n[lstResult[i][0] + "_CHT"] = lstResult[i][1];
-				dicI18n[lstResult[i][0] + "_ENU"] = lstResult[i][2];
-				dicI18n[lstResult[i][0] + "_JPN"] = lstResult[i][3];
+				dicI18n[lstResult[i][0] + "_CHT"] = Utils.removeDoubleQuote(lstResult[i][1]);
+				dicI18n[lstResult[i][0] + "_ENU"] = Utils.removeDoubleQuote(lstResult[i][2]);
+				dicI18n[lstResult[i][0] + "_JPN"] = Utils.removeDoubleQuote(lstResult[i][3]);
 			}
 			
 			var floorAndRoomTranslationFileSource1:File = File.applicationDirectory.resolvePath(strFloorAndRoomTranslationFile);

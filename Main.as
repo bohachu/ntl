@@ -42,7 +42,6 @@
 			this.stage.align = StageAlign.TOP_LEFT;
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
-			this.stage.addEventListener(Event.DEACTIVATE, deactivateHandler);
 			
 			CAMEO::Debug {
 				sharedObjectSavedStatus.clear();
@@ -160,10 +159,6 @@
 		private function removeContent() {
 			if (contentController) contentController.dispose();
 			contentController = null;
-		}
-		
-		private function deactivateHandler(e:Event) {
-			SoundMixer.stopAll();
 		}
 	}
 	

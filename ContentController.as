@@ -46,6 +46,7 @@
 			navigator = new Navigator(contentContainer);
 			
 			NativeApplication.nativeApplication.addEventListener(KeyboardEvent.KEY_DOWN, keyDownEevnt);
+			mainMovieClip.stage.addEventListener(Event.DEACTIVATE, deactivateHandler);
 			
 			createGuidanceTool();
 			createTitlebar();
@@ -324,6 +325,9 @@
 					navigatorBackHandler();
 				}
 			}
+		}
+		
+		private function deactivateHandler(e:Event) {
 		}
 		
 		private function forDynamicCreate() {
