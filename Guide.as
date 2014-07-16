@@ -187,7 +187,7 @@
 			pauseSprite = null;
 		}
 		
-		private function pauseSlideShow(e:MouseEvent) {
+		public function pauseSlideShow(e:MouseEvent = null) {
 			showToolsAndRemovePauseButton();
 			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
 			slideShow.stopSlideShow();

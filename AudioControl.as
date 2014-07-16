@@ -45,9 +45,11 @@
 		}
 		
 		public function playSound() {
-			soundChannel = new SoundChannel();
-			soundChannel = sound.play(intCurrentPosition);
-			soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundPlayEnd);
+			if (sound) {
+				soundChannel = new SoundChannel();
+				soundChannel = sound.play(intCurrentPosition);
+				soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundPlayEnd);
+			}
 //			if (soundChannel) {
 //				TweenPlugin.activate([VolumePlugin]);
 //				TweenLite.to(soundChannel, 0.2, {volume:0});
@@ -65,8 +67,8 @@
 		}
 		
 		public function stopSound() {
-			intCurrentPosition = soundChannel.position;
-			intCurrentBgSoundPosition = bgSoundChannel.position;
+			if (soundChannel) intCurrentPosition = soundChannel.position;
+			if (bgSoundChannel) intCurrentBgSoundPosition = bgSoundChannel.position;
 			removeSoundChannel();
 			removeBgSoundChannel();
 		}

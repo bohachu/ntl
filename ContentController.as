@@ -328,6 +328,8 @@
 		}
 		
 		private function deactivateHandler(e:Event) {
+			var currentContent = navigator.getCurrentContent();
+			if (currentContent is Guide) (currentContent as Guide).pauseSlideShow();
 		}
 		
 		private function forDynamicCreate() {

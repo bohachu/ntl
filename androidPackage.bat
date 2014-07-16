@@ -1,1 +1,1 @@
-call "D:\Resource\AdobeAIRSDK 3.7\bin\adt" -package -target apk-captive-runtime -storetype pkcs12 -keystore ../androidFlash.p12 -storepass 123456 Ntl-v0.2.0711beta.apk Main-app-android.xml -extdir "C:/github/flashCommon/ane" -extdir "C:/github/flashCommon/ane/Android" Main.swf icons data
+call "D:\Resource\AdobeAIRSDK 3.7\bin\adt" -package -target apk-captive-runtime -storetype pkcs12 -keystore ../androidFlash.p12 -storepass 123456 Ntl-v0.2.0718-beta.apk Main-app-android.xml -extdir "C:/github/flashCommon/ane" -extdir "C:/github/flashCommon/ane/Android" Main.swf icons data

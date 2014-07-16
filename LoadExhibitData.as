@@ -131,9 +131,14 @@
 		private function loadAudio() {
 			var strAudioFileName:String = "Audio_" + language.getLanguageType() + ".mp3";
 			var audioFile:File = exhibitFolder.resolvePath(strAudioFileName);
-			var loadMp3:LoadMp3 = new LoadMp3();
-			loadMp3.addEventListener(LoadMp3.LOAD_MP3_COMPLETE, onLoadMp3Complete);
-			loadMp3.load(audioFile.url);
+			
+			if (audioFile.exists) {
+				var loadMp3:LoadMp3 = new LoadMp3();
+				loadMp3.addEventListener(LoadMp3.LOAD_MP3_COMPLETE, onLoadMp3Complete);
+				loadMp3.load(audioFile.url);
+			} else {
+				this.dispatchEvent(new Event(LoadExhibitData.LOAD_EXHIBIT_DATA_COMPLETE));
+			}
 		}
 		
 		private function onLoadMp3Complete(e:Event) {

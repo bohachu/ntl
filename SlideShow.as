@@ -181,8 +181,8 @@
 		}
 		
 		private function removePhoto(photo:Bitmap) {
-			photoShowTimer.start();
-			photoContainer.removeChild(photo);
+			if (photoShowTimer) photoShowTimer.start();
+			if (photoContainer) photoContainer.removeChild(photo);
 		}
 
 		public function playSlideShow() {

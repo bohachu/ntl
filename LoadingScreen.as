@@ -3,6 +3,8 @@
 	import flash.display.MovieClip;
 	import flash.display.DisplayObjectContainer;
 	
+	import tw.cameo.LayoutManager;
+	
 	public class LoadingScreen {
 		
 		private var container:DisplayObjectContainer = null;
@@ -20,6 +22,7 @@
 				break;
 			}
 			
+			if (!LayoutManager.useIphone5Layout()) loadingMovieClip.y = -88;
 			container.addChild(loadingMovieClip);
 		}
 		

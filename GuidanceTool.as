@@ -45,7 +45,7 @@
 		
 		public function create(containerIn:DisplayObjectContainer) {
 			toolContainer = new Sprite();
-			guidanceButton = new GuidanceButton();
+			guidanceButton = new GuidanceButtonLong();
 			guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
 			toolContainer.addChild(guidanceButton);
 			toolContainer.y = intGuidanceToolY = intDefaultHeight - toolContainer.height;

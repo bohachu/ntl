@@ -49,6 +49,7 @@
 			strRoom = lstArgs[1];
 			titlebar.setTitlebar(i18n.get(strFloor) + "-" + i18n.get(strRoom), Titlebar.TITLE_BUTTON_TYPE_SIDE_MENU, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
 			titlebar.showTitlebar();
+			titlebar.setSideMenuColumn(strFloor + "-" + strRoom);
 			guidanceTool.showGuidanceTool();
 			intContentStartY = titlebar.intTitlebarHeight;
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
@@ -154,15 +155,27 @@
 		
 		private function getLayout(intPhotoNumber:int):MovieClip {
 			switch (intPhotoNumber) {
+				case 1:
+					return new Layout1Pics();
+				break;
+				case 2:
+					return new Layout2Pics();
+				break;
 				case 3:
 					return new Layout3Pics();
 				break;
 				case 4:
 					return new Layout4Pics();
 				break;
+				case 5:
+					return new Layout5Pics();
+				break;
+				case 6:
+					return new Layout6Pics();
+				break;
 			}
 			
-			return new Layout3Pics();
+			return new Layout1Pics();
 		}
 		
 		private function onPhotoClick(e:MouseEvent) {
