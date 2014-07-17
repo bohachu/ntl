@@ -192,13 +192,14 @@
 			var strClickColumnName:String = titlebar.getClickSideMenuColumn();
 			var strFloor:String = "";
 			var strRoom:String = "";
+			var intIndexOfDashLine:int = 0;
 			
 			if (navigator.getContentNumber() == 3) { //In Guide page
 				var dicPreviousContentParameter:Object = navigator.getContentParameter(1);
 				strFloor = dicPreviousContentParameter.data[0];
 				strRoom = dicPreviousContentParameter.data[1];
 				if (strClickColumnName != strFloor + "-" + strRoom) {
-					var intIndexOfDashLine:int = strClickColumnName.indexOf("-");
+					intIndexOfDashLine = strClickColumnName.indexOf("-");
 					dicPreviousContentParameter.data[0] = strClickColumnName.slice(0, intIndexOfDashLine);
 					dicPreviousContentParameter.data[1] = strClickColumnName.slice(intIndexOfDashLine+1);
 					
@@ -210,7 +211,7 @@
 			if (navigator.getContentNumber() == 2) { // In Room Exhibit List page
 				var roomExhibitList:RoomExhibitList = navigator.getCurrentContent() as RoomExhibitList;
 				if (strClickColumnName != roomExhibitList.strFloor + "-" + roomExhibitList.strRoom) {
-					var intIndexOfDashLine:int = strClickColumnName.indexOf("-");
+					intIndexOfDashLine = strClickColumnName.indexOf("-");
 					strFloor = strClickColumnName.slice(0, intIndexOfDashLine);
 					strRoom = strClickColumnName.slice(intIndexOfDashLine+1);
 					roomExhibitList.resetExhibitList(strFloor, strRoom);

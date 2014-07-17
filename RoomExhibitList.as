@@ -19,6 +19,7 @@
 	import LoadingScreen;
 	import LoadExhibitWallPhotoIntro;
 	import GuideEvent;
+	import Layout;
 	
 	public class RoomExhibitList extends MovieClip {
 		
@@ -40,8 +41,7 @@
 		private var bg:Sprite = null;
 		private var loadingScreen:LoadingScreen = null;
 		private var lstExhibit:Array = null;
-		private var photoWall:MovieClip = null;
-		private var dragAndSlide:DragAndSlide = null;
+		private var photoWall:Layout = null;
 
 		public function RoomExhibitList(lstArgs:Array) {
 			// constructor code
@@ -68,13 +68,10 @@
 		
 		private function destructor(e:Event) {
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destructor);
-			removePhotoEventListener();
+			removePhotoWall();
 			removeLoadingScreen();
 			removeBackground();
-			dragAndSlide.dispose();
-			dragAndSlide = null;
 			lstExhibit = null;
-			photoWall = null;
 		}
 		
 		private function changeLayoutForIphone5() {
@@ -103,38 +100,24 @@
 		private function loadLayout() {
 			initLoadingScreen();
 			lstExhibit = mappingData.getExhibitList(strFloor +  "-" + strRoom);
-			photoWall = getLayout(lstExhibit.length);
+			photoWall = new Layout(lstExhibit);
+			photoWall.addEventListener(Layout.PHOTO_CLICK, onPhotoClick);
 			photoWall.y = intContentStartY;
 			
-			for (var i:int = 1; i<lstExhibit.length+1; i++) {
-				photoWall["photo" + String(i)].alpha = 0;
-				(photoWall["photo" + String(i)] as MovieClip).strGuidanceNumber = lstExhibit[i-1];
-				photoWall["photo" + String(i)].addEventListener(MouseEvent.CLICK, onPhotoClick);
-			}
-			
 			this.addChild(photoWall);
-			var intMoveLength:Number = intDefaultHeight - titlebar.intTitlebarHeight - guidanceTool.intGuidanceToolHeight;
-			dragAndSlide = new DragAndSlide(photoWall, intMoveLength, "Vertical", true, 0, false);
+			var intViewLength:Number = intDefaultHeight - titlebar.intTitlebarHeight - guidanceTool.intGuidanceToolHeight;
 			loadData();
 		}
 		
 		private function removePhotoWall() {
-			removePhotoEventListener();
-			dragAndSlide.dispose();
-			dragAndSlide = null;
+			photoWall.removeEventListener(Layout.PHOTO_CLICK, onPhotoClick);
 			this.removeChild(photoWall);
 			photoWall = null;
 		}
 		
-		private function removePhotoEventListener() {
-			for (var i:int = 1; i<lstExhibit.length+1; i++) {
-				photoWall["photo" + String(i)].removeEventListener(MouseEvent.CLICK, onPhotoClick);
-			}
-		}
-		
 		private function loadData() {
 			for (var i:int = 0; i<lstExhibit.length; i++) {
-				var loadExhibitWallPhotoIntro:LoadExhibitWallPhotoIntro = new LoadExhibitWallPhotoIntro(lstExhibit[i], photoWall["photo" + String(i+1)]);
+				var loadExhibitWallPhotoIntro:LoadExhibitWallPhotoIntro = new LoadExhibitWallPhotoIntro(lstExhibit[i], photoWall.getPhotoMovieClip(i+1));
 				loadExhibitWallPhotoIntro.addEventListener(LoadExhibitWallPhotoIntro.LOAD_INTRO_COMPLETE, onLoadIntroComplete);
 				loadExhibitWallPhotoIntro.loadIntro();
 			}
@@ -153,34 +136,8 @@
 			TweenLite.to(photoMovieClip, 1, {alpha:1});
 		}
 		
-		private function getLayout(intPhotoNumber:int):MovieClip {
-			switch (intPhotoNumber) {
-				case 1:
-					return new Layout1Pics();
-				break;
-				case 2:
-					return new Layout2Pics();
-				break;
-				case 3:
-					return new Layout3Pics();
-				break;
-				case 4:
-					return new Layout4Pics();
-				break;
-				case 5:
-					return new Layout5Pics();
-				break;
-				case 6:
-					return new Layout6Pics();
-				break;
-			}
-			
-			return new Layout1Pics();
-		}
-		
-		private function onPhotoClick(e:MouseEvent) {
-//			trace(e.target.parent.strGuidanceNumber);
-			eventChannel.writeEvent(new GuideEvent(GuideEvent.START_GUIDANCE, [e.target.parent.strGuidanceNumber]));
+		private function onPhotoClick(e:Event) {
+			eventChannel.writeEvent(new GuideEvent(GuideEvent.START_GUIDANCE, [photoWall.getStrGuideNumber()]));
 		}
 		
 		public function resetExhibitList(strFloorIn:String, strRoomIn:String) {

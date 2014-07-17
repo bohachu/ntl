@@ -23,6 +23,7 @@
 	import Language;
 	import MappingData;
 	import SideMenu;
+	import flash.text.TextFormat;
 	
 	public class Titlebar extends EventDispatcher {
 
@@ -96,6 +97,20 @@
 		
 		public function setTitle(strTitle:String) {
 			titlebarBanner.label.text = strTitle;
+			var textFormat:TextFormat = titlebarBanner.label.getTextFormat();
+			if (titlebarBanner.label.numLines == 1) textFormat.size = 35;
+			if (titlebarBanner.label.numLines > 1)  textFormat.size = 30;
+			
+			titlebarBanner.label.setTextFormat(textFormat);
+			
+			if (titlebarBanner.label.numLines == 1) {
+				titlebarBanner.label.height = 50.5;
+				titlebarBanner.label.y = 21.75;
+			}
+			if (titlebarBanner.label.numLines > 1) {
+				titlebarBanner.label.height = 83.8;
+				titlebarBanner.label.y = 7.75;
+			}
 		}
 		
 		private function setButton(strButtonType:String, strButtonLocation:String) {
@@ -203,6 +218,7 @@
 			var snapShotBitmapData:BitmapData = new BitmapData(intDefaultWidth, intDefaultHeight, false, 0);
 			snapShotBitmapData.draw(container.stage, new Matrix(intDefaultWidth/intStageWidth, 0, 0, intDefaultHeight/intStageHeight));
 			var snapShotBitmap:Bitmap = new Bitmap(snapShotBitmapData);
+			snapShotBitmap.smoothing = true;
 			snapShotContainer.addChild(snapShotBitmap);
 			
 			container.addChild(snapShotContainer);

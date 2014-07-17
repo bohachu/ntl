@@ -34,13 +34,14 @@
 		private var soundAudio:Sound = null;
 		private var audioControl:AudioControl = null;
 		private var intCurrentPhotoIndex:int = 0;
-		private var intPhotoTransformSec:int = 1;
-		private var intPhotoShowTime:int = 3000;
+		private var intPhotoTransformSec:int = 1.5;
+		private var intPhotoShowTime:int = 3500;
 		private var photoShowTimer:Timer = null;
 		private var photoContainer:Sprite = null;
 		private var imageTitleContainer:Sprite = null;
 		private var imageTitleText:TextField = null;
 		private var imageTitleTextFormat:TextFormat = null;
+		private var isOnAir:Boolean = false;
 
 		public function SlideShow(dicExhibitDataIn:Object, lstPhotoIn:Array, soundAudioIn:Sound) {
 			// constructor code
@@ -181,26 +182,30 @@
 		}
 		
 		private function removePhoto(photo:Bitmap) {
-			if (photoShowTimer) photoShowTimer.start();
+			if (photoShowTimer && isOnAir) photoShowTimer.start();
 			if (photoContainer) photoContainer.removeChild(photo);
 		}
 
 		public function playSlideShow() {
+			isOnAir = true;
 			photoShowTimer.start();
 			audioControl.playSound();
 		}
 		
 		public function stopSlideShow() {
+			isOnAir = false;
 			photoShowTimer.stop();
 			audioControl.stopSound();
 		}
 		
 		public function resetAndPlay() {
+			isOnAir = true;
 			photoShowTimer.start();
 			audioControl.resetAndPlaySound();
 		}
 		
 		private function onSoundPlayEnd(e:Event) {
+			isOnAir = false;
 			photoShowTimer.stop();
 			this.dispatchEvent(new Event(SlideShow.PLAY_END));
 		}
