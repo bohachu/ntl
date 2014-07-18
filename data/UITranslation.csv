@@ -1,54 +1,53 @@
 UI Name,中文,英文,日文
-IntoGuidance,進入導覽,Into Guidance,進入導覽日文
-CheckIn,到此一遊,Check In,到此一遊日文
+IntoGuidance,進入導覽,Joining the Tour ,ガイドツアー
+CheckIn,到此一遊,Checking in,観光案内
 QrCode,QR Code,QR Code,QR Code
-Traffic,交通指引,Traffic,交通指引日文
-Ok,確定,OK,確定日文
-Cancel,取消,Cancel,取消日文
-Home,回首頁,Home,回首頁日文
-Message_EmptyExhibitNumber,請輸入展品編號,Please input exhibit number,請輸入展品編號日文
-Message_WrongExhibitNumber,輸入的展品編號不正確,Exhibit number is not correct,輸入的展品編號不正確日文
-Chose_Picture,從相簿挑選或拍攝照片,Take a photo from photo library or camera,從相簿挑選或拍攝照片日文
-Chose_Picture_Title,選擇照片,Chose a photo,選擇照片日文
-Chose_Frame,選擇相框,Select Style,選擇相框日文
-Message_SaveToCameraRollFail,圖片無法儲存至手機圖庫,Image cannot be saved.,圖片無法儲存至手機圖庫日文
-Message_SaveToCameraRollSuccess,圖片已儲存到圖庫裡，是否要分享？,mage saved! Share to facebook?,圖片已儲存到圖庫裡，是否要分享？日文
-Traffic_Info_Location_Title,館　　　址,館　　址,館　　址
-Traffic_Info_Location_Content,台北市陽明山陽明路2段15號,台北市陽明山陽明路2段15號,台北市陽明山陽明路2段15號
-Traffic_Info_Tel_Title,電　　　話,Telephone,電　　話
+Traffic,交通指引,Traffic,交通アクセス
+Ok,確定,OK,決定
+Cancel,取消,Cancel,取り消す
+Home,回首頁,Back to Home,ホームに戻る
+Message_EmptyExhibitNumber,請輸入展品編號,Please Enter the Exhibit Number,展示物番号を入力して下さい
+Message_WrongExhibitNumber,輸入的展品編號不正確,Incorrect Exhibit Number,入力した展示物番号が不正確です
+Chose_Picture,從相簿挑選或拍攝照片,Choose from photo library or take a Picture,アルバムから選ぶか写真を撮影
+Chose_Picture_Title,選擇照片,Choose a photo,写真を選ぶ
+Chose_Frame,選擇相框,Choose a style,フォトフレームを選ぶ
+Message_SaveToCameraRollFail,圖片無法儲存至手機圖庫,Pictures cannot be stored in the album,画像が携帯電話のデータフォルダに保存できません
+Message_SaveToCameraRollSuccess,圖片已儲存到圖庫裡，是否要分享？,Pictures successfully stored in the album. Do  you want to share the photos?,画像はデータフォルダに保存済です。共有しますか？
+Traffic_Info_Location_Title,館　　址,Address,当館の住所
+Traffic_Info_Location_Content,台北市陽明山陽明路2段15號,"No. 15, Yangmingshan Yangming Rd. Sec. 2, Taipei City",台北市陽明山陽明路2段15号
+Traffic_Info_Tel_Title,電　　話,Telephone,電　　話
 Traffic_Info_Tel_Content,(02)2861-0565,'+886-2-2861-0565,'+886-2-2861-0565
-Traffic_Info_Title,交通指南,交通指南,交通指南
+Traffic_Info_Title,交通指南,Getting Here,交通アクセス
 Traffic_Info_Content,"(一)捷運－淡水線【劍潭站】１號出口：
 1.沿中山北路往士林方向步行約6分鐘至【銘傳大學】轉乘公車260全程車至【中山樓（正門）】下車。
 2.轉乘公車紅5至【教師研習中心站】下車後步行約5到10分鐘至中山樓正門。
 
-(二)例假日可搭乘假日休閒公車109、111至【教師研習中心站】下車。","(一)捷運－淡水線【劍潭站】１號出口：
-1.沿中山北路往士林方向步行約6分鐘至【銘傳大學】轉乘公車260全程車至【中山樓（正門）】下車。
-2.轉乘公車紅5至【教師研習中心站】下車後步行約5到10分鐘至中山樓正門。
+(二)例假日可搭乘假日休閒公車109、111至【教師研習中心站】下車。","1.  Take the MRT Tamsui Line to the Jiantan Station Exit:
+(1) Walk 6 min. along Zhongshan N. Rd. toward Shilin and take Bus 260 at the Mingchuan University Stop. Take Bus 260 for around 20 min. and get off at the Zhongshan Building Stop. 
 
-(二)例假日可搭乘假日休閒公車109、111至【教師研習中心站】下車。","(一)捷運－淡水線【劍潭站】１號出口：
-1.沿中山北路往士林方向步行約6分鐘至【銘傳大學】轉乘公車260全程車至【中山樓（正門）】下車。
-2.轉乘公車紅5至【教師研習中心站】下車後步行約5到10分鐘至中山樓正門。
+(2) Take Bus Red 5 to the Teacher Training Center Stop and walk about 5 to 10 min. to the Zhongshan Building.","(一)MRT－淡水線【剣潭駅】で下車。１号出口から出てから、
+1.中山北路を士林方向に徒歩で約6分。バス停【銘伝大学】でバス260路全程車(全路線車)に乗り【中山楼（正門）】下車。
+2.バス紅5路に乗り【教師研習中心駅】で下車。徒歩約5～10分で中山楼正門に到着。
 
-(二)例假日可搭乘假日休閒公車109、111至【教師研習中心站】下車。"
-Traffic_Info_Open_Title,開放時間,開放時間,開放時間
+(二)休日・祝日は假日休閒(休日レジャー)バス109、111路に乗り【教師研習中心駅】で下車。"
+Traffic_Info_Open_Title,開放時間,Opening Hours,開館時間
 Traffic_Info_Open_Content,"陽明山中山樓現為市定古蹟，為保管維護場地設施及人力限制，暫不予開放自由參觀。固定開放4個時段（08:30、10:00、13:30、15:00），並提供 1 小時之導覽服務。
 
 (一) 週一至週日，每日固定四場導覽。（8:30；10:00；13:30；15:00）
 
 (二) 休館日：
 1、機電保養日、場地租借、國定假日配合本館公告休館日停止開放參觀導覽服務。（將另行公告於本所網站）
-2、如遇颱風、地震等天災宣布停止上班時，亦停止開放參觀導覽服務。","陽明山中山樓現為市定古蹟，為保管維護場地設施及人力限制，暫不予開放自由參觀。固定開放4個時段（08:30、10:00、13:30、15:00），並提供 1 小時之導覽服務。
+2、如遇颱風、地震等天災宣布停止上班時，亦停止開放參觀導覽服務。","The Zhongshan Building is a protected historical site and only open at the following times: 8:30, 10:00, 13:30 and 15:00.  Visitors are required to join a one-hour tour. 
 
-(一) 週一至週日，每日固定四場導覽。（8:30；10:00；13:30；15:00）
+1. Four tours ( 8:30, 10:00, 13:30 and 15:00) from Monday to Sunday. 
 
-(二) 休館日：
-1、機電保養日、場地租借、國定假日配合本館公告休館日停止開放參觀導覽服務。（將另行公告於本所網站）
-2、如遇颱風、地震等天災宣布停止上班時，亦停止開放參觀導覽服務。","陽明山中山樓現為市定古蹟，為保管維護場地設施及人力限制，暫不予開放自由參觀。固定開放4個時段（08:30、10:00、13:30、15:00），並提供 1 小時之導覽服務。
+2. Closed: 
+(1) The Building is closed on national holidays, when there is  mechanical maintenance or when the Building is rented for events. These days will be announced on the official website. 
 
-(一) 週一至週日，每日固定四場導覽。（8:30；10:00；13:30；15:00）
+(2) The Building will also close when the government announces a day off due to a natural disaster such as a typhoon or earthquake. ","陽明山中山楼は、現在では市指定史跡となっており、敷地・施設の保存・保全の目的で、また人員面で制約があるため、自由参観を一時中止しております。08:30、10:00、13:30、15:00）の4つの指定時間帯に公開し、 1 時間のガイドツアーを行っています。
 
-(二) 休館日：
-1、機電保養日、場地租借、國定假日配合本館公告休館日停止開放參觀導覽服務。（將另行公告於本所網站）
-2、如遇颱風、地震等天災宣布停止上班時，亦停止開放參觀導覽服務。"
-Test,Test,"Test,test ""askfjsakfsa"" asfsaf",aaa
+(一) 月～日曜日には、毎日4回の定時ガイドツアーあり。（8:30；10:00；13:30；15:00）
+
+(二) 休館日
+1、設備保全日、敷地賃貸、祝祭日には当館が告知する休館日に合わせ参観ガイドツアーを中止します。（本所公式サイトに別に告知します）
+2、台風、地震などの天災により勤務中止が発令された場合にも、参観ガイドツアーを中止いたします。"

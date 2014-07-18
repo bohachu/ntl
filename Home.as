@@ -65,6 +65,7 @@
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
 			
 			titlebar.hideTitlebar();
+			guidanceTool.setType(GuidanceTool.GUIDE_BUTTON_TYPE1);
 			guidanceTool.showGuidanceTool();
 			
 			if (isIphone5Layout) {

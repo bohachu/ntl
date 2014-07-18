@@ -50,6 +50,7 @@
 			titlebar.setTitlebar(i18n.get(strFloor) + "-" + i18n.get(strRoom), Titlebar.TITLE_BUTTON_TYPE_SIDE_MENU, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
 			titlebar.showTitlebar();
 			titlebar.setSideMenuColumn(strFloor + "-" + strRoom);
+			guidanceTool.setType(GuidanceTool.GUIDE_BUTTON_TYPE1);
 			guidanceTool.showGuidanceTool();
 			intContentStartY = titlebar.intTitlebarHeight;
 			this.addEventListener(Event.ADDED_TO_STAGE, init);

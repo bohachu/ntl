@@ -1,5 +1,6 @@
 ﻿package  {
 	
+	import flash.display.Sprite;
 	import flash.display.MovieClip;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.SimpleButton;
@@ -15,10 +16,13 @@
 	
 	import I18n;
 	import GuidanceToolEvent;
-	import flash.display.Sprite;
+	import flash.events.Event;
 	
 	public class GuidanceTool extends EventDispatcher {
 
+		public static const GUIDE_BUTTON_TYPE1:String = "GuidanceTool.GUIDE_BUTTON_TYPE1";
+		public static const GUIDE_BUTTON_TYPE2:String = "GuidanceTool.GUIDE_BUTTON_TYPE2";
+		public static const SHOW_GUIDE_TEXT_CLICK:String = "GuidanceTool.SHOW_GUIDE_TEXT_CLICK";
 		private static var _instance:GuidanceTool = null;
 
 		private var isIphone5Layout:Boolean = LayoutManager.useIphone5Layout();
@@ -27,8 +31,10 @@
 
 		private var i18n:I18n = I18n.getInstance();
 		private var container:DisplayObjectContainer = null;
+		private var strType:String = GUIDE_BUTTON_TYPE1;
 		private var toolContainer:Sprite = null;
 		private var guidanceButton:SimpleButton = null;
+		private var showGuideTextButton:SimpleButton = null;
 		private var intGuidanceToolY:int = intDefaultHeight;
 		private var guidanceInputPannel:MovieClip = null;
 		
@@ -44,6 +50,7 @@
 		}
 		
 		public function create(containerIn:DisplayObjectContainer) {
+			strType = GUIDE_BUTTON_TYPE1;
 			toolContainer = new Sprite();
 			guidanceButton = new GuidanceButtonLong();
 			guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
@@ -65,8 +72,48 @@
 			toolContainer = null;
 		}
 		
+		private function createButton() {
+			if (strType == GUIDE_BUTTON_TYPE1 && guidanceButton is GuidanceButtonShort) {
+				removeGuidanceButton();
+				removeShowGuideTextButton();
+				
+				guidanceButton = new GuidanceButtonLong();
+				guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
+				toolContainer.addChild(guidanceButton);
+			}
+			if (strType == GUIDE_BUTTON_TYPE2 && guidanceButton is GuidanceButtonLong) {
+				removeGuidanceButton();
+				
+				guidanceButton = new GuidanceButtonShort();
+				guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
+				toolContainer.addChild(guidanceButton);
+				showGuideTextButton = new ShowGuideTextButton();
+				showGuideTextButton.x = 320;
+				showGuideTextButton.addEventListener(MouseEvent.CLICK, onShowGuideTextButtonClick);
+				toolContainer.addChild(showGuideTextButton);
+			}
+		}
+		
+		private function removeGuidanceButton() {
+			toolContainer.removeChild(guidanceButton);
+			guidanceButton.removeEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
+			guidanceButton = null;
+		}
+		
+		private function removeShowGuideTextButton() {
+			if (showGuideTextButton) {
+				toolContainer.removeChild(showGuideTextButton);
+				showGuideTextButton.removeEventListener(MouseEvent.CLICK, onShowGuideTextButtonClick);
+			}
+			showGuideTextButton = null;
+		}
+		
 		private function onGuidanceButtonClick(e:MouseEvent) {
 			initGuidanceInputPannel();
+		}
+		
+		private function onShowGuideTextButtonClick(e:MouseEvent) {
+			this.dispatchEvent(new Event(GuidanceTool.SHOW_GUIDE_TEXT_CLICK));
 		}
 		
 		private function initGuidanceInputPannel() {
@@ -173,6 +220,12 @@
 		
 		public function hideGuidanceTool() {
 			if (toolContainer.y != intDefaultHeight) TweenLite.to(toolContainer, 0.5, {y:intDefaultHeight, ease:Strong.easeOut, onComplete:invisibleGuidanceTool});
+		}
+		
+		public function setType(strTypeIn:String) {
+			strType = strTypeIn;
+			
+			createButton();
 		}
 		
 		private function invisibleGuidanceTool() {
