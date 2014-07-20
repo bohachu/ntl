@@ -112,9 +112,10 @@
 		private function initTextFieldContainer() {
 			initLoadingScreen();
 			textContainer = new Sprite();
+			textContainer.x = 90;
 			var textContainerBg:Sprite = new Sprite();
 			textContainerBg.graphics.beginFill(0, 0);
-			textContainerBg.graphics.drawRect(0, 0, 640, 1);
+			textContainerBg.graphics.drawRect(0, 0, 320, 1);
 			textContainerBg.graphics.endFill();
 			textContainer.addChild(textContainerBg);
 			this.addChild(textContainer);
@@ -166,7 +167,6 @@
 			var addressTitle:MovieClip = new TrafficContentTitle();
 			addressTitle.label.text = strLabel;
 			addressTitle.label.setTextFormat(titleFormat);
-			addressTitle.x = 90;
 			addressTitle.y = intCurrentContentHeight;
 			intCurrentContentHeight += addressTitle.height + intTitleSpace;
 			
@@ -184,7 +184,6 @@
 			contentText.text = strContent;
 			contentText.setTextFormat(contentFormat);
 			contentText.alpha = 0.7;
-			contentText.x = 90;
 			contentText.y = intCurrentContentHeight;
 			intCurrentContentHeight += contentText.height + intContentSpace;
 

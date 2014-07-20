@@ -323,6 +323,17 @@
 					ev.preventDefault();
         			ev.stopImmediatePropagation();
 					
+					if (titlebar.isSideMenuOpen()) {
+						titlebar.hideSideMenu();
+						return;
+					}
+					
+					var currentContent:MovieClip = navigator.getCurrentContent();
+					if (currentContent is Guide && (currentContent as Guide).isGuideTextShow()) {
+						(currentContent as Guide).hideGuideText();
+						return;
+					}
+					
 					navigatorBackHandler();
 				}
 			}

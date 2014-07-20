@@ -29,6 +29,7 @@
 	import I18n;
 	import Titlebar;
 	import GuidanceTool;
+	import LoadingScreen;
 	
 	public class TakeAPolaroid extends MovieClip {
 
@@ -45,6 +46,7 @@
 		private var intDefaultHeight:Number = (isIphone5Layout) ? LayoutSettings.intDefaultHeightForIphone5 : LayoutSettings.intDefaultHeight;
 		
 		private var bg:Sprite = null;
+		private var loadingScreen:LoadingScreen = null;
 		private var polaroidPhotoContainer:Sprite = null;
 		private var photoBitmap:Bitmap = null;
 		private var photoContainer:Sprite = null;
@@ -106,6 +108,7 @@
 			eventChannel.removeEventListener(ToastMessage.CLICK_OK, backToHome);
 			eventChannel.removeEventListener(ToastMessage.CLICK_OK, onConfirmToShare);
 			titlebar.removeEventListener(Titlebar.CLICK_OK, onOkToSavePhoto);
+			removeLoadingScreen();
 			removeCameraRoll();
 			removePhoto();
 			removePhotoMask();
@@ -134,6 +137,15 @@
 		private function removeBackground() {
 			if (bg) this.removeChild(bg);
 			bg = null;
+		}
+		
+		private function initLoadingScreen() {
+			if (loadingScreen == null) loadingScreen = new LoadingScreen(this.parent);
+		}
+		
+		private function removeLoadingScreen() {
+			if (loadingScreen) loadingScreen.dispose();
+			loadingScreen = null;
 		}
 		
 		private function initContainer() {
@@ -274,6 +286,7 @@
 		}
 		
 		private function onOkToSavePhoto(e:Event) {
+			initLoadingScreen();
 			titlebar.removeEventListener(Titlebar.CLICK_OK, onOkToSavePhoto);
 			var snapShotBitmapData:BitmapData = new BitmapData(640, intDefaultHeight-titlebar.intTitlebarHeight);
 			snapShotBitmapData.draw(polaroidPhotoContainer, new Matrix(1, 0, 0, 1, 0, -titlebar.intTitlebarHeight));
@@ -313,12 +326,14 @@
 		}
 		
 		private function onSaveToCameraRollComplete(e:Event = null) {
+			removeLoadingScreen();
 			eventChannel.addEventListener(ToastMessage.CLICK_OK, onConfirmToShare);
 			eventChannel.addEventListener(ToastMessage.CLOSE_MESSAGE, backToHome);
 			ToastMessage.showConfrim(this, i18n.get("Message_SaveToCameraRollSuccess"));
 		}
 		
 		private function onSaveToCameraRollFail(e:ErrorEvent) {
+			removeLoadingScreen();
 			eventChannel.addEventListener(ToastMessage.CLOSE_MESSAGE, backToHome);
 			ToastMessage.showToastMessage(this, i18n.get("Message_SaveToCameraRollFail"));
 		}

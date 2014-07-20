@@ -13,6 +13,7 @@
 	import tw.cameo.LayoutSettings;
 	import tw.cameo.EventChannel;
 	import com.greensock.TweenLite;
+	import com.greensock.BlitMask;
 	import com.greensock.easing.*;
 	import tw.cameo.DragAndSlide;
 	
@@ -214,11 +215,13 @@
 		}
 		
 		private function showControlTool() {
-			slideShowControlTool = new SlideShowControlTool();
-			slideShowControlTool.y = (isIphone5Layout) ? 0 : -88;
-			this.addChild(slideShowControlTool);
-			slideShowControlTool.playButton.addEventListener(MouseEvent.CLICK, onClickPlayButton);
-			slideShowControlTool.replayButton.addEventListener(MouseEvent.CLICK, onClickReplayButton);
+			if (slideShowControlTool == null) {
+				slideShowControlTool = new SlideShowControlTool();
+				slideShowControlTool.y = (isIphone5Layout) ? 0 : -88;
+				this.addChild(slideShowControlTool);
+				slideShowControlTool.playButton.addEventListener(MouseEvent.CLICK, onClickPlayButton);
+				slideShowControlTool.replayButton.addEventListener(MouseEvent.CLICK, onClickReplayButton);
+			}
 		}
 		
 		private function showToolsAndRemovePauseButton() {
@@ -255,14 +258,13 @@
 		private function onShowGuideTextClick(e:Event) {
 			if (isShowGuideText) {
 				hideGuideText();
-				isShowGuideText = false;
 			} else {
 				showGuideText();
-				isShowGuideText = true;
 			}
 		}
 		
-		private function showGuideText() {
+		public function showGuideText() {
+			isShowGuideText = true;
 			if (guideTextContainer == null) {
 				guideTextContainer = new Sprite();
 				guideTextContainer.addChild(new BackgroundSprite());
@@ -291,15 +293,33 @@
 				
 				dragAndSlide = new DragAndSlide(guideText, intDefaultHeight-titlebar.intTitlebarHeight-guidanceTool.intGuidanceToolHeight, "Vertical", true);
 			}
-			TweenLite.to(guideTextContainer, 1, {y:0, ease:Strong.easeOut});
+			TweenLite.to(guideTextContainer, 1, {y:0, ease:Strong.easeOut, onComplete:setSlideShowInvisible});
 		}
 		
-		private function hideGuideText() {
-			TweenLite.to(guideTextContainer, 1, {y:intDefaultHeight, ease:Strong.easeOut, onComplete:removeGuideText});
+		private function setSlideShowInvisible() {
+			slideShowContainer.visible = false;
 		}
 		
-		private function removeGuideText() {
+		public function hideGuideText() {
+			isShowGuideText = false;
+			slideShowContainer.visible = true;
+			var textMask:Sprite = new Sprite();
+			textMask.graphics.beginFill(0);
+			textMask.graphics.drawRect(0, 0, 640, 1136);
+			textMask.graphics.endFill();
+			guideTextContainer.addChild(textMask);
+			guideTextContainer.mask = textMask;
+			TweenLite.to(guideTextContainer, 1, {y:intDefaultHeight, ease:Strong.easeOut, onComplete:removeGuideText, onCompleteParams:[textMask]});
+		}
+		
+		private function removeGuideText(textMask:Sprite = null) {
 			if (guideTextContainer) {
+				if (textMask) {
+					guideTextContainer.removeChild(textMask);
+					guideTextContainer.mask = null;
+					textMask = null;
+				}
+				
 				dragAndSlide.dispose();
 				dragAndSlide = null;
 				this.removeChild(guideTextContainer);
@@ -331,6 +351,10 @@
 			removeControlTool();
 			removeSlideShow();
 			loadData();
+		}
+		
+		public function isGuideTextShow():Boolean {
+			return isShowGuideText;
 		}
 	}
 	

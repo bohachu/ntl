@@ -228,6 +228,10 @@
 		}
 		
 		private function onClickSnapShot(e:MouseEvent) {
+			hideSideMenu();
+		}
+		
+		public function hideSideMenu() {
 			TweenLite.to(snapShotContainer, 0.6, {x:0, ease:Strong.easeOut, onComplete:removeShapShot});
 		}
 		
@@ -278,6 +282,10 @@
 		
 		public function setSideMenuColumn(strColumnName:String) {
 			sideMenu.setSelectColumn(strColumnName);
+		}
+		
+		public function isSideMenuOpen():Boolean {
+			return sideMenuContainer.visible;
 		}
 		
 		private function invisibleTitlebar() {
