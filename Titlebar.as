@@ -12,6 +12,7 @@
 	import flash.utils.getDefinitionByName;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import flash.text.TextFormat;
 	
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
@@ -23,7 +24,6 @@
 	import Language;
 	import MappingData;
 	import SideMenu;
-	import flash.text.TextFormat;
 	
 	public class Titlebar extends EventDispatcher {
 
@@ -39,6 +39,8 @@
 		public static const CLICK_HOME:String = "Titlebar.CLICK_HOME";
 		public static const CLICK_SIDE_MENU_COLUMN:String = "Titlebar.CLICK_SIDE_MENU_COLUMN";
 		public static const CLICK_OK:String = "Titlebar.CLICK_OK";
+		public static const SHOW_SIDEMENU:String = "Titlebar.SHOW_SIDEMENU";
+		public static const HIDE_SIDEMENU:String = "Titlebar.SHOW_SIDEMENU";
 		public static const SIDEMENU_CLOSE:String = "Titlebar.SIDEMENU_CLOSE";
 		private static var _instance:Titlebar = null;
 		
@@ -224,6 +226,7 @@
 			container.addChild(snapShotContainer);
 			sideMenuContainer.visible = true;
 			TweenLite.to(snapShotContainer, 0.6, {x:530, ease:Strong.easeOut});
+			this.dispatchEvent(new Event(Titlebar.SHOW_SIDEMENU));
 			snapShotContainer.addEventListener(MouseEvent.CLICK, onClickSnapShot);
 		}
 		
@@ -236,6 +239,7 @@
 		}
 		
 		private function removeShapShot() {
+			this.dispatchEvent(new Event(Titlebar.HIDE_SIDEMENU));
 			if (snapShotContainer) {
 				snapShotContainer.removeEventListener(MouseEvent.CLICK, onClickSnapShot);
 				container.removeChild(snapShotContainer);

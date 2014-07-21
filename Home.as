@@ -6,10 +6,14 @@
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.display.SimpleButton;
+	import flash.net.SharedObject;
+	import flash.media.Sound;
+	import flash.media.SoundChannel;
 
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
 	import tw.cameo.EventChannel;
+	import tw.cameo.Navigator;
 	import com.greensock.TweenLite;
 	
 	import I18n;
@@ -24,6 +28,7 @@
 		public static const CLICK_CHECK_IN:String = "Home.CLICK_CHECK_IN";
 		public static const CLICK_TRAFFIC:String = "Home.CLICK_TRAFFIC";
 		
+		private var sharedObjectSavedStatus:SharedObject = SharedObject.getLocal("SavedStatus");
 		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var i18n:I18n = I18n.getInstance();
 		private var language:Language = Language.getInstance();
@@ -34,7 +39,10 @@
 		private var intDefaultHeight:Number = LayoutSettings.intDefaultHeight;
 		private const intDefaultHeightForIphone5:Number = LayoutSettings.intDefaultHeightForIphone5;
 		private var isIphone5Layout:Boolean = LayoutManager.useIphone5Layout();
-
+		
+		private var welcomeSound:Sound = null;
+		private var welcomeSoundChannel:SoundChannel = null;
+		private var isShowAnimation:Boolean = false;
 		private var bg:Sprite = null;
 		
 		private var paintingAnimation:MovieClip = null;
@@ -55,14 +63,21 @@
 		private var btnTraffic:MovieClip = null;
 		private var pointBtnTraffic:Point = new Point(423, (isIphone5Layout) ? 565 : 440);
 		
-		public function Home(... args) {
+		public function Home(isShowAnimationIn:Boolean = false) {
 			// constructor code
+			isShowAnimation = isShowAnimationIn;
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
 		private function init(e:Event) {
 			this.removeEventListener(Event.ADDED_TO_STAGE, init);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
+			
+			if (!sharedObjectSavedStatus.data.hasOwnProperty("isNotFirstTimeUse")) {
+				sharedObjectSavedStatus.data["isNotFirstTimeUse"] = true;
+				sharedObjectSavedStatus.flush();
+				playWelcomeAudio();
+			}
 			
 			titlebar.hideTitlebar();
 			guidanceTool.setType(GuidanceTool.GUIDE_BUTTON_TYPE1);
@@ -75,11 +90,33 @@
 			createPaintingAnimation();
 		}
 		
+		private function playWelcomeAudio() {
+			switch (language.getLanguageType()) {
+				case "CHT":
+					welcomeSound = new Welcom_CHT();
+				break;
+				case "ENU":
+					welcomeSound = new Welcom_ENU();
+				break;
+				case "JPN":
+					welcomeSound = new Welcom_JPN();
+				break;
+			}
+			welcomeSoundChannel = welcomeSound.play();
+		}
+		
+		private function removeWelcomeSound() {
+			if (welcomeSoundChannel) welcomeSoundChannel.stop();
+			welcomeSoundChannel = null;
+			welcomeSound = null;
+		}
+		
 		private function destructor(e:Event) {
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destructor);
 			removeButton();
 			removePaintingAnimation();
 			removeBackground();
+			removeWelcomeSound();
 		}
 		
 		private function changeLayoutForIphone5() {
@@ -99,8 +136,14 @@
 			paintingAnimation = new HomePaintingAnimation();
 			paintingAnimation.x = pointPaintingAnimation.x;
 			paintingAnimation.y = pointPaintingAnimation.y;
-			paintingAnimation.addEventListener("ANIMATION_PLAY_END", onAnimationPlayEnd);
-			this.addChild(paintingAnimation);
+			if (isShowAnimation) {
+				paintingAnimation.addEventListener("ANIMATION_PLAY_END", onAnimationPlayEnd);
+				this.addChild(paintingAnimation);
+			} else {
+				this.addChild(paintingAnimation);
+				paintingAnimation.gotoAndStop(paintingAnimation.totalFrames);
+				onAnimationPlayEnd();
+			}
 		}
 		
 		private function removePaintingAnimation() {
@@ -110,7 +153,7 @@
 			pointPaintingAnimation = null;
 		}
 		
-		private function onAnimationPlayEnd(e:Event) {
+		private function onAnimationPlayEnd(e:Event = null) {
 			paintingAnimation.removeEventListener("ANIMATION_PLAY_END", onAnimationPlayEnd);
 			createButton();
 		}

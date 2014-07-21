@@ -1,5 +1,5 @@
 UI Name,中文,英文,日文
-IntoGuidance,進入導覽,Joining the Tour ,ガイドツアー
+IntoGuidance,進入導覽,Enter Tour,ガイドツアー
 CheckIn,到此一遊,Checking in,観光案内
 QrCode,QR Code,QR Code,QR Code
 Traffic,交通指引,Traffic,交通アクセス
@@ -25,7 +25,9 @@ Traffic_Info_Content,"(一)捷運－淡水線【劍潭站】１號出口：
 (二)例假日可搭乘假日休閒公車109、111至【教師研習中心站】下車。","1.  Take the MRT Tamsui Line to the Jiantan Station Exit:
 (1) Walk 6 min. along Zhongshan N. Rd. toward Shilin and take Bus 260 at the Mingchuan University Stop. Take Bus 260 for around 20 min. and get off at the Zhongshan Building Stop. 
 
-(2) Take Bus Red 5 to the Teacher Training Center Stop and walk about 5 to 10 min. to the Zhongshan Building.","(一)MRT－淡水線【剣潭駅】で下車。１号出口から出てから、
+(2) Take Bus Red 5 to the Teacher Training Center Stop and walk about 5 to 10 min. to the Zhongshan Building.
+
+2. On Saturday and Sunday, take Holiday Bus 109 and 110 to Teacher Training Center.","(一)MRT－淡水線【剣潭駅】で下車。１号出口から出てから、
 1.中山北路を士林方向に徒歩で約6分。バス停【銘伝大学】でバス260路全程車(全路線車)に乗り【中山楼（正門）】下車。
 2.バス紅5路に乗り【教師研習中心駅】で下車。徒歩約5～10分で中山楼正門に到着。
 

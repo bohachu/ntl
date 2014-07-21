@@ -142,7 +142,8 @@
 			lstPhoto = loadExhibitData.getImageList();
 			soundAudio = loadExhibitData.getAudio();
 			
-			titlebar.setTitlebar(dicExhibitData["Title_" + language.getLanguageType()], Titlebar.TITLE_BUTTON_TYPE_SIDE_MENU, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
+//			titlebar.setTitlebar(dicExhibitData["Title_" + language.getLanguageType()], Titlebar.TITLE_BUTTON_TYPE_SIDE_MENU, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
+			titlebar.setTitlebar(dicExhibitData["Title_" + language.getLanguageType()], Titlebar.TITLE_BUTTON_TYPE_BACK, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
 			
 			loadExhibitData.dispose();
 			loadExhibitData = null;

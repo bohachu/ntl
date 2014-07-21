@@ -72,13 +72,21 @@
 		private function createHome() {
 			var dicContentParameter = {
 				className: "Home",
-				data: null,
+				data: true,
 				showDirection: null,
 				hideDirection: null
 			};
 			
 			showContent(dicContentParameter);
+			setHomeAnimationDisable();
 			System.gc();
+		}
+		
+		private function setHomeAnimationDisable() {
+			var dicHomeParameter:Object= navigator.getContentParameter(0);
+			dicHomeParameter.data = false;
+			
+			navigator.setContentParameter(0, dicHomeParameter);
 		}
 		
 		private function onIntoGuidanceClick(e:Event) {
@@ -168,6 +176,7 @@
 			titlebar.addEventListener(Titlebar.CLICK_HOME, onTitlebarHomeClick);
 			titlebar.addEventListener(Titlebar.CLICK_QRCODE, onQrCodeClick);
 			titlebar.addEventListener(Titlebar.CLICK_SIDE_MENU_COLUMN, onSideMenuColumnClick);
+			titlebar.addEventListener(Titlebar.SHOW_SIDEMENU, onShowSideMenu);
 			titlebar.initTitleBar(toolsContainer);
 		}
 		
@@ -176,6 +185,8 @@
 			titlebar.removeEventListener(Titlebar.CLICK_HOME, onTitlebarHomeClick);
 			titlebar.removeEventListener(Titlebar.CLICK_QRCODE, onQrCodeClick);
 			titlebar.removeEventListener(Titlebar.CLICK_SIDE_MENU_COLUMN, onSideMenuColumnClick);
+			titlebar.removeEventListener(Titlebar.SHOW_SIDEMENU, onShowSideMenu);
+			titlebar.removeEventListener(Titlebar.HIDE_SIDEMENU, onHideSideMenu);
 			titlebar = null;
 		}
 		
@@ -218,6 +229,20 @@
 					eventChannel.addEventListener(Titlebar.SIDEMENU_CLOSE, reloadRoomExhibitList);
 				}
 			}
+		}
+		
+		private function onShowSideMenu(e:Event) {
+			var currentContent:MovieClip = navigator.getCurrentContent();
+			currentContent.visible = false;
+			titlebar.removeEventListener(Titlebar.SHOW_SIDEMENU, onShowSideMenu);
+			titlebar.addEventListener(Titlebar.HIDE_SIDEMENU, onHideSideMenu);
+		}
+		
+		private function onHideSideMenu(e:Event) {
+			var currentContent:MovieClip = navigator.getCurrentContent();
+			currentContent.visible = true;
+			titlebar.addEventListener(Titlebar.SHOW_SIDEMENU, onShowSideMenu);
+			titlebar.removeEventListener(Titlebar.HIDE_SIDEMENU, onHideSideMenu);
 		}
 		
 		private function reloadRoomExhibitList(e:Event) {
@@ -265,10 +290,10 @@
 					guidePage.reloadGuide();
 				}
 			} else {
-				if (navigator.getContentNumber() == 1) { // Navigator not have ExhibitList Page in Main
-					var dicExhibitListPageParameter:Object = getExhibitListPageParameter(strFloor, strRoom);
-					navigator.addContentParameter(dicExhibitListPageParameter);
-				}
+//				if (navigator.getContentNumber() == 1) { // Navigator not have ExhibitList Page
+//					var dicExhibitListPageParameter:Object = getExhibitListPageParameter(strFloor, strRoom);
+//					navigator.addContentParameter(dicExhibitListPageParameter);
+//				}
 				
 				var dicContentParameter = {
 					className: "Guide",
@@ -278,6 +303,13 @@
 				};
 			
 				showContent(dicContentParameter);
+			}
+			
+			if (navigator.getContentNumber() == 2 || navigator.getContentNumber() == 3) { // Navigator has ExhibitList Page
+				var dicExhibitListContentParameter:Object = navigator.getContentParameter(1);
+				dicExhibitListContentParameter.data[0] = strFloor;
+				dicExhibitListContentParameter.data[1] = strRoom;
+				navigator.setContentParameter(1, dicExhibitListContentParameter);
 			}
 		}
 		

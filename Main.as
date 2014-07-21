@@ -74,7 +74,7 @@
 		private function onSplashScreenFinish(e:Event) {
 			removeSplashScreen();
 			initLoadingScreen();
-			checkVersion();
+			checkDataUpdate();
 		}
 		
 		private function removeSplashScreen() {
@@ -90,16 +90,16 @@
 			if (loadingScreen) loadingScreen.dispose();
 			loadingScreen = null;
 		}
+//		
+//		private function checkVersion() {
+//			eventChannel.addEventListener(CheckAppVersion.FINISH, onCheckVersionFinish);
+//			var strCheckUrl:String = (Capabilities.os.indexOf("iPhone") == -1) ? Config.strAppVersionUrl : Config.strAppVersionUrlIos;
+//			
+//			CheckAppVersion.checkVersion(strCheckUrl, Config.strUpdateUrl, this);
+//		}
 		
-		private function checkVersion() {
-			eventChannel.addEventListener(CheckAppVersion.FINISH, onCheckVersionFinish);
-			var strCheckUrl:String = (Capabilities.os.indexOf("iPhone") == -1) ? Config.strAppVersionUrl : Config.strAppVersionUrlIos;
-			
-			CheckAppVersion.checkVersion(strCheckUrl, Config.strUpdateUrl, this);
-		}
-		
-		private function onCheckVersionFinish(e:Event) {
-			eventChannel.removeEventListener(CheckAppVersion.FINISH, onCheckVersionFinish);
+		private function checkDataUpdate() {
+//			eventChannel.removeEventListener(CheckAppVersion.FINISH, onCheckVersionFinish);
 			checkUpdate = new CheckUpdate();
 			checkUpdate.addEventListener(CheckUpdate.UPDATE_FINISH, onCheckUpdateFinish);
 			checkUpdate.init();
