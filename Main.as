@@ -114,7 +114,7 @@
 			if (!sharedObjectSavedStatus.data.hasOwnProperty("isNotFirstTimeUse")) {
 				firstTimeUseSelectLanguage();
 			} else {
-				loadingI18n();
+				loadMappingData();
 			}
 		}
 		

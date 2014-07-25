@@ -275,26 +275,29 @@
 		}
 		
 		private function startGuide(lstExhibitFolder:Array) {
+			var currentContent:MovieClip = navigator.getCurrentContent();
 			var lstFloorAndRoom:Array = mappingData.getFloorAndRoomFromExhibitNumber(lstExhibitFolder[0]);
 			var strFloor:String = lstFloorAndRoom[0];
 			var strRoom:String = lstFloorAndRoom[1];
 			var strColumnName:String = strFloor + "-" + strRoom;
 			titlebar.setSideMenuColumn(strColumnName);
 			
-			if (navigator.getContentNumber() == 3) { // Navigator has ExhibitList Page and in Guide Page
-				var guidePage:MovieClip = navigator.getCurrentContent();
-				if (String(guidePage.lstExhibitFolder) == String(lstExhibitFolder)) {
-					guidePage.replayGuide();
+			if (currentContent is RoomExhibitList || navigator.getContentNumber() == 3) {
+				// Navigator has ExhibitList Page
+				var dicExhibitListContentParameter:Object = navigator.getContentParameter(1);
+				dicExhibitListContentParameter.data[0] = strFloor;
+				dicExhibitListContentParameter.data[1] = strRoom;
+				navigator.setContentParameter(1, dicExhibitListContentParameter);
+			}
+			
+			if (currentContent is Guide) { // current page is Guide
+				if (String(currentContent.lstExhibitFolder) == String(lstExhibitFolder)) {
+					currentContent.replayGuide();
 				} else {
-					guidePage.lstExhibitFolder = lstExhibitFolder;
-					guidePage.reloadGuide();
+					currentContent.lstExhibitFolder = lstExhibitFolder;
+					currentContent.reloadGuide();
 				}
 			} else {
-//				if (navigator.getContentNumber() == 1) { // Navigator not have ExhibitList Page
-//					var dicExhibitListPageParameter:Object = getExhibitListPageParameter(strFloor, strRoom);
-//					navigator.addContentParameter(dicExhibitListPageParameter);
-//				}
-				
 				var dicContentParameter = {
 					className: "Guide",
 					data: lstExhibitFolder,
@@ -303,13 +306,6 @@
 				};
 			
 				showContent(dicContentParameter);
-			}
-			
-			if (navigator.getContentNumber() == 2 || navigator.getContentNumber() == 3) { // Navigator has ExhibitList Page
-				var dicExhibitListContentParameter:Object = navigator.getContentParameter(1);
-				dicExhibitListContentParameter.data[0] = strFloor;
-				dicExhibitListContentParameter.data[1] = strRoom;
-				navigator.setContentParameter(1, dicExhibitListContentParameter);
 			}
 		}
 		
