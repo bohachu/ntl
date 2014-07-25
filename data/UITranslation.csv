@@ -1,6 +1,6 @@
-UI Name,中文,英文,日文
+﻿UI Name,中文,英文,日文
 IntoGuidance,進入導覽,Enter Tour,ガイドツアー
-CheckIn,到此一遊,Checking in,観光案内
+CheckIn,到此一遊,Checking in,チェックイン
 QrCode,QR Code,QR Code,QR Code
 Traffic,交通指引,Traffic,交通アクセス
 Ok,確定,OK,決定
@@ -13,7 +13,7 @@ Chose_Picture_Title,選擇照片,Choose a photo,写真を選ぶ
 Chose_Frame,選擇相框,Choose a style,フォトフレームを選ぶ
 Message_SaveToCameraRollFail,圖片無法儲存至手機圖庫,Pictures cannot be stored in the album,画像が携帯電話のデータフォルダに保存できません
 Message_SaveToCameraRollSuccess,圖片已儲存到圖庫裡，是否要分享？,Pictures successfully stored in the album. Do  you want to share the photos?,画像はデータフォルダに保存済です。共有しますか？
-Traffic_Info_Location_Title,館　　址,Address,当館の住所
+Traffic_Info_Location_Title,館　　址,Address,住　　所
 Traffic_Info_Location_Content,台北市陽明山陽明路2段15號,"No. 15, Yangmingshan Yangming Rd. Sec. 2, Taipei City",台北市陽明山陽明路2段15号
 Traffic_Info_Tel_Title,電　　話,Telephone,電　　話
 Traffic_Info_Tel_Content,(02)2861-0565,'+886-2-2861-0565,'+886-2-2861-0565
