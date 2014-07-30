@@ -343,7 +343,7 @@
 			CAMEO::ANE {
 				var jpgFile:File = File.applicationStorageDirectory.resolvePath(strPhotoFile);
 				var strJpgSavePath:String = jpgFile.nativePath;
-				ext.shareImage(strJpgSavePath, "", this.stage);
+				ext.shareImage(strJpgSavePath, "", this.stage, i18n.get("Message_InternetFail"), i18n.get("Message_ShareSuccess"), i18n.get("Message_ShareFail"));
 			}
 			backToHome();
 		}
