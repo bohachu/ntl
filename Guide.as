@@ -8,6 +8,8 @@
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextFieldAutoSize;
+	import flash.desktop.NativeApplication;
+	import flash.desktop.SystemIdleMode;
 
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
@@ -80,6 +82,7 @@
 		}
 		
 		private function destructor(e:Event) {
+			Utils.keepAppIdleModeNormal();
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destructor);
 			guidanceTool.removeEventListener(GuidanceTool.SHOW_GUIDE_TEXT_CLICK, onShowGuideTextClick);
 			removeGuideText();
@@ -170,6 +173,7 @@
 				removePauseButton();
 				loadData();
 			} else {
+				Utils.keepAppIdleModeNormal();
 				showToolsAndRemovePauseButton();
 			}
 		}
@@ -184,6 +188,7 @@
 			slideShowContainer.addChild(slideShow);
 			hideToolsAndCreatePauseButton();
 			slideShow.playSlideShow();
+			Utils.keepAppIdleModeAwake();
 		}
 		
 		private function createPauseButton() {
@@ -207,12 +212,14 @@
 			showToolsAndRemovePauseButton();
 			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
 			slideShow.stopSlideShow();
+			Utils.keepAppIdleModeNormal();
 		}
 
 		private function continuePlayGuide() {
 			hideToolsAndCreatePauseButton();
 			var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
 			slideShow.playSlideShow();
+			Utils.keepAppIdleModeAwake();
 		}
 		
 		private function showControlTool() {
@@ -342,6 +349,7 @@
 				hideToolsAndCreatePauseButton();
 				var slideShow:SlideShow = slideShowContainer.getChildAt(0) as SlideShow;
 				slideShow.resetAndPlay();
+				Utils.keepAppIdleModeAwake();
 			}
 		}
 

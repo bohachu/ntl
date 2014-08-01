@@ -1,5 +1,8 @@
 ﻿package  {
 	
+	import flash.desktop.NativeApplication;
+	import flash.desktop.SystemIdleMode;
+	
 	public class Utils {
 
 		public static function removeDoubleQuote(textString:String):String {
@@ -11,6 +14,15 @@
 				textString = textString.slice(1, textString.length-1);
 			}
 			return textString;
+		}
+		
+		
+		public static function keepAppIdleModeAwake() {
+			NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.KEEP_AWAKE;
+		}
+		
+		public static function keepAppIdleModeNormal() {
+			NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.NORMAL;
 		}
 	}
 	
