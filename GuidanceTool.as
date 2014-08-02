@@ -39,6 +39,7 @@
 		private var guidanceInputPannel:MovieClip = null;
 		
 		public var intGuidanceToolHeight:int = 0;
+		private var isCurrentTextEmpty:Boolean = true;
 
 		public function GuidanceTool() {
 			// constructor code
@@ -118,7 +119,8 @@
 		
 		private function initGuidanceInputPannel() {
 			guidanceInputPannel = new GuidanceInputPannel();
-			guidanceInputPannel.numberTextTield.text == "";
+			guidanceInputPannel.numberTextTield.text = i18n.get("Message_ExhibitNumber");
+			isCurrentTextEmpty = true;
 			if (!isIphone5Layout) guidanceInputPannel.y = -80;
 			addGuidanceInputPannelButtonEventListener();
 			container.addChild(guidanceInputPannel);
@@ -165,7 +167,7 @@
 		}
 		
 		private function onOkClick(e:MouseEvent) {
-			if (guidanceInputPannel.numberTextTield.text != "") {
+			if (guidanceInputPannel.numberTextTield.text != "" && !isCurrentTextEmpty) {
 				if (checkExhibitExist(int(guidanceInputPannel.numberTextTield.text))) {
 					var intInputNumber:int = int(guidanceInputPannel.numberTextTield.text);
 //					var strInputNumber:String = guidanceInputPannel.numberTextTield.text;
@@ -186,12 +188,21 @@
 		}
 		
 		private function onDeleteClick(e:MouseEvent) {
-			if (guidanceInputPannel.numberTextTield.text != "") {
+			if (guidanceInputPannel.numberTextTield.text != "" && !isCurrentTextEmpty) {
 				guidanceInputPannel.numberTextTield.text = guidanceInputPannel.numberTextTield.text.slice(0, -1);
+			}
+			if (guidanceInputPannel.numberTextTield.text == "") {
+				guidanceInputPannel.numberTextTield.text = i18n.get("Message_ExhibitNumber");
+				isCurrentTextEmpty = true;
 			}
 		}
 		
 		private function onNumberClick(e:MouseEvent) {
+			if (isCurrentTextEmpty) {
+				guidanceInputPannel.numberTextTield.text = e.target.name.slice(-1);
+				isCurrentTextEmpty = false;
+				return;
+			}
 			if (guidanceInputPannel.numberTextTield.text.length < 10) {
 				guidanceInputPannel.numberTextTield.text += e.target.name.slice(-1);
 			}
