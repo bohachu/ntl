@@ -342,6 +342,7 @@
 		
 		public function replayGuide() {
 			trace("Guide.as / replayGuide.");
+			removeGuideTextAndShowSlideShow();
 			if (intCurrentExhibitIndex != 0) {
 				intCurrentExhibitIndex = 0;
 				loadData();
@@ -355,11 +356,16 @@
 
 		public function reloadGuide() {
 			trace("Guide.as / reloadGuide.", lstExhibitFolder);
-			removeGuideText();
+			removeGuideTextAndShowSlideShow();
 			isShowGuideText = false;
 			removeControlTool();
 			removeSlideShow();
 			loadData();
+		}
+		
+		private function removeGuideTextAndShowSlideShow() {
+			removeGuideText();
+			slideShowContainer.visible = true;
 		}
 		
 		public function isGuideTextShow():Boolean {
