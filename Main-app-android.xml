@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <application xmlns="http://ns.adobe.com/air/application/3.7">
     <id>tw.cameo.NTL</id>
-    <versionNumber>0.5</versionNumber>
+    <versionNumber>1.0</versionNumber>
     <filename>陽明山中山樓</filename>
     <description/>
   <!-- To localize the description, use the following format for the description element.
@@ -11,14 +11,15 @@
 		<text xml:lang="ja">Japanese App description goes here</text>
 	</description>
 	-->
-    <name>陽明山中山樓</name>
-  <!-- To localize the name, use the following format for the name element.
-	<name>
-		<text xml:lang="en">English App name goes here</text>
-		<text xml:lang="fr">French App name goes here</text>
-		<text xml:lang="ja">Japanese App name goes here</text>
+ 	<name>
+		<text xml:lang="zh-TW">陽明山中山樓</text>
+		<text xml:lang="zh-CN">陽明山中山樓</text>
+		<text xml:lang="zh_Hans">陽明山中山樓</text>
+		<text xml:lang="zh_Hant">陽明山中山樓</text>
+		<text xml:lang="en">Yangmingshan Chungshan Hall</text>
+		<text xml:lang="fr">Yangmingshan Chungshan Hall</text>
+		<text xml:lang="ja">陽明山中山楼</text>
 	</name>
-	-->
     <copyright/>
     <initialWindow>
         <content>Main.swf</content>
