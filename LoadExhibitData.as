@@ -97,7 +97,12 @@
 		}
 		
 		private function loadFirstPicture() {
-			var imageFile:File = exhibitFolder.resolvePath("Image01.jpg");
+			var imageFile:File = exhibitFolder.resolvePath("Cover.jpg");
+			
+			if (!imageFile.exists) {
+				imageFile = exhibitFolder.resolvePath("Image01.jpg");
+			}
+			
 			loadImage = new LoadImageNonSingleton();
 			loadImage.addEventListener(LoadImageNonSingleton.LOAD_IMAGE_COMPLETE, onLoadFirstImageComplete);
 			loadImage.loadImage(imageFile);

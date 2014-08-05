@@ -2,7 +2,7 @@
 <application xmlns="http://ns.adobe.com/air/application/4.0">
     <id>tw.cameo.NTL</id>
     <versionNumber>1.0</versionNumber>
-    <filename>陽明山中山樓</filename>
+    <filename>中山樓之美</filename>
     <description/>
   <!-- To localize the description, use the following format for the description element.
 	<description>
@@ -12,10 +12,10 @@
 	</description>
 	-->
 	<name>
-		<text xml:lang="zh-TW">陽明山中山樓</text>
-		<text xml:lang="zh-CN">陽明山中山樓</text>
-		<text xml:lang="zh_Hans">陽明山中山樓</text>
-		<text xml:lang="zh_Hant">陽明山中山樓</text>
+		<text xml:lang="zh-TW">中山樓之美</text>
+		<text xml:lang="zh-CN">中山樓之美</text>
+		<text xml:lang="zh_Hans">中山樓之美</text>
+		<text xml:lang="zh_Hant">中山樓之美</text>
 		<text xml:lang="en">Yangmingshan Chungshan Hall</text>
 		<text xml:lang="ja">陽明山中山楼</text>
 	</name>
