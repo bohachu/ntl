@@ -55,6 +55,7 @@
 <activity android:name="com.cameo.flash2video.lib.CameraActivity"/>
 <activity android:name="com.sbhave.nativeExtension.ui.CameraActivity"/>
 </application>
+<uses-sdk android:minSdkVersion="9" />
 </manifest>]]>
     </manifestAdditions>
     </android>

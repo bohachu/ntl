@@ -14,6 +14,7 @@
 	import tw.cameo.LayoutSettings;
 	import tw.cameo.EventChannel;
 	import tw.cameo.Navigator;
+	import tw.cameo.AppAbout;
 	import com.greensock.TweenLite;
 	
 	import I18n;
@@ -42,6 +43,7 @@
 		
 		private var welcomeSound:Sound = null;
 		private var welcomeSoundChannel:SoundChannel = null;
+		private var isPlayingWelcomeSound:Boolean = false;
 		private var isShowAnimation:Boolean = false;
 		private var bg:Sprite = null;
 		
@@ -50,6 +52,9 @@
 		
 		private var btnChangeLanguage:MovieClip = null;
 		private var pointBtnChangeLanguage:Point = new Point(444, 17);
+		
+		private var appAbout:AppAbout = null;
+		private var pointBtnAbout:Point = new Point(103, 17);
 		
 		private var btnIntoGuidance:MovieClip = null;
 		private var pointBtnIntoGuidance:Point = new Point(208, (isIphone5Layout) ? 315 : 205);
@@ -91,6 +96,8 @@
 		}
 		
 		private function playWelcomeAudio() {
+			if (isPlayingWelcomeSound) return;
+			
 			switch (language.getLanguageType()) {
 				case "CHT":
 					welcomeSound = new Welcom_CHT();
@@ -103,10 +110,13 @@
 				break;
 			}
 			welcomeSoundChannel = welcomeSound.play();
+			welcomeSoundChannel.addEventListener(Event.SOUND_COMPLETE, removeWelcomeSound);
+			isPlayingWelcomeSound = true;
 		}
 		
-		private function removeWelcomeSound() {
+		private function removeWelcomeSound(e:Event = null) {
 			if (welcomeSoundChannel) welcomeSoundChannel.stop();
+			isPlayingWelcomeSound = false;
 			welcomeSoundChannel = null;
 			welcomeSound = null;
 		}
@@ -159,6 +169,9 @@
 		}
 		
 		private function createButton() {
+			appAbout = new AppAbout();
+			appAbout.setAppIconPosition(pointBtnAbout.x, pointBtnAbout.y);
+			
 			btnChangeLanguage = new ChangeLanguageButton();
 			btnChangeLanguage.x = pointBtnChangeLanguage.x;
 			btnChangeLanguage.y = pointBtnChangeLanguage.y;
@@ -180,8 +193,8 @@
 			btnTraffic.y = pointBtnTraffic.y;
 			
 			setButtonLabel();
-			addButtonEventListener();
 			addButtonToStage();
+			addButtonEventListener();
 		}
 		
 		private function setButtonLabel() {
@@ -198,12 +211,15 @@
 			btnQrCode.alpha = 0;
 			btnTakePhoto.alpha = 0;
 			btnTraffic.alpha = 0;
+			appAbout.alpha = 0;
 			this.addChild(btnChangeLanguage);
 			this.addChild(btnIntoGuidance);
 			this.addChild(btnQrCode);
 			this.addChild(btnTakePhoto);
 			this.addChild(btnTraffic);
+			this.addChild(appAbout);
 			
+			TweenLite.to(appAbout, 1, {alpha:1});
 			TweenLite.to(btnChangeLanguage, 1, {alpha:1});
 			TweenLite.to(btnIntoGuidance, 1, {alpha:1});
 			TweenLite.to(btnQrCode, 1, {alpha:1});
@@ -212,12 +228,14 @@
 		}
 		
 		private function removeButtonFromStage() {
+			this.removeChild(appAbout);
 			this.removeChild(btnChangeLanguage);
 			this.removeChild(btnIntoGuidance);
 			this.removeChild(btnQrCode);
 			this.removeChild(btnTakePhoto);
 			this.removeChild(btnTraffic);
 			
+			appAbout = null;
 			pointBtnChangeLanguage = null;
 			pointBtnIntoGuidance = null;
 			pointBtnQrCode = null;
@@ -236,6 +254,7 @@
 		}
 		
 		private function addButtonEventListener() {
+			appAbout.addEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
 			btnChangeLanguage.addEventListener(MouseEvent.CLICK, onChangeLanguageClick);
 			btnIntoGuidance.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
 			btnQrCode.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
@@ -244,11 +263,26 @@
 		}
 		
 		private function removeButtonEventListener() {
+			appAbout.removeEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
+			appAbout.removeEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
 			btnChangeLanguage.removeEventListener(MouseEvent.CLICK, onChangeLanguageClick);
 			btnIntoGuidance.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
 			btnQrCode.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
 			btnTakePhoto.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
 			btnTraffic.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+		}
+		
+		private function onShowAppAbout(e:Event) {
+			trace("onShowAppAbout");
+			appAbout.removeEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
+			appAbout.addEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
+			playWelcomeAudio();
+		}
+		
+		private function onHideAppAbout(e:Event) {
+			appAbout.removeEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
+			appAbout.addEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
+			removeWelcomeSound();
 		}
 		
 		private function onChangeLanguageClick(e:MouseEvent) {
