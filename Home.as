@@ -169,7 +169,7 @@
 		}
 		
 		private function createButton() {
-			appAbout = new AppAbout();
+			appAbout = new AppAbout("Type2");
 			appAbout.setAppIconPosition(pointBtnAbout.x, pointBtnAbout.y);
 			
 			btnChangeLanguage = new ChangeLanguageButton();
@@ -273,7 +273,6 @@
 		}
 		
 		private function onShowAppAbout(e:Event) {
-			trace("onShowAppAbout");
 			appAbout.removeEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
 			appAbout.addEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
 			playWelcomeAudio();

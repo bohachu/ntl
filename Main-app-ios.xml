@@ -12,12 +12,12 @@
 	</description>
 	-->
 	<name>
-		<text xml:lang="zh-TW">中山樓之美</text>
-		<text xml:lang="zh-CN">中山樓之美</text>
-		<text xml:lang="zh_Hans">中山樓之美</text>
 		<text xml:lang="zh_Hant">中山樓之美</text>
 		<text xml:lang="en">Yangmingshan Chungshan Hall</text>
 		<text xml:lang="ja">陽明山中山楼</text>
+		<text xml:lang="zh-TW">中山樓之美</text>
+		<text xml:lang="zh-CN">中山樓之美</text>
+		<text xml:lang="zh_Hans">中山樓之美</text>
 	</name>
     <copyright/>
     <initialWindow>
