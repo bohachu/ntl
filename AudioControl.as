@@ -96,6 +96,10 @@
 				isFadeOut = false;
 			}
 		}
+		
+		public function getCurrentAudioPosition():Number {
+			return intCurrentPosition;
+		}
 
 	}
 	

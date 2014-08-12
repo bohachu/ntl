@@ -32,6 +32,8 @@
 		private var lstImageInfo:Array = null;
 		private var lstPhoto:Array = null;
 		private var soundAudio:Sound = null;
+		private var intAudioLength:Number = 0;
+		private var intCurrentAudioPosition:Number = 0;
 		private var audioControl:AudioControl = null;
 		private var intCurrentPhotoIndex:int = 0;
 		private var intPhotoTransformSec:int = 1.5;
@@ -49,6 +51,8 @@
 			lstImageInfo = dicExhibitData["lstImageInfo"];
 			lstPhoto = lstPhotoIn;
 			soundAudio = soundAudioIn;
+			intAudioLength = soundAudio.length;
+			intCurrentAudioPosition = 0;
 			adjustPhoto();
 			
 			initSlideShow();
@@ -158,7 +162,9 @@
 		}
 		
 		private function initPhotoShowTimer() {
-			photoShowTimer = new Timer(intPhotoShowTime);
+			intPhotoShowTime = Math.floor(((intAudioLength - (lstPhoto.length-1)*1000) / lstPhoto.length)/100) * 100;
+			trace(intAudioLength, intCurrentAudioPosition, lstPhoto.length, intPhotoShowTime);
+			photoShowTimer = new Timer(intPhotoShowTime, lstPhoto.length-1);
 			photoShowTimer.addEventListener(TimerEvent.TIMER, onPhotoShowTimer);
 		}
 		
@@ -172,6 +178,7 @@
 		
 		private function onPhotoShowTimer(e:TimerEvent) {
 			photoShowTimer.stop();
+			if (photoShowTimer.delay != intPhotoShowTime) photoShowTimer.delay = intPhotoShowTime;
 			var intNextPhotoIndex:int = (intCurrentPhotoIndex+1 < lstPhoto.length) ? intCurrentPhotoIndex+1 : 0;
 			var currentBitmap:Bitmap = photoContainer.getChildAt(0) as Bitmap;
 			TweenLite.to(currentBitmap, intPhotoTransformSec, {alpha:0, onComplete:removePhoto, onCompleteParams:[currentBitmap]});
@@ -196,17 +203,23 @@
 			isOnAir = false;
 			photoShowTimer.stop();
 			audioControl.stopSound();
+			intCurrentAudioPosition = audioControl.getCurrentAudioPosition();
+			setNextPhotoTimerDelay();
 		}
 		
 		public function resetAndPlay() {
 			isOnAir = true;
+			photoShowTimer.delay = intPhotoShowTime;
 			photoShowTimer.start();
 			audioControl.resetAndPlaySound();
+			intCurrentAudioPosition = 0;
 		}
 		
 		private function onSoundPlayEnd(e:Event) {
 			isOnAir = false;
+			intCurrentAudioPosition = 0;
 			photoShowTimer.stop();
+			photoShowTimer.delay = intPhotoShowTime;
 			this.dispatchEvent(new Event(SlideShow.PLAY_END));
 		}
 		
@@ -216,6 +229,12 @@
 			image.height *= intScaleRatio;
 			image.x = -(image.width - intDefaultWidth)/2;
 			image.y = -(image.height - intDefaultHeight)/2;
+		}
+		
+		private function setNextPhotoTimerDelay() {
+			var intNextShowPhotoTime:Number = (intCurrentPhotoIndex+1)*intPhotoShowTime + intCurrentPhotoIndex*1000;
+			var intDiffTime:Number = Math.floor((intNextShowPhotoTime - intCurrentAudioPosition)/100) * 100;
+			photoShowTimer.delay = intDiffTime;
 		}
 	}
 	

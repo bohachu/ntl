@@ -116,6 +116,12 @@
 		private function loadAllPicture() {			
 			var strImageFileName:String = (intCurrentImageIndex > 10) ? "Image" + String(intCurrentImageIndex) + ".jpg" : "Image0" + String(intCurrentImageIndex) + ".jpg";
 			var imageFile:File = exhibitFolder.resolvePath(strImageFileName);
+			
+			if (!imageFile.exists) {
+				loadAudio();
+				return;
+			}
+			
 			if (loadImage == null) loadImage = new LoadImageNonSingleton();
 			loadImage.addEventListener(LoadImageNonSingleton.LOAD_IMAGE_COMPLETE, onLoadImageComplete);
 			loadImage.loadImage(imageFile);
@@ -125,12 +131,15 @@
 			loadImage.removeEventListener(LoadImageNonSingleton.LOAD_IMAGE_COMPLETE, onLoadImageComplete);
 			lstImage.push(loadImage.imageBitmap);
 			
-			if (intCurrentImageIndex == dicExhibitInfo["lstImageInfo"].length) {
-				loadAudio();
-			} else {
-				intCurrentImageIndex++;
-				loadAllPicture();
-			}
+//			if (intCurrentImageIndex == dicExhibitInfo["lstImageInfo"].length) {
+//				loadAudio();
+//			} else {
+//				intCurrentImageIndex++;
+//				loadAllPicture();
+//			}
+
+			intCurrentImageIndex++;
+			loadAllPicture();
 		}
 		
 		private function loadAudio() {
