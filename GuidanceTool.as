@@ -212,12 +212,24 @@
 			var isExists:Boolean = false;
 			var strFolderName:String = (intExhibitNumber < 10) ? "0" + String(intExhibitNumber) : String(intExhibitNumber);
 			
-			var exhibitFolderSource1:File = File.applicationDirectory.resolvePath("data/" + strFolderName);
-			var exhibitFileSource1:File = File.applicationDirectory.resolvePath("data/" + strFolderName + "/Info.csv");
+			var exhibitFolderSource1:File = null;
+			var exhibitFileSource1:File = null;
+			var exhibitFolderSource2:File = null;
+			var exhibitFileSource2:File = null;
 			
-			var exhibitFolderSource2:File = File.applicationStorageDirectory.resolvePath("data/" + strFolderName);
-			var exhibitFileSource2:File = File.applicationStorageDirectory.resolvePath("data/" + strFolderName + "/Info.csv");
+			CAMEO::IOS {
+				exhibitFolderSource1 = File.applicationDirectory.resolvePath("data/" + strFolderName);
+				exhibitFileSource1 = File.applicationDirectory.resolvePath("data/" + strFolderName + "/Info.csv");
+				exhibitFolderSource2 = File.applicationStorageDirectory.resolvePath("data/" + strFolderName);
+				exhibitFileSource2 = File.applicationStorageDirectory.resolvePath("data/" + strFolderName + "/Info.csv");
+			}
 			
+			CAMEO::Android {
+				exhibitFolderSource1 = File.applicationDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/data/" + strFolderName);
+				exhibitFileSource1 = File.applicationDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/data/" + strFolderName + "/Info.csv");
+				exhibitFolderSource2 = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/data/" + strFolderName);
+				exhibitFileSource2 = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/data/" + strFolderName + "/Info.csv");
+			}
 			if (exhibitFolderSource1.exists && exhibitFileSource1.exists) isExists = true;
 			if (exhibitFolderSource2.exists && exhibitFileSource2.exists) isExists = true;
 			

@@ -14,13 +14,18 @@
 		public static var _instance:I18n = null;
 		public static const LOAD_TRANSLATION_COMPLETE:String = "I18n.LOAD_TRANSLATION_COMPLETE";
 		
-		private const strUITranslationFile:String = "data/UITranslation.csv";
-		private const strFloorAndRoomTranslationFile:String = "data/FloorAndRoomTranslation.csv";
+		private var strUITranslationFile:String = "data/UITranslation.csv";
+		private var strFloorAndRoomTranslationFile:String = "data/FloorAndRoomTranslation.csv";
+		
 		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var language:Language = Language.getInstance();
 		public var dicI18n:Object = null;
 
 		public function I18n() {
+			CAMEO::Android {
+				strUITranslationFile = "/sdcard/android/data/air.tw.cameo.NTL/data/UITranslation.csv";
+				strFloorAndRoomTranslationFile = "/sdcard/android/data/air.tw.cameo.NTL/data/FloorAndRoomTranslation.csv";
+			}
 			// constructor code
 			dicI18n = new Object();
 		}

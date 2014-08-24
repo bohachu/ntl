@@ -39,7 +39,12 @@
 			// constructor code
 			isForRoomExhibitList = isForRoomExhibitListIn;
 			
-			strFolder = "data/" + strFolderIn;
+			CAMEO::IOS {
+				strFolder = "data/" + strFolderIn;
+			}
+			CAMEO::Android {
+				strFolder = "/sdcard/android/data/air.tw.cameo.NTL/data/" + strFolderIn;
+			}
 			exhibitFolder = File.applicationDirectory.resolvePath(strFolder);
 			var folderNew:File = File.applicationStorageDirectory.resolvePath(strFolder);
 			if (folderNew.exists) exhibitFolder = folderNew;
