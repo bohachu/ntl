@@ -11,7 +11,6 @@
 		<text xml:lang="ja">Japanese App description goes here</text>
 	</description>
 	-->
-<<<<<<< HEAD
  	<name>
 		<text xml:lang="zh_Hant">中山樓之美</text>
 		<text xml:lang="en">The Beauty of Chungshan Hall</text>
@@ -19,14 +18,6 @@
 		<text xml:lang="zh-TW">中山樓之美</text>
 		<text xml:lang="zh-CN">中山樓之美</text>
 		<text xml:lang="zh_Hans">中山樓之美</text>
-=======
-    <!--<name>中山樓導覽</name>
-   To localize the name, use the following format for the name element.-->
-	<name>
-		<text xml:lang="zh-TW">陽明山中山樓</text>
-		<text xml:lang="en">Yangmingshan Chungshan Hall</text>
-		<text xml:lang="ja">陽明山中山楼</text>
->>>>>>> origin/master
 	</name>
 	
     <copyright/>
