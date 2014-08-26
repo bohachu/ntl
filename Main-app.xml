@@ -32,6 +32,10 @@
   </iPhone>
   <extensions>
     <extensionID>com.sbhave.nativeExtensions.zbar</extensionID>
+<<<<<<< HEAD
     <extensionID>tw.cameo.lib.CameoNativeExtension</extensionID>
+=======
+    <extensionID>tw.cameo.expansionfile</extensionID>
+>>>>>>> origin/master
   </extensions>
 </application>

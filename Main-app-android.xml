@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<application xmlns="http://ns.adobe.com/air/application/3.7">
+<application xmlns="http://ns.adobe.com/air/application/4.0">
     <id>tw.cameo.NTL</id>
-    <versionNumber>1.0</versionNumber>
-    <filename>中山樓之美</filename>
+    <versionNumber>1</versionNumber>
+    <filename>中山樓導覽</filename>
     <description/>
   <!-- To localize the description, use the following format for the description element.
 	<description>
@@ -11,6 +11,7 @@
 		<text xml:lang="ja">Japanese App description goes here</text>
 	</description>
 	-->
+<<<<<<< HEAD
  	<name>
 		<text xml:lang="zh_Hant">中山樓之美</text>
 		<text xml:lang="en">The Beauty of Chungshan Hall</text>
@@ -18,7 +19,16 @@
 		<text xml:lang="zh-TW">中山樓之美</text>
 		<text xml:lang="zh-CN">中山樓之美</text>
 		<text xml:lang="zh_Hans">中山樓之美</text>
+=======
+    <!--<name>中山樓導覽</name>
+   To localize the name, use the following format for the name element.-->
+	<name>
+		<text xml:lang="zh-TW">陽明山中山樓</text>
+		<text xml:lang="en">Yangmingshan Chungshan Hall</text>
+		<text xml:lang="ja">陽明山中山楼</text>
+>>>>>>> origin/master
 	</name>
+	
     <copyright/>
     <initialWindow>
         <content>Main.swf</content>
@@ -43,23 +53,29 @@
 <uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 <uses-permission android:name="android.permission.CAMERA"/>
 <uses-feature android:name="android.hardware.camera" android:required="false"/>
 <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+<uses-permission android:name="com.android.vending.CHECK_LICENSE" />
 <uses-permission android:name="android.permission.WAKE_LOCK" />
-<uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 <application>
 <activity android:name="com.cameo.flash2video.lib.CameraActivity"/>
 <activity android:name="com.sbhave.nativeExtension.ui.CameraActivity"/>
+<activity android:name="tw.cameo.expansionfile.LoadingActivity"/>
+<service android:name="tw.cameo.expansionfile.AneDownloadService"/>
+<receiver android:name="tw.cameo.expansionfile.AneAlarmReceiver"/>
 </application>
-<uses-sdk android:minSdkVersion="9" />
 </manifest>]]>
     </manifestAdditions>
     </android>
   <extensions>
     <extensionID>tw.cameo.imagehandler</extensionID>
+    <extensionID>tw.cameo.expansionfile</extensionID>
     <extensionID>com.cameo.flash2videoext</extensionID>
     <extensionID>com.sbhave.nativeExtensions.zbar</extensionID>
   </extensions>

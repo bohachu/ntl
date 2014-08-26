@@ -14,8 +14,8 @@
 		public static const LOAD_MAPPING_DATA_COMPLETE:String = "MappingData.LOAD_MAPPING_DATA_COMPLETE";
 		
 		private var eventChannel:EventChannel = EventChannel.getInstance();
-		private const strFloorRoomMappingFile:String = "data/FloorRoomMapping.csv";
-		private const strRoomExhibitMappingFile:String = "data/RoomExhibitMapping.csv";
+		private var strFloorRoomMappingFile:String = "data/FloorRoomMapping.csv";
+		private var strRoomExhibitMappingFile:String = "data/RoomExhibitMapping.csv";
 		
 		private var lstFloor:Array = null;
 		private var dicFloorRoomMapping:Object = null;
@@ -23,6 +23,10 @@
 		private var lstExhibitCategory:Array = null;
 		
 		public function MappingData() {
+			CAMEO::Android {
+				strFloorRoomMappingFile = "/sdcard/android/data/air.tw.cameo.NTL/data/FloorRoomMapping.csv";
+				strRoomExhibitMappingFile = "/sdcard/android/data/air.tw.cameo.NTL/data/RoomExhibitMapping.csv";
+			}
 			// constructor code
 			lstFloor = new Array();
 			dicFloorRoomMapping = new Object();
