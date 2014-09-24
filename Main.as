@@ -23,7 +23,11 @@
 	import MappingData;
 	import I18n;
 	
-	import tw.cameo.expansionfile.AneExpansionFile;
+	CAMEO::Android {
+		CAMEO::ANE {
+			import tw.cameo.expansionfile.AneExpansionFile;
+		}
+	}
 	
 	public class Main extends MovieClip {
 		
@@ -75,18 +79,23 @@
 		
 		private function onSplashScreenFinish(e:Event) {
 			CAMEO::Android {
-				var aneExpansionFile:AneExpansionFile = new AneExpansionFile();
+				CAMEO::ANE {
+					var aneExpansionFile:AneExpansionFile = new AneExpansionFile();
+				
+					var isDownloadExpasionFile : Boolean = aneExpansionFile.ExistsDownloadExpansionFile(1000000);
+					var isUnzipFile : Boolean = aneExpansionFile.ExistsUnzipExpansionFile(1000000);
+					if (isDownloadExpasionFile && isUnzipFile) {
+						goToSecondScreen();
+						return ;
+					}
 			
-				var isDownloadExpasionFile : Boolean = aneExpansionFile.ExistsDownloadExpansionFile(1000000);
-				var isUnzipFile : Boolean = aneExpansionFile.ExistsUnzipExpansionFile(1000000);
-				if (isDownloadExpasionFile && isUnzipFile) {
-					goToSecondScreen();
-					return ;
+					var strKey:String = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtc30eMJKtnXiw6gQc5EvW1Q6xVmlt479SahOAWQgiznQ16IN7+ccNGwn/87wMY3K38dCkqOK8teQ0zBNflDjS/zwtFPkzga2gZ7TIXC+FI+HEWYPdmkblS2wRvqvmKuN8dcDIJ2yzKRMlP877MkdABRLoUYtHbkGRlY5fZu/Myog3kBNrsOiS5c1b5vkMFvwUx7Jna3C5QapbOzzkVtdJ+7hT/a0hg8Q5yftn+fUHHH5uksNioCywoGNyvQ2JJbnYwANJ1420LT2m6YoBn0mUv9FStgPZLTuyOLSxtmdwH3M7UyoATATvMjSndC7LG3MIBQR3+xt+4DEw9B1JgPrFwIDAQAB";
+					aneExpansionFile.DownloadExpansionFile(1000000, strKey);
+					this.addEventListener(Event.ACTIVATE, onComeBackHandler);
 				}
-			
-				var strKey:String = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtc30eMJKtnXiw6gQc5EvW1Q6xVmlt479SahOAWQgiznQ16IN7+ccNGwn/87wMY3K38dCkqOK8teQ0zBNflDjS/zwtFPkzga2gZ7TIXC+FI+HEWYPdmkblS2wRvqvmKuN8dcDIJ2yzKRMlP877MkdABRLoUYtHbkGRlY5fZu/Myog3kBNrsOiS5c1b5vkMFvwUx7Jna3C5QapbOzzkVtdJ+7hT/a0hg8Q5yftn+fUHHH5uksNioCywoGNyvQ2JJbnYwANJ1420LT2m6YoBn0mUv9FStgPZLTuyOLSxtmdwH3M7UyoATATvMjSndC7LG3MIBQR3+xt+4DEw9B1JgPrFwIDAQAB";
-				aneExpansionFile.DownloadExpansionFile(1000000, strKey);
-				this.addEventListener(Event.ACTIVATE, onComeBackHandler);
+				CAMEO::NO_ANE {
+					goToSecondScreen();
+				}
 			}
 			CAMEO::IOS {
 				goToSecondScreen();
