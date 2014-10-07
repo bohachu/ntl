@@ -22,10 +22,6 @@
 		public var dicI18n:Object = null;
 
 		public function I18n() {
-			CAMEO::Android {
-				strUITranslationFile = "/sdcard/android/data/air.tw.cameo.NTL/data/UITranslation.csv";
-				strFloorAndRoomTranslationFile = "/sdcard/android/data/air.tw.cameo.NTL/data/FloorAndRoomTranslation.csv";
-			}
 			// constructor code
 			dicI18n = new Object();
 		}
@@ -36,15 +32,30 @@
 		}
 		
 		public function loadTranslation() {
-			var uiTranslationFileSource1:File = File.applicationDirectory.resolvePath(strUITranslationFile);
-			var uiTranslationFileSource2:File = File.applicationStorageDirectory.resolvePath(strUITranslationFile);
-			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadUITranslationFileComplete);
-			if (uiTranslationFileSource2.exists) {
-				LoadCsvFile.loadFile(uiTranslationFileSource2);
-			} else {
-				LoadCsvFile.loadFile(uiTranslationFileSource1);
+			var uiTranslationFileSource:File = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/" + strUITranslationFile);
+			
+			if (uiTranslationFileSource.exists) {
+				goLoadUITranslationFile(uiTranslationFileSource);
+				return;
 			}
 			
+			uiTranslationFileSource = File.applicationStorageDirectory.resolvePath(strUITranslationFile);
+			if (uiTranslationFileSource.exists) {
+				goLoadUITranslationFile(uiTranslationFileSource);
+				return;
+			}
+			
+			uiTranslationFileSource = File.applicationDirectory.resolvePath(strUITranslationFile);
+			if (uiTranslationFileSource.exists) {
+				goLoadUITranslationFile(uiTranslationFileSource);
+				return;
+			}
+			
+		}
+		
+		private function goLoadUITranslationFile(file:File) {
+			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadUITranslationFileComplete);
+			LoadCsvFile.loadFile(file);
 		}
 		
 		private function loadUITranslationFileComplete(e:Event) {
@@ -57,15 +68,28 @@
 				dicI18n[lstResult[i][0] + "_JPN"] = Utils.removeDoubleQuote(lstResult[i][3]);
 			}
 			
-			var floorAndRoomTranslationFileSource1:File = File.applicationDirectory.resolvePath(strFloorAndRoomTranslationFile);
-			var floorAndRoomTranslationFileSource2:File = File.applicationStorageDirectory.resolvePath(strFloorAndRoomTranslationFile);
-			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadFloorAndRoomTranslationFileComplete);
-			
-			if (floorAndRoomTranslationFileSource2.exists) {
-				LoadCsvFile.loadFile(floorAndRoomTranslationFileSource2);
-			} else {
-				LoadCsvFile.loadFile(floorAndRoomTranslationFileSource1);
+			var floorAndRoomTranslationFileSource:File = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/" + strFloorAndRoomTranslationFile);
+			if (floorAndRoomTranslationFileSource.exists) {
+				goLoadFloorAndRoomTranslationFile(floorAndRoomTranslationFileSource);
+				return;
 			}
+			
+			floorAndRoomTranslationFileSource = File.applicationStorageDirectory.resolvePath(strFloorAndRoomTranslationFile);
+			if (floorAndRoomTranslationFileSource.exists) {
+				goLoadFloorAndRoomTranslationFile(floorAndRoomTranslationFileSource);
+				return;
+			}
+			
+			floorAndRoomTranslationFileSource = File.applicationDirectory.resolvePath(strFloorAndRoomTranslationFile);
+			if (floorAndRoomTranslationFileSource.exists) {
+				goLoadFloorAndRoomTranslationFile(floorAndRoomTranslationFileSource);
+				return;
+			}
+		}
+		
+		private function goLoadFloorAndRoomTranslationFile(file:File) {
+			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadFloorAndRoomTranslationFileComplete);
+			LoadCsvFile.loadFile(file);
 		}
 		
 		private function loadFloorAndRoomTranslationFileComplete(e:Event) {

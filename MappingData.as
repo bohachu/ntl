@@ -23,11 +23,6 @@
 		private var lstExhibitCategory:Array = null;
 		
 		public function MappingData() {
-			CAMEO::Android {
-				strFloorRoomMappingFile = "/sdcard/android/data/air.tw.cameo.NTL/data/FloorRoomMapping.csv";
-				strRoomExhibitMappingFile = "/sdcard/android/data/air.tw.cameo.NTL/data/RoomExhibitMapping.csv";
-			}
-			// constructor code
 			lstFloor = new Array();
 			dicFloorRoomMapping = new Object();
 			dicRoomExhibitMapping = new Object();
@@ -40,16 +35,28 @@
 		}
 		
 		public function loadMappingData() {
-			
-			var floorRoomMappingFileSource1:File = File.applicationDirectory.resolvePath(strFloorRoomMappingFile);
-			var floorRoomMappingFileSource2:File = File.applicationStorageDirectory.resolvePath(strFloorRoomMappingFile);
-			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadFloorRoomMappingFileComplete);
-
-			if (floorRoomMappingFileSource2.exists) {
-				LoadCsvFile.loadFile(floorRoomMappingFileSource2);
-			} else {
-				LoadCsvFile.loadFile(floorRoomMappingFileSource1);
+			var floorRoomMappingFileSource:File = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/" + strFloorRoomMappingFile);
+			if (floorRoomMappingFileSource.exists) {
+				goLoadFloorRoomMappingData(floorRoomMappingFileSource);
+				return;
 			}
+			
+			floorRoomMappingFileSource = File.applicationStorageDirectory.resolvePath(strFloorRoomMappingFile);
+			if (floorRoomMappingFileSource.exists) {
+				goLoadFloorRoomMappingData(floorRoomMappingFileSource);
+				return;
+			}
+			
+			floorRoomMappingFileSource = File.applicationDirectory.resolvePath(strFloorRoomMappingFile);
+			if (floorRoomMappingFileSource.exists) {
+				goLoadFloorRoomMappingData(floorRoomMappingFileSource);
+				return;
+			}
+		}
+		
+		private function goLoadFloorRoomMappingData(file:File) {
+			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadFloorRoomMappingFileComplete);
+			LoadCsvFile.loadFile(file);
 		}
 		
 		private function loadFloorRoomMappingFileComplete(e:Event) {
@@ -68,14 +75,28 @@
 			
 			lstResult = null;
 			
-			var roomExhibitMappingFileSource1:File = File.applicationDirectory.resolvePath(strRoomExhibitMappingFile);
-			var roomExhibitMappingFileSource2:File = File.applicationStorageDirectory.resolvePath(strRoomExhibitMappingFile);
-			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadRoomExhibitMappingFileComplete);
-			if (roomExhibitMappingFileSource2.exists) {
-				LoadCsvFile.loadFile(roomExhibitMappingFileSource2);
-			} else {
-				LoadCsvFile.loadFile(roomExhibitMappingFileSource1);
+			var roomExhibitMappingFileSource:File = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/" + strRoomExhibitMappingFile);
+			if (roomExhibitMappingFileSource.exists) {
+				goLoadRoomExhibitMappingFile(roomExhibitMappingFileSource);
+				return;
 			}
+			
+			roomExhibitMappingFileSource = File.applicationStorageDirectory.resolvePath(strRoomExhibitMappingFile);
+			if (roomExhibitMappingFileSource.exists) {
+				goLoadRoomExhibitMappingFile(roomExhibitMappingFileSource);
+				return;
+			}
+			
+			roomExhibitMappingFileSource = File.applicationDirectory.resolvePath(strRoomExhibitMappingFile);
+			if (roomExhibitMappingFileSource.exists) {
+				goLoadRoomExhibitMappingFile(roomExhibitMappingFileSource);
+				return;
+			}
+		}
+		
+		private function goLoadRoomExhibitMappingFile(file:File) {
+			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadRoomExhibitMappingFileComplete);
+			LoadCsvFile.loadFile(file);
 		}
 		
 		private function loadRoomExhibitMappingFileComplete(e:Event) {

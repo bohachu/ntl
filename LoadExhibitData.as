@@ -27,7 +27,7 @@
 		private var loadCsvFileNonSingleton:LoadCsvFileNonSingleton = null;
 		private var loadImage:LoadImageNonSingleton = null;
 		
-		private var strFolder:String = "data/01";
+		private var strFolder:String = "";
 		private var exhibitFolder:File = null;
 		private var isForRoomExhibitList:Boolean = false;
 		private var dicExhibitInfo:Object = null;
@@ -38,16 +38,21 @@
 		public function LoadExhibitData(strFolderIn:String, isForRoomExhibitListIn:Boolean = false) {
 			// constructor code
 			isForRoomExhibitList = isForRoomExhibitListIn;
+			strFolder = "data/" + strFolderIn;
+			exhibitFolder = getFolder(strFolder);
+		}
+		
+		private function getFolder(strCheckFolder:String):File {
+			var checkFolder:File = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/" + strCheckFolder);
+			if (checkFolder.exists) return checkFolder;
 			
-			CAMEO::IOS {
-				strFolder = "data/" + strFolderIn;
-			}
-			CAMEO::Android {
-				strFolder = "/sdcard/android/data/air.tw.cameo.NTL/data/" + strFolderIn;
-			}
-			exhibitFolder = File.applicationDirectory.resolvePath(strFolder);
-			var folderNew:File = File.applicationStorageDirectory.resolvePath(strFolder);
-			if (folderNew.exists) exhibitFolder = folderNew;
+			checkFolder = File.applicationStorageDirectory.resolvePath(strCheckFolder);
+			if (checkFolder.exists) return checkFolder;
+			
+			checkFolder = File.applicationDirectory.resolvePath(strCheckFolder);
+			if (checkFolder.exists) return checkFolder;
+			
+			return null;
 		}
 		
 		public function loadData() {

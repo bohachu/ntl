@@ -78,6 +78,9 @@
 		}
 		
 		private function onSplashScreenFinish(e:Event) {
+			goToSecondScreen();
+			return;
+			
 			CAMEO::Android {
 				CAMEO::ANE {
 					var aneExpansionFile:AneExpansionFile = new AneExpansionFile();
