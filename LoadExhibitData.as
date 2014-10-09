@@ -124,7 +124,7 @@
 		}
 		
 		private function loadAllPicture() {			
-			var strImageFileName:String = (intCurrentImageIndex > 10) ? "Image" + String(intCurrentImageIndex) + ".jpg" : "Image0" + String(intCurrentImageIndex) + ".jpg";
+			var strImageFileName:String = (intCurrentImageIndex >= 10) ? "Image" + String(intCurrentImageIndex) + ".jpg" : "Image0" + String(intCurrentImageIndex) + ".jpg";
 			var imageFile:File = exhibitFolder.resolvePath(strImageFileName);
 			
 			if (!imageFile.exists) {

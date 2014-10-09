@@ -180,12 +180,16 @@
 			photoShowTimer.stop();
 			if (photoShowTimer.delay != intPhotoShowTime) photoShowTimer.delay = intPhotoShowTime;
 			var intNextPhotoIndex:int = (intCurrentPhotoIndex+1 < lstPhoto.length) ? intCurrentPhotoIndex+1 : 0;
+			intCurrentPhotoIndex = intNextPhotoIndex;
+			removeOldPhotoAndAddNewPhoto();
+//			setImageTitle(getImageTitle(intCurrentPhotoIndex));
+		}
+		
+		private function removeOldPhotoAndAddNewPhoto() {
 			var currentBitmap:Bitmap = photoContainer.getChildAt(0) as Bitmap;
 			TweenLite.to(currentBitmap, intPhotoTransformSec, {alpha:0, onComplete:removePhoto, onCompleteParams:[currentBitmap]});
-			photoContainer.addChild(lstPhoto[intNextPhotoIndex]);
-			TweenLite.to(lstPhoto[intNextPhotoIndex], intPhotoTransformSec, {alpha:1});
-			intCurrentPhotoIndex = intNextPhotoIndex;
-			setImageTitle(getImageTitle(intCurrentPhotoIndex));
+			photoContainer.addChild(lstPhoto[intCurrentPhotoIndex]);
+			TweenLite.to(lstPhoto[intCurrentPhotoIndex], intPhotoTransformSec, {alpha:1});
 		}
 		
 		private function removePhoto(photo:Bitmap) {
@@ -213,6 +217,8 @@
 			photoShowTimer.start();
 			audioControl.resetAndPlaySound();
 			intCurrentAudioPosition = 0;
+			intCurrentPhotoIndex = 0;
+			removeOldPhotoAndAddNewPhoto();
 		}
 		
 		private function onSoundPlayEnd(e:Event) {
