@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<application xmlns="http://ns.adobe.com/air/application/15.0">
+<application xmlns="http://ns.adobe.com/air/application/3.7">
   <id>tw.cameo.Ntl</id>
   <versionNumber>1.0</versionNumber>
   <filename>Main</filename>
@@ -32,6 +32,7 @@
   </iPhone>
   <extensions>
     <extensionID>com.sbhave.nativeExtensions.zbar</extensionID>
-    <extensionID>tw.cameo.lib.CameoNativeExtension</extensionID>
+    <extensionID>tw.cameo.imagehandler</extensionID>
+    <extensionID>com.cameo.flash2videoext</extensionID>
   </extensions>
 </application>
