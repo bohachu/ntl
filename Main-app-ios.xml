@@ -46,6 +46,7 @@
       <![CDATA[
       <key>UIPrerenderedIcon</key><true/><key>UIDeviceFamily</key><array><string>1</string><string>2</string></array>
       <key>UIRequiredDeviceCapabilities</key><dict><key>front-facing-camera</key><true/><key>still-camera</key><true/></dict>
+	  <key>MinimumOSVersion</key><string>6.0</string>
       ]]>
     </InfoAdditions>
     <!--
