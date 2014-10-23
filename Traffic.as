@@ -63,7 +63,7 @@
 			this.removeEventListener(Event.ADDED_TO_STAGE, init);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
 			
-			titlebar.setTitlebar(i18n.get("Traffic"), Titlebar.TITLE_BUTTON_TYPE_BACK, Titlebar.TITLE_BUTTON_TYPE_NONE);
+			titlebar.setTitlebar(i18n.get("Traffic"), Titlebar.TITLE_BUTTON_TYPE_HOME, Titlebar.TITLE_BUTTON_TYPE_NONE);
 			titlebar.showTitlebar();
 			guidanceTool.hideGuidanceTool();
 			

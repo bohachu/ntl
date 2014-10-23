@@ -44,6 +44,7 @@
 		private var intDefaultHeight:Number = (isIphone5Layout) ? LayoutSettings.intDefaultHeightForIphone5 : LayoutSettings.intDefaultHeight;
 		
 		public var lstExhibitFolder:Array = null;
+		private var isBackToHome:Boolean = false;
 		private var intCurrentExhibitIndex:int = 0;
 		private var bg:Sprite = null;
 		private var loadingScreen:LoadingScreen = null;
@@ -60,9 +61,11 @@
 		private var guideTextContainer:Sprite = null;
 		private var dragAndSlide:DragAndSlide = null;
 
-		public function Guide(lstExhibitFolderIn:Array) {
+		public function Guide(lstParameters:Array) {
 			// constructor code
-			lstExhibitFolder = lstExhibitFolderIn;
+			
+			lstExhibitFolder = lstParameters[0];
+			isBackToHome = lstParameters[1];
 			titlebar.showTitlebar();
 			guidanceTool.setType(GuidanceTool.GUIDE_BUTTON_TYPE2);
 			guidanceTool.addEventListener(GuidanceTool.SHOW_GUIDE_TEXT_CLICK, onShowGuideTextClick);
@@ -147,7 +150,8 @@
 			
 //			titlebar.setTitlebar(dicExhibitData["Title_" + language.getLanguageType()], Titlebar.TITLE_BUTTON_TYPE_SIDE_MENU, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
 			var strTitle:String = Utils.removeDoubleQuote(dicExhibitData["Title_" + language.getLanguageType()]);
-			titlebar.setTitlebar(strTitle, Titlebar.TITLE_BUTTON_TYPE_BACK, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
+			var strButtonType:String = (isBackToHome) ? Titlebar.TITLE_BUTTON_TYPE_HOME : Titlebar.TITLE_BUTTON_TYPE_BACK;
+			titlebar.setTitlebar(strTitle, strButtonType, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
 			
 			loadExhibitData.dispose();
 			loadExhibitData = null;

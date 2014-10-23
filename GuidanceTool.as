@@ -7,6 +7,7 @@
 	import flash.events.MouseEvent;
 	import flash.events.EventDispatcher;
 	import flash.filesystem.File;
+	import flash.text.TextField;
 	
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
@@ -30,10 +31,11 @@
 		private var intDefaultHeight:Number = (isIphone5Layout) ? LayoutSettings.intDefaultHeightForIphone5 : LayoutSettings.intDefaultHeight;
 
 		private var i18n:I18n = I18n.getInstance();
+		private var language:Language = Language.getInstance();
 		private var container:DisplayObjectContainer = null;
 		private var strType:String = GUIDE_BUTTON_TYPE1;
 		private var toolContainer:Sprite = null;
-		private var guidanceButton:SimpleButton = null;
+		private var guidanceButton:MovieClip = null;
 		private var showGuideTextButton:SimpleButton = null;
 		private var intGuidanceToolY:int = intDefaultHeight;
 		private var guidanceInputPannel:MovieClip = null;
@@ -53,14 +55,17 @@
 		public function create(containerIn:DisplayObjectContainer) {
 			strType = GUIDE_BUTTON_TYPE1;
 			toolContainer = new Sprite();
-			guidanceButton = new GuidanceButtonLong();
-			guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
-			toolContainer.addChild(guidanceButton);
+			createGuidanceButton("Long");
 			toolContainer.y = intGuidanceToolY = intDefaultHeight - toolContainer.height;
 			intGuidanceToolHeight = toolContainer.height;
 			
 			container = containerIn;
 			container.addChild(toolContainer);
+			language.addEventListener(Language.SET_LANGUAGE_COMPLETE, onSetLanguageComplete);
+		}
+		
+		private function onSetLanguageComplete(e:Event) {
+			setGuidanceButtonLabel();
 		}
 		
 		public function dispose() {
@@ -78,21 +83,32 @@
 				removeGuidanceButton();
 				removeShowGuideTextButton();
 				
-				guidanceButton = new GuidanceButtonLong();
-				guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
-				toolContainer.addChild(guidanceButton);
+				createGuidanceButton("Long");
 			}
 			if (strType == GUIDE_BUTTON_TYPE2 && guidanceButton is GuidanceButtonLong) {
 				removeGuidanceButton();
 				
-				guidanceButton = new GuidanceButtonShort();
-				guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
-				toolContainer.addChild(guidanceButton);
+				createGuidanceButton("Short");
 				showGuideTextButton = new ShowGuideTextButton();
 				showGuideTextButton.x = 320;
 				showGuideTextButton.addEventListener(MouseEvent.CLICK, onShowGuideTextButtonClick);
 				toolContainer.addChild(showGuideTextButton);
 			}
+		}
+		
+		private function createGuidanceButton(strType:String) {
+			guidanceButton = (strType == "Long") ? new GuidanceButtonLong() : new GuidanceButtonShort();
+			setGuidanceButtonLabel();
+			guidanceButton.label.mouseEnabled = false;
+			guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
+			toolContainer.addChild(guidanceButton);
+		}
+		
+		private function setGuidanceButtonLabel() {
+			guidanceButton.label.text = i18n.get("Label_InputNumber");
+			if (guidanceButton is GuidanceButtonLong) return;
+			if ((guidanceButton.label as TextField).numLines > 1) guidanceButton.label.y = 3;
+			if ((guidanceButton.label as TextField).numLines == 1) guidanceButton.label.y = 24;
 		}
 		
 		private function removeGuidanceButton() {
@@ -119,6 +135,12 @@
 		
 		private function initGuidanceInputPannel() {
 			guidanceInputPannel = new GuidanceInputPannel();
+			guidanceInputPannel.btnCancel.label.text = i18n.get("Cancel");
+			guidanceInputPannel.btnCancel.label.mouseEnabled = false;
+			guidanceInputPannel.btnOk.label.text = i18n.get("Label_Ok");
+			guidanceInputPannel.btnOk.label.mouseEnabled = false;
+			if ((guidanceInputPannel.btnOk.label as TextField).numLines > 1) guidanceInputPannel.btnOk.label.y = 120;
+			if ((guidanceInputPannel.btnOk.label as TextField).numLines == 1) guidanceInputPannel.btnOk.label.y = 150;
 			guidanceInputPannel.numberTextTield.text = i18n.get("Message_ExhibitNumber");
 			isCurrentTextEmpty = true;
 			if (!isIphone5Layout) guidanceInputPannel.y = -80;
@@ -170,13 +192,12 @@
 			if (guidanceInputPannel.numberTextTield.text != "" && !isCurrentTextEmpty) {
 				if (checkExhibitExist(int(guidanceInputPannel.numberTextTield.text))) {
 					var intInputNumber:int = int(guidanceInputPannel.numberTextTield.text);
-//					var strInputNumber:String = guidanceInputPannel.numberTextTield.text;
 					var strFolderName:String = (intInputNumber < 10) ? "0" + String(intInputNumber) : String(intInputNumber);
 					removeGuidanceInputPannel();
 					this.dispatchEvent(new GuidanceToolEvent(GuidanceToolEvent.VIEW_GUIDANCE, strFolderName));
 				} else {
-//					this.dispatchEvent(new GuidanceToolEvent(GuidanceToolEvent.VIEW_GUIDANCE, guidanceInputPannel.numberTextTield.text));
 					ToastMessage.showToastMessage(container, i18n.get("Message_WrongExhibitNumber"));
+					clearTextFieldAndSetEmpty();
 				}
 			} else {
 				ToastMessage.showToastMessage(container, i18n.get("Message_EmptyExhibitNumber"));
@@ -191,10 +212,12 @@
 			if (guidanceInputPannel.numberTextTield.text != "" && !isCurrentTextEmpty) {
 				guidanceInputPannel.numberTextTield.text = guidanceInputPannel.numberTextTield.text.slice(0, -1);
 			}
-			if (guidanceInputPannel.numberTextTield.text == "") {
-				guidanceInputPannel.numberTextTield.text = i18n.get("Message_ExhibitNumber");
-				isCurrentTextEmpty = true;
-			}
+			if (guidanceInputPannel.numberTextTield.text == "") clearTextFieldAndSetEmpty();
+		}
+		
+		private function clearTextFieldAndSetEmpty() {
+			guidanceInputPannel.numberTextTield.text = i18n.get("Message_ExhibitNumber");
+			isCurrentTextEmpty = true;
 		}
 		
 		private function onNumberClick(e:MouseEvent) {
@@ -203,8 +226,16 @@
 				isCurrentTextEmpty = false;
 				return;
 			}
+			
 			if (guidanceInputPannel.numberTextTield.text.length < 10) {
 				guidanceInputPannel.numberTextTield.text += e.target.name.slice(-1);
+			}
+			
+			var intExhibitNumber:int = int(guidanceInputPannel.numberTextTield.text);
+			
+			if (!checkExhibitExist(intExhibitNumber)) {
+				ToastMessage.showToastMessage(container, i18n.get("Message_WrongExhibitNumber"));
+				clearTextFieldAndSetEmpty();
 			}
 		}
 		

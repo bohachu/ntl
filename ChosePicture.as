@@ -45,7 +45,7 @@
 			this.removeEventListener(Event.ADDED_TO_STAGE, init);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
 			
-			titlebar.setTitlebar(i18n.get("Chose_Picture_Title"), Titlebar.TITLE_BUTTON_TYPE_BACK);
+			titlebar.setTitlebar(i18n.get("Chose_Picture_Title"), Titlebar.TITLE_BUTTON_TYPE_HOME);
 			titlebar.showTitlebar();
 			guidanceTool.hideGuidanceTool();
 			

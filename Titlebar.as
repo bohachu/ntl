@@ -28,6 +28,7 @@
 	public class Titlebar extends EventDispatcher {
 
 		public static const TITLE_BUTTON_TYPE_NONE:String = "Titlebar.TITLE_BUTTON_TYPE_NONE";
+		public static const TITLE_BUTTON_TYPE_HOME:String = "TitlebarHomeButton";
 		public static const TITLE_BUTTON_TYPE_BACK:String = "TitlebarBackButton";
 		public static const TITLE_BUTTON_TYPE_SIDE_MENU:String = "TitlebarSideMenuButton";
 		public static const TITLE_BUTTON_TYPE_QRCODE:String = "TitlebarQrCodeButton";
@@ -148,6 +149,11 @@
 		private function getTitleButtonDefaultHandler(strButtonType:String):Function {
 			var func:Function = null;
 			switch (strButtonType) {
+				case TITLE_BUTTON_TYPE_HOME:
+					func = function() { 
+						this.dispatchEvent(new Event(Titlebar.CLICK_HOME));
+					};
+				break;
 				case TITLE_BUTTON_TYPE_BACK:
 					func = function() { 
 						this.dispatchEvent(new Event(Titlebar.CLICK_BACK));
@@ -297,6 +303,7 @@
 		}
 		
 		private function forDynamicCreate() {
+			var homeButton:TitlebarHomeButton = null;
 			var backButton:TitlebarBackButton = null;
 			var sideMenuButton:TitlebarSideMenuButton = null;
 			var qrCodeButton:TitlebarQrCodeButton = null;

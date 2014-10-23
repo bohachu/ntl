@@ -298,9 +298,11 @@
 					currentContent.reloadGuide();
 				}
 			} else {
+				var isBackToHome:Boolean = (navigator.getContentNumber() == 1) ? true : false;
+				var lstParameter:Array = [lstExhibitFolder, isBackToHome];
 				var dicContentParameter = {
 					className: "Guide",
-					data: lstExhibitFolder,
+					data: lstParameter,
 					showDirection: Navigator.SHOW_UP,
 					hideDirection: Navigator.HIDE_DOWN
 				};

@@ -4,8 +4,12 @@ CheckIn,到此一遊,Check in,チェックイン
 QrCode,QR Code,QR Code,QR Code
 Traffic,交通指引,Traffic,交通アクセス
 Ok,確定,OK,決定
+Label_Ok,"確
+定",OK,"決
+定"
 Cancel,取消,Cancel,取り消す
 Home,回首頁,Back to Home,ホームに戻る
+Label_InputNumber,輸入編號,Enter the number,番号を入力します
 Message_ExhibitNumber,展品編號,Exhibit Number,展示物番号
 Message_EmptyExhibitNumber,請輸入展品編號,Please Enter the Exhibit Number,展示物番号を入力して下さい
 Message_WrongExhibitNumber,輸入的展品編號不正確,Incorrect Exhibit Number,入力した展示物番号が不正確です
@@ -15,10 +19,10 @@ Chose_Frame,選擇相框,Choose a style,スタイルを選ぶ
 Message_SaveToCameraRollFail,圖片無法儲存至手機圖庫,Pictures cannot be stored in the album,画像が携帯電話のデータフォルダに保存できません
 Message_SaveToCameraRollSuccess,圖片已儲存到圖庫裡，是否要分享？,Pictures successfully stored in the album. Do  you want to share the photos?,画像はデータフォルダに保存済です。共有しますか？
 Message_InternetFail,請開啟網路,No Internet Connection,No Internet Connection
-Message_ShareSuccess,Facebook圖片上傳成功！,Image successfully upload to facebook!,Upload Success!
-Message_ShareFail,Facebook圖片上傳失敗,Image cannot uploaded to facebook,Upload Fail!
+Message_ShareSuccess,Facebook圖片上傳成功！,Image successfully upload to facebook!,アップロードしました！
+Message_ShareFail,Facebook圖片上傳失敗,Image cannot uploaded to facebook,アップロードできませんでした！
 Traffic_Info_Location_Title,館　　址,Address,住所
-Traffic_Info_Location_Content,臺北市北投區陽明路2段15號,"No.15,Yangming Road, Sec,Beitou District,Taipei,Taiwan",台北市北投区陽明路2段15号
+Traffic_Info_Location_Content,臺北市北投區陽明路2段15號,"No.15,Yangming Road, Sec,Beitou District,Taipei,Taiwan",台北市北投区陽明路2段15 号
 Traffic_Info_Tel_Title,電　　話,Telephone,電　　話
 Traffic_Info_Tel_Content,(02)2861-0565,'+886-2-2861-0565,'+886-2-2861-0565
 Traffic_Info_Title,交通指南,Getting Here,交通アクセス
@@ -29,7 +33,7 @@ Traffic_Info_Content,"(一)捷運－淡水線【劍潭站】１號出口：
 (二)例假日可搭乘假日休閒公車109、111至【教師研習中心站】下車。","1.  Take the MRT Tamsui Line to the Jiantan Station Exit:
 (1) Walk 6 min. along Zhongshan N. Rd. toward Shilin and take Bus 260 at the Mingchuan University Stop. Take Bus 260 for around 20 min. and get off at the Chungshan Hall Stop. 
 
-(2) Take Bus Red 5 to the Teacher Training Center Stop and walk about 5 to 10 min. to the Zhongshan Building.
+(2) Take Bus Red 5 to the Teacher Training Center Stop and walk about 5 to 10 min. to the Chungshan Hall.
 
 2. On Saturday and Sunday, take Holiday Bus 109 and 110 to Teacher Training Center.","(一)MRT－淡水線【剣潭駅】で下車。１号出口から出てから、
 1.中山北路を士林方向に徒歩で約6分。バス停【銘伝大学】でバス260路全路線車に乗り【中山楼（正門）】下車。
