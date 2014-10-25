@@ -32,6 +32,5 @@
   </iPhone>
   <extensions>
     <extensionID>com.sbhave.nativeExtensions.zbar</extensionID>
-    <extensionID>tw.cameo.lib.CameoNativeExtension</extensionID>
   </extensions>
 </application>

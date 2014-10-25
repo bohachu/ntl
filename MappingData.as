@@ -16,11 +16,13 @@
 		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var strFloorRoomMappingFile:String = "data/FloorRoomMapping.csv";
 		private var strRoomExhibitMappingFile:String = "data/RoomExhibitMapping.csv";
+		private var strTopTenCollectionFile:String = "data/TopTenCollection.csv";
 		
 		private var lstFloor:Array = null;
 		private var dicFloorRoomMapping:Object = null;
 		private var dicRoomExhibitMapping:Object = null;
 		private var lstExhibitCategory:Array = null;
+		private var lstTopTenCollection:Array = null;
 		
 		public function MappingData() {
 			lstFloor = new Array();
@@ -35,28 +37,11 @@
 		}
 		
 		public function loadMappingData() {
-			var floorRoomMappingFileSource:File = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/" + strFloorRoomMappingFile);
-			if (floorRoomMappingFileSource.exists) {
-				goLoadFloorRoomMappingData(floorRoomMappingFileSource);
-				return;
+			var floorRoomMappingFileSource:File = checkAndGetFile(strFloorRoomMappingFile);
+			if (floorRoomMappingFileSource) {
+				eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadFloorRoomMappingFileComplete);
+				LoadCsvFile.loadFile(floorRoomMappingFileSource);
 			}
-			
-			floorRoomMappingFileSource = File.applicationStorageDirectory.resolvePath(strFloorRoomMappingFile);
-			if (floorRoomMappingFileSource.exists) {
-				goLoadFloorRoomMappingData(floorRoomMappingFileSource);
-				return;
-			}
-			
-			floorRoomMappingFileSource = File.applicationDirectory.resolvePath(strFloorRoomMappingFile);
-			if (floorRoomMappingFileSource.exists) {
-				goLoadFloorRoomMappingData(floorRoomMappingFileSource);
-				return;
-			}
-		}
-		
-		private function goLoadFloorRoomMappingData(file:File) {
-			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadFloorRoomMappingFileComplete);
-			LoadCsvFile.loadFile(file);
 		}
 		
 		private function loadFloorRoomMappingFileComplete(e:Event) {
@@ -75,28 +60,11 @@
 			
 			lstResult = null;
 			
-			var roomExhibitMappingFileSource:File = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/" + strRoomExhibitMappingFile);
-			if (roomExhibitMappingFileSource.exists) {
-				goLoadRoomExhibitMappingFile(roomExhibitMappingFileSource);
-				return;
+			var roomExhibitMappingFileSource:File = checkAndGetFile(strRoomExhibitMappingFile);
+			if (roomExhibitMappingFileSource) {
+				eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadRoomExhibitMappingFileComplete);
+				LoadCsvFile.loadFile(roomExhibitMappingFileSource);
 			}
-			
-			roomExhibitMappingFileSource = File.applicationStorageDirectory.resolvePath(strRoomExhibitMappingFile);
-			if (roomExhibitMappingFileSource.exists) {
-				goLoadRoomExhibitMappingFile(roomExhibitMappingFileSource);
-				return;
-			}
-			
-			roomExhibitMappingFileSource = File.applicationDirectory.resolvePath(strRoomExhibitMappingFile);
-			if (roomExhibitMappingFileSource.exists) {
-				goLoadRoomExhibitMappingFile(roomExhibitMappingFileSource);
-				return;
-			}
-		}
-		
-		private function goLoadRoomExhibitMappingFile(file:File) {
-			eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, loadRoomExhibitMappingFileComplete);
-			LoadCsvFile.loadFile(file);
 		}
 		
 		private function loadRoomExhibitMappingFileComplete(e:Event) {
@@ -117,7 +85,36 @@
 			LoadCsvFile.dispose();
 			lstResult = null;
 			
+			var topTenCollectionFileSource:File = checkAndGetFile(strTopTenCollectionFile);
+			if (topTenCollectionFileSource) {
+				eventChannel.addEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, onLoadTenCollectionFileComplete);
+				LoadCsvFile.loadFile(topTenCollectionFileSource);
+			}
+		}
+		
+		private function onLoadTenCollectionFileComplete(e:Event) {
+			eventChannel.removeEventListener(LoadCsvFile.LOAD_CSV_COMPLETE, onLoadTenCollectionFileComplete);
+			var lstResult:Array = LoadCsvFile.getResult();
+			lstTopTenCollection = lstResult[0];
+			
+			LoadCsvFile.dispose();
 			this.dispatchEvent(new Event(MappingData.LOAD_MAPPING_DATA_COMPLETE));
+		}
+		
+		private function checkAndGetFile(strFileName:String):File {
+			var file:File = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/" + strFileName);
+			
+			if (file.exists) return file;
+			
+			file = File.applicationStorageDirectory.resolvePath(strFileName);
+			
+			if (file.exists) return file;
+			
+			file = File.applicationDirectory.resolvePath(strFileName);
+			
+			if (file.exists) return file;
+			
+			return null;
 		}
 		
 		public function getFloorList():Array {
@@ -145,6 +142,14 @@
 			lstResult[1] = strLabelName.slice(intIndexOfDashLine+1);
 			
 			return lstResult;
+		}
+		
+		public function checkIsTopTenCollection(strExihibtNumber:String):Boolean {
+			var intExihibtNumber:int = int(strExihibtNumber);
+			if (lstTopTenCollection.indexOf(String(intExihibtNumber)) >= 0) {
+				return true;
+			}
+			return false;
 		}
 		
 		public function checkRoomLabelExist(strRoomLabel:String):Boolean {

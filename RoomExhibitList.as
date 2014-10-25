@@ -131,6 +131,8 @@
 			loadExhibitWallPhotoIntro.removeEventListener(LoadExhibitWallPhotoIntro.LOAD_INTRO_COMPLETE, onLoadIntroComplete);
 			
 			var photoMovieClip:MovieClip = loadExhibitWallPhotoIntro.getPhotoMovieClip();
+			var strGuidanceNumber:String = photoMovieClip.strGuidanceNumber;
+			if (mappingData.checkIsTopTenCollection(strGuidanceNumber)) photoMovieClip.topTenIcon.visible = true;
 			loadExhibitWallPhotoIntro.dispose();
 			loadExhibitWallPhotoIntro = null;
 			
