@@ -105,7 +105,7 @@
 		}
 		
 		private function setGuidanceButtonLabel() {
-			guidanceButton.label.text = i18n.get("Label_InputNumber");
+			guidanceButton.label.text = (guidanceButton is GuidanceButtonLong) ? i18n.get("Label_InputNumber01") : i18n.get("Label_InputNumber02") ;
 			if (guidanceButton is GuidanceButtonLong) return;
 			if ((guidanceButton.label as TextField).numLines > 1) guidanceButton.label.y = 3;
 			if ((guidanceButton.label as TextField).numLines == 1) guidanceButton.label.y = 24;

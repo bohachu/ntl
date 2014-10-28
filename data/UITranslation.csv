@@ -7,9 +7,11 @@ Ok,確定,OK,決定
 Label_Ok,"確
 定",OK,"決
 定"
-Cancel,取消,Cancel,取り消す
+Cancel,取消,Cancel,取り消し
 Home,回首頁,Back to Home,ホームに戻る
-Label_InputNumber,輸入編號,Enter the number,番号を入力します
+Label_InputNumber01,輸入編號,Enter the number,番号を入力してください
+Label_InputNumber02,輸入編號,Enter the number,"番号を入力し
+てください"
 Message_ExhibitNumber,展品編號,Exhibit Number,展示物番号
 Message_EmptyExhibitNumber,請輸入展品編號,Please Enter the Exhibit Number,展示物番号を入力して下さい
 Message_WrongExhibitNumber,輸入的展品編號不正確,Incorrect Exhibit Number,入力した展示物番号が不正確です
