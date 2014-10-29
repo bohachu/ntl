@@ -68,6 +68,9 @@
 		private var btnTraffic:MovieClip = null;
 		private var pointBtnTraffic:Point = new Point(423, (isIphone5Layout) ? 565 : 440);
 		
+		private var btnWelcome:MovieClip = null;
+		private var pointBtnWelcome:Point = new Point(189, (isIphone5Layout) ? 740 : 620);
+		
 		public function Home(isShowAnimationIn:Boolean = false) {
 			// constructor code
 			isShowAnimation = isShowAnimationIn;
@@ -95,8 +98,11 @@
 			createPaintingAnimation();
 		}
 		
-		private function playWelcomeAudio() {
-			if (isPlayingWelcomeSound) return;
+		private function playWelcomeAudio(e:MouseEvent = null) {
+			if (isPlayingWelcomeSound) {
+				removeWelcomeSound();
+				return;
+			}
 			
 			switch (language.getLanguageType()) {
 				case "CHT":
@@ -169,8 +175,8 @@
 		}
 		
 		private function createButton() {
-			appAbout = new AppAbout("Type2");
-			appAbout.setAppIconPosition(pointBtnAbout.x, pointBtnAbout.y);
+//			appAbout = new AppAbout("Type2");
+//			appAbout.setAppIconPosition(pointBtnAbout.x, pointBtnAbout.y);
 			
 			btnChangeLanguage = new ChangeLanguageButton();
 			btnChangeLanguage.x = pointBtnChangeLanguage.x;
@@ -192,6 +198,10 @@
 			btnTraffic.x = pointBtnTraffic.x;
 			btnTraffic.y = pointBtnTraffic.y;
 			
+			btnWelcome = new BtnWelcome();
+			btnWelcome.x = pointBtnWelcome.x;
+			btnWelcome.y = pointBtnWelcome.y;
+			
 			setButtonLabel();
 			addButtonToStage();
 			addButtonEventListener();
@@ -203,6 +213,8 @@
 			btnQrCode.label.text = i18n.get("QrCode");
 			btnTakePhoto.label.text = i18n.get("CheckIn");
 			btnTraffic.label.text = i18n.get("Traffic");
+			btnWelcome.label.text = i18n.get("Welcome");
+			btnWelcome.label.mouseEnabled = false;
 		}
 		
 		private function addButtonToStage() {
@@ -211,41 +223,42 @@
 			btnQrCode.alpha = 0;
 			btnTakePhoto.alpha = 0;
 			btnTraffic.alpha = 0;
-			appAbout.alpha = 0;
+			btnWelcome.alpha = 0;
 			this.addChild(btnChangeLanguage);
 			this.addChild(btnIntoGuidance);
 			this.addChild(btnQrCode);
 			this.addChild(btnTakePhoto);
 			this.addChild(btnTraffic);
-			this.addChild(appAbout);
+			this.addChild(btnWelcome);
 			
-			TweenLite.to(appAbout, 1, {alpha:1});
 			TweenLite.to(btnChangeLanguage, 1, {alpha:1});
 			TweenLite.to(btnIntoGuidance, 1, {alpha:1});
 			TweenLite.to(btnQrCode, 1, {alpha:1});
 			TweenLite.to(btnTakePhoto, 1, {alpha:1});
 			TweenLite.to(btnTraffic, 1, {alpha:1});
+			TweenLite.to(btnWelcome, 1, {alpha:1});
 		}
 		
 		private function removeButtonFromStage() {
-			this.removeChild(appAbout);
 			this.removeChild(btnChangeLanguage);
 			this.removeChild(btnIntoGuidance);
 			this.removeChild(btnQrCode);
 			this.removeChild(btnTakePhoto);
 			this.removeChild(btnTraffic);
+			this.removeChild(btnWelcome);
 			
-			appAbout = null;
 			pointBtnChangeLanguage = null;
 			pointBtnIntoGuidance = null;
 			pointBtnQrCode = null;
 			pointBtnTakePhoto = null;
 			pointBtnTraffic = null;
+			pointBtnWelcome = null;
 			btnChangeLanguage = null;
 			btnIntoGuidance = null;
 			btnQrCode = null;
 			btnTakePhoto = null;
 			btnTraffic = null;
+			btnWelcome = null;
 		}
 		
 		private function removeButton() {
@@ -254,34 +267,33 @@
 		}
 		
 		private function addButtonEventListener() {
-			appAbout.addEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
 			btnChangeLanguage.addEventListener(MouseEvent.CLICK, onChangeLanguageClick);
 			btnIntoGuidance.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
 			btnQrCode.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
 			btnTakePhoto.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
 			btnTraffic.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+			btnWelcome.addEventListener(MouseEvent.CLICK, playWelcomeAudio);
 		}
 		
 		private function removeButtonEventListener() {
-			appAbout.removeEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
-			appAbout.removeEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
 			btnChangeLanguage.removeEventListener(MouseEvent.CLICK, onChangeLanguageClick);
 			btnIntoGuidance.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
 			btnQrCode.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
 			btnTakePhoto.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
 			btnTraffic.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+			btnWelcome.removeEventListener(MouseEvent.CLICK, playWelcomeAudio);
 		}
 		
 		private function onShowAppAbout(e:Event) {
-			appAbout.removeEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
-			appAbout.addEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
-			playWelcomeAudio();
+//			appAbout.removeEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
+//			appAbout.addEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
+//			playWelcomeAudio();
 		}
 		
 		private function onHideAppAbout(e:Event) {
-			appAbout.removeEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
-			appAbout.addEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
-			removeWelcomeSound();
+//			appAbout.removeEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
+//			appAbout.addEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
+//			removeWelcomeSound();
 		}
 		
 		private function onChangeLanguageClick(e:MouseEvent) {

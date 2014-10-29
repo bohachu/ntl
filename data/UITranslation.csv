@@ -3,6 +3,7 @@ IntoGuidance,進入導覽,Enter Tour,ガイドツアー
 CheckIn,到此一遊,Check in,チェックイン
 QrCode,QR Code,QR Code,QR Code
 Traffic,交通指引,Traffic,交通アクセス
+Welcome,歡     迎,Welcome,歓     迎
 Ok,確定,OK,決定
 Label_Ok,"確
 定",OK,"決
@@ -15,7 +16,12 @@ Label_InputNumber02,輸入編號,Enter the number,"番号を入力し
 Message_ExhibitNumber,展品編號,Exhibit Number,展示物番号
 Message_EmptyExhibitNumber,請輸入展品編號,Please Enter the Exhibit Number,展示物番号を入力して下さい
 Message_WrongExhibitNumber,輸入的展品編號不正確,Incorrect Exhibit Number,入力した展示物番号が不正確です
-Chose_Picture,從相簿挑選或拍攝照片,Choose from photo library or take a Picture,アルバムから選ぶか写真を撮影
+Chose_Picture,"從相簿挑選或
+拍攝照片",Choose from photo library or take a Picture,アルバムから選ぶか写真を撮影
+Label_Rotate_Title,旋轉:,Rotate:,回転:
+Rotate_Instruction,以兩指順/逆時針方向轉動照片,Twist clockwise or counterclockwise to rotate a photo,左右に回転させると写真も回転します
+Label_Zoom_Title,放大/縮小:,Zoom in/out,ズームイン/アウト:
+Zoom_Instruction,雙指相互靠近/遠離以縮放照片,Touch photo with two fingers and move them closer/apart,2 本の指で写真に触れて指をくっつけたり、離したりしてください
 Chose_Picture_Title,選擇照片,Choose a photo,写真を選ぶ
 Chose_Frame,選擇相框,Choose a style,スタイルを選ぶ
 Message_SaveToCameraRollFail,圖片無法儲存至手機圖庫,Pictures cannot be stored in the album,画像が携帯電話のデータフォルダに保存できません

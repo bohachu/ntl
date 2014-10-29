@@ -1,5 +1,6 @@
 ﻿package  {
 	
+	import flash.net.SharedObject;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.display.SimpleButton;
@@ -36,6 +37,7 @@
 		public static const TAKE_PICTURE_COMPLETE:String = "TakeAPolaroid.TAKE_PICTURE_COMPLETE";
 
 		private const strPhotoFile:String = "Polaroid.jpg"
+		private var sharedObjectSavedStatus:SharedObject = SharedObject.getLocal("SavedStatus");
 		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var i18n:I18n = I18n.getInstance();
 		private var titlebar:Titlebar = Titlebar.getInstance();
@@ -66,6 +68,8 @@
 		private var snapShotBitmap:Bitmap = null;
 		private var cameraRoll:CameraRoll = null;
 		private var cameraSound:Sound = null;
+		
+		private var helpPage:HelpPage = null;
 		
 		CAMEO::ANE {
 			private var ext:VideoNativeExtension = null;
@@ -108,6 +112,7 @@
 			eventChannel.removeEventListener(ToastMessage.CLICK_OK, backToHome);
 			eventChannel.removeEventListener(ToastMessage.CLICK_OK, onConfirmToShare);
 			titlebar.removeEventListener(Titlebar.CLICK_OK, onOkToSavePhoto);
+			removeHelpPage();
 			removeLoadingScreen();
 			removeCameraRoll();
 			removePhoto();
@@ -226,6 +231,29 @@
 		
 		private function fadeOutPhotoMask() {
 			TweenLite.to(photoMask, 4, {alpha:0, onComplete:removePhotoMask});
+			if (!sharedObjectSavedStatus.data.hasOwnProperty("hasShowHelpPage")) {
+				showHelpPage();
+			}
+		}
+		
+		private function showHelpPage() {
+			if (helpPage) return;
+			helpPage = new HelpPage(this.stage);
+			helpPage.addEventListener(HelpPage.HELP_PAGE_DONE, onHelpPageDone);
+		}
+		
+		public function removeHelpPage() {
+			if (helpPage == null) return;
+			helpPage.removeEventListener(HelpPage.HELP_PAGE_DONE, onHelpPageDone);
+			helpPage.dispose();
+			helpPage = null;
+		}
+		
+		private function onHelpPageDone(e:Event) {
+			sharedObjectSavedStatus.data["hasShowHelpPage"] = true;
+			sharedObjectSavedStatus.flush();
+			helpPage.removeEventListener(HelpPage.HELP_PAGE_DONE, onHelpPageDone);
+			removeHelpPage();
 		}
 		
 		private function removePhotoMask() {
@@ -360,6 +388,11 @@
 			photoSprite.height *= intScaleRatio;
 			photoSprite.x += -(photoSprite.width - intPhotoWidth)/2;
 			photoSprite.y += -(photoSprite.height - intPhotoHeight)/2;
+		}
+		
+		public function isHelpPageShow():Boolean {
+			if (helpPage) return true;
+			return false;
 		}
 
 	}

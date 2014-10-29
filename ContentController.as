@@ -364,6 +364,11 @@
 						return;
 					}
 					
+					if (currentContent is TakeAPolaroid && (currentContent as TakeAPolaroid).isHelpPageShow()) {
+						(currentContent as TakeAPolaroid).removeHelpPage();
+						return;
+					}
+					
 					navigatorBackHandler();
 				}
 			}
