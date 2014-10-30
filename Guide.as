@@ -365,6 +365,7 @@
 			isShowGuideText = false;
 			removeControlTool();
 			removeSlideShow();
+			intCurrentExhibitIndex = 0;
 			loadData();
 		}
 		
