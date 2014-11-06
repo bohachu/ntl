@@ -5,6 +5,7 @@
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
+	import tw.cameo.Utils;
 	import LoadExhibitData;
 	import Language;
 	
@@ -39,7 +40,7 @@
 			loadExhibitData.removeEventListener(LoadExhibitData.LOAD_EXHIBIT_DATA_COMPLETE, onLoadExhibitDataComplete);
 			var dicExhibitInfo:Object = loadExhibitData.getExhibitInfo();
 			var lstImage:Array = loadExhibitData.getImageList();
-			photoMovieClip.label.text = "[" + strFolder + "] " + dicExhibitInfo["Title_" + strLangType];
+			photoMovieClip.label.text = "[" + strFolder + "] " + Utils.removeDoubleQuote(dicExhibitInfo["Title_" + strLangType]);
 			setImageSizePostion(lstImage[0], photoMovieClip.button.width, photoMovieClip.button.height);
 			
 			photoMovieClip.photoContainer.removeChildren();

@@ -132,7 +132,7 @@
 			
 			var photoMovieClip:MovieClip = loadExhibitWallPhotoIntro.getPhotoMovieClip();
 			var strGuidanceNumber:String = photoMovieClip.strGuidanceNumber;
-			if (mappingData.checkIsTopTenCollection(strGuidanceNumber)) photoMovieClip.topTenIcon.visible = true;
+			if (mappingData.checkIsTopTenCollection(strGuidanceNumber)) photoMovieClip.label.text = "★ " + photoMovieClip.label.text;
 			loadExhibitWallPhotoIntro.dispose();
 			loadExhibitWallPhotoIntro = null;
 			
