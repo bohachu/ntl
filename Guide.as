@@ -10,6 +10,7 @@
 	import flash.text.TextFieldAutoSize;
 	import flash.desktop.NativeApplication;
 	import flash.desktop.SystemIdleMode;
+	import flash.display.Shape;
 
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
@@ -18,17 +19,9 @@
 	import com.greensock.BlitMask;
 	import com.greensock.easing.*;
 	import tw.cameo.DragAndSlide;
-	
-	import I18n;
-	import Language;
-	import Titlebar;
-	import GuidanceTool;
-	import MappingData;
-	import LoadingScreen;
-	import GuideEvent;
-	import LoadExhibitData;
-	import SlideShow;
-	import Utils;
+	import tw.cameo.Log;
+	import tw.cameo.WebViewLog;
+	import tw.cameo.TempData;
 	
 	public class Guide extends MovieClip {
 		
@@ -38,6 +31,7 @@
 		private var titlebar:Titlebar = Titlebar.getInstance();
 		private var guidanceTool:GuidanceTool = GuidanceTool.getInstance();
 		private var mappingData:MappingData = MappingData.getInstance();
+		private var tempData:TempData = TempData.getInstance();
 		
 		private var isIphone5Layout:Boolean = LayoutManager.useIphone5Layout();
 		private var intDefaultWidth:Number = LayoutSettings.intDefaultWidth;
@@ -53,6 +47,7 @@
 		private var lstPhoto:Array = null;
 		private var slideShowContainer:Sprite = null;
 		
+		private var toolTextBg:Shape = null;
 		private var slideShowControlTool:MovieClip = null;
 		private var pauseSprite:Sprite = null;
 		
@@ -67,6 +62,7 @@
 			lstExhibitFolder = lstParameters[0];
 			isBackToHome = lstParameters[1];
 			titlebar.showTitlebar();
+			titlebar.setTitle("");
 			guidanceTool.setType(GuidanceTool.GUIDE_BUTTON_TYPE2);
 			guidanceTool.addEventListener(GuidanceTool.SHOW_GUIDE_TEXT_CLICK, onShowGuideTextClick);
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
@@ -91,6 +87,7 @@
 			removeGuideText();
 			removePauseButton();
 			removeControlTool();
+			removeToolTextBg();
 			removeSlideShow();
 			removeSlideShowContainer();
 			removeLoadingScreen();
@@ -148,10 +145,9 @@
 			lstPhoto = loadExhibitData.getImageList();
 			soundAudio = loadExhibitData.getAudio();
 			
-//			titlebar.setTitlebar(dicExhibitData["Title_" + language.getLanguageType()], Titlebar.TITLE_BUTTON_TYPE_SIDE_MENU, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
-			var strTitle:String = Utils.removeDoubleQuote(dicExhibitData["Title_" + language.getLanguageType()]);
+			var strTitle:String = "[" + lstExhibitFolder[intCurrentExhibitIndex] + "] " + Utils.removeDoubleQuote(dicExhibitData["Title_" + language.getLanguageType()]);
 			var strButtonType:String = (isBackToHome) ? Titlebar.TITLE_BUTTON_TYPE_HOME : Titlebar.TITLE_BUTTON_TYPE_BACK;
-			titlebar.setTitlebar(strTitle, strButtonType, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
+			titlebar.setTitlebar(strTitle, strButtonType, Titlebar.TITLE_BUTTON_TYPE_CAMERA);
 			
 			loadExhibitData.dispose();
 			loadExhibitData = null;
@@ -160,7 +156,14 @@
 			var slideShow:SlideShow = new SlideShow(dicExhibitData, lstPhoto, soundAudio);
 			slideShow.addEventListener(SlideShow.PLAY_END, onSlideShowPlayEnd);
 			
-			playGuide(slideShow);
+			if (tempData.getTempData("isNavigatorBackToGuide")) {
+				trace("Guide.as / isNavigatorBack.");
+				tempData.deleteTempData("isNavigatorBackToGuide");
+				slideShowContainer.addChild(slideShow);
+				showToolsAndRemovePauseButton();
+			} else {
+				playGuide(slideShow);
+			}
 		}
 		
 		private function removeSlideShow() {
@@ -227,14 +230,51 @@
 			Utils.keepAppIdleModeAwake();
 		}
 		
+		private function createToolTextBg() {
+			if (toolTextBg) return;
+			toolTextBg = new Shape();
+			toolTextBg.graphics.beginFill(0, 0.7);
+			toolTextBg.graphics.drawRect(0, 0, 640, 1136);
+			toolTextBg.graphics.endFill();
+			toolTextBg.alpha = 0;
+			this.addChild(toolTextBg);
+		}
+		
+		private function showToolTextBg() {
+			createToolTextBg();
+			TweenLite.killTweensOf(toolTextBg);
+			TweenLite.to(toolTextBg, 0.5, {alpha:1});
+		}
+		
+		private function hideToolTextBg() {
+			if (toolTextBg == null) return;
+			TweenLite.killTweensOf(toolTextBg);
+			TweenLite.to(toolTextBg, 0.5, {alpha:0, onComplete:removeToolTextBg});
+		}
+		
+		private function removeToolTextBg() {
+			if (toolTextBg == null) return;
+			this.removeChild(toolTextBg);
+			toolTextBg = null;
+		}
+		
 		private function showControlTool() {
-			if (slideShowControlTool == null) {
-				slideShowControlTool = new SlideShowControlTool();
-				slideShowControlTool.y = (isIphone5Layout) ? 0 : -88;
-				this.addChild(slideShowControlTool);
-				slideShowControlTool.playButton.addEventListener(MouseEvent.CLICK, onClickPlayButton);
-				slideShowControlTool.replayButton.addEventListener(MouseEvent.CLICK, onClickReplayButton);
-			}
+			showToolTextBg();
+			createControlTool();
+			TweenLite.killTweensOf(slideShowControlTool);
+			TweenLite.to(slideShowControlTool, 0.5, {alpha:1});
+		}
+		
+		private function createControlTool() {
+			if (slideShowControlTool) return;
+			slideShowControlTool = new SlideShowControlTool();
+			slideShowControlTool.y = (isIphone5Layout) ? 0 : -88;
+			slideShowControlTool.playLabel.text = i18n.get("Label_Play");
+			slideShowControlTool.replayLabel.text = i18n.get("Label_Replay");
+			slideShowControlTool.alpha = 0;
+			this.addChild(slideShowControlTool);
+			slideShowControlTool.playButton.addEventListener(MouseEvent.CLICK, onClickPlayButton);
+			slideShowControlTool.replayButton.addEventListener(MouseEvent.CLICK, onClickReplayButton);
 		}
 		
 		private function showToolsAndRemovePauseButton() {
@@ -245,18 +285,24 @@
 		}
 		
 		private function hideToolsAndCreatePauseButton() {
-			removeControlTool();
+			hideToolTextBg();
+			hideControlTool();
 			createPauseButton();
 			titlebar.hideTitlebar();
 			guidanceTool.hideGuidanceTool();
 		}
 		
+		private function hideControlTool() {
+			if (slideShowControlTool == null) return;
+			TweenLite.killTweensOf(slideShowControlTool);
+			TweenLite.to(slideShowControlTool, 0.5, {alpha:0, onComplete:removeControlTool});
+		}
+		
 		private function removeControlTool() {
-			if (slideShowControlTool) {
-				slideShowControlTool.playButton.removeEventListener(MouseEvent.CLICK, onClickPlayButton);
-				slideShowControlTool.replayButton.removeEventListener(MouseEvent.CLICK, onClickReplayButton);
-				this.removeChild(slideShowControlTool);
-			}
+			if (slideShowControlTool == null) return;
+			slideShowControlTool.playButton.removeEventListener(MouseEvent.CLICK, onClickPlayButton);
+			slideShowControlTool.replayButton.removeEventListener(MouseEvent.CLICK, onClickReplayButton);
+			this.removeChild(slideShowControlTool);
 			slideShowControlTool = null;
 		}
 		
@@ -277,70 +323,88 @@
 		}
 		
 		public function showGuideText() {
+			hideControlTool();
 			isShowGuideText = true;
 			if (guideTextContainer == null) {
 				guideTextContainer = new Sprite();
-				guideTextContainer.addChild(new BackgroundSprite());
-				guideTextContainer.addChild(new ContentBg());
+				guideTextContainer.graphics.beginFill(0, 0);
+				guideTextContainer.graphics.drawRect(0, 0, 640, 1136);
+				guideTextContainer.graphics.endFill();
 				guideTextContainer.y = intDefaultHeight;
+				var textMask:Sprite = new Sprite();
+				textMask.graphics.beginFill(0);
+				textMask.graphics.drawRect(0, 0, 640, 1136);
+				textMask.graphics.endFill();
+				textMask.y = titlebar.intTitlebarHeight;
+				guideTextContainer.addChild(textMask);
+				guideTextContainer.mask = textMask;
 				
 				guideText = new Sprite();
-				guideText.x = 90;
-				guideText.y = titlebar.intTitlebarHeight + 20;
+				guideText.x = 55;
+				guideText.y = titlebar.intTitlebarHeight;
 				var textFormat:TextFormat = new TextFormat();
-				textFormat.size = 40;
-				textFormat.font = "Arial, _san";
-				textFormat.color = 0x330000;
+				
+				if (language.getLanguageType() == "CHT" || language.getLanguageType() == "JPN") {
+					textFormat.size = 35;
+					textFormat.letterSpacing = 5;
+					textFormat.leading = 10;
+				} else {
+					textFormat.size = 35;
+				}
+				
+				textFormat.font = "Arial, Helvetica, _san, _serif, _typewriter";
+				textFormat.color = 0xFFFFFF;
 				
 				var guideTextField:TextField = new TextField();
-				guideTextField.width = 460;
+				guideTextField.y = 20;
+				guideTextField.width = 525*LayoutManager.intScaleX;
 				guideTextField.multiline = true;
-				guideTextField.wordWrap = true;
 				guideTextField.autoSize = TextFieldAutoSize.LEFT;
+				guideTextField.wordWrap = true;
 				guideTextField.selectable = guideTextField.mouseEnabled = false;
-				guideTextField.text = Utils.removeDoubleQuote(dicExhibitData["Content_" + language.getLanguageType()]);
+				guideTextField.text = Utils.removeDoubleQuote(dicExhibitData["Content_" + language.getLanguageType()], language.getLanguageType());
 				guideTextField.setTextFormat(textFormat);
 				guideText.addChild(guideTextField);
+//				guideTextField.height = guideTextField.textHeight;
+				guideTextField.width = 525;
 				guideTextContainer.addChild(guideText);
 				this.addChild(guideTextContainer);
 				
-				dragAndSlide = new DragAndSlide(guideText, intDefaultHeight-titlebar.intTitlebarHeight-guidanceTool.intGuidanceToolHeight, "Vertical", true);
+				TweenLite.delayedCall(0.5, adjustGuideText);
+				dragAndSlide = new DragAndSlide(guideText, intDefaultHeight-titlebar.intTitlebarHeight-guidanceTool.intGuidanceToolHeight, "Vertical", false);
 			}
-			TweenLite.to(guideTextContainer, 1, {y:0, ease:Strong.easeOut, onComplete:setSlideShowInvisible});
+			TweenLite.killTweensOf(guideTextContainer);
+			TweenLite.to(guideTextContainer, 1, {y:0, ease:Strong.easeOut});
 		}
 		
-		private function setSlideShowInvisible() {
-			slideShowContainer.visible = false;
+		private function adjustGuideText() {
+			if (guideText == null) return;
+			var guideTextField:TextField = guideText.getChildAt(0) as TextField;
+			guideTextField.autoSize = TextFieldAutoSize.NONE;
+			if (guideTextField.textHeight > guideTextField.height) {
+				guideTextField.height = guideTextField.textHeight + 10;
+			} else {
+				guideTextField.height += 10;
+			}
 		}
 		
 		public function hideGuideText() {
 			isShowGuideText = false;
-			slideShowContainer.visible = true;
-			var textMask:Sprite = new Sprite();
-			textMask.graphics.beginFill(0);
-			textMask.graphics.drawRect(0, 0, 640, 1136);
-			textMask.graphics.endFill();
-			guideTextContainer.addChild(textMask);
-			guideTextContainer.mask = textMask;
-			TweenLite.to(guideTextContainer, 1, {y:intDefaultHeight, ease:Strong.easeOut, onComplete:removeGuideText, onCompleteParams:[textMask]});
+			showControlTool();
+			TweenLite.killTweensOf(guideTextContainer);
+			TweenLite.to(guideTextContainer, 1, {y:intDefaultHeight, onComplete:removeGuideText});
 		}
 		
-		private function removeGuideText(textMask:Sprite = null) {
-			if (guideTextContainer) {
-				if (textMask) {
-					guideTextContainer.removeChild(textMask);
-					guideTextContainer.mask = null;
-					textMask = null;
-				}
-				
-				dragAndSlide.dispose();
-				dragAndSlide = null;
-				this.removeChild(guideTextContainer);
-				guideTextContainer.removeChild(guideText);
-				var guideTextField:TextField = guideText.getChildAt(0) as TextField;
-				guideText.removeChild(guideTextField);
-				guideTextField = null;
-			}
+		private function removeGuideText() {
+			if (guideTextContainer == null) return;
+			guideTextContainer.mask = null;
+			dragAndSlide.dispose();
+			dragAndSlide = null;
+			this.removeChild(guideTextContainer);
+			guideTextContainer.removeChild(guideText);
+			var guideTextField:TextField = guideText.getChildAt(0) as TextField;
+			guideText.removeChild(guideTextField);
+			guideTextField = null;
 			guideText = null;
 			guideTextContainer = null;
 		}
@@ -362,7 +426,6 @@
 		public function reloadGuide() {
 			trace("Guide.as / reloadGuide.", lstExhibitFolder);
 			removeGuideTextAndShowSlideShow();
-			isShowGuideText = false;
 			removeControlTool();
 			removeSlideShow();
 			intCurrentExhibitIndex = 0;
@@ -371,7 +434,7 @@
 		
 		private function removeGuideTextAndShowSlideShow() {
 			removeGuideText();
-			slideShowContainer.visible = true;
+			isShowGuideText = false;
 		}
 		
 		public function isGuideTextShow():Boolean {

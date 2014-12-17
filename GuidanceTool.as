@@ -18,6 +18,7 @@
 	import I18n;
 	import GuidanceToolEvent;
 	import flash.events.Event;
+	import flash.text.TextFormat;
 	
 	public class GuidanceTool extends EventDispatcher {
 
@@ -32,9 +33,10 @@
 
 		private var i18n:I18n = I18n.getInstance();
 		private var language:Language = Language.getInstance();
+		private var mappingData:MappingData = MappingData.getInstance();
 		private var container:DisplayObjectContainer = null;
 		private var strType:String = GUIDE_BUTTON_TYPE1;
-		private var toolContainer:Sprite = null;
+		private var buttonContainer:Sprite = null;
 		private var guidanceButton:MovieClip = null;
 		private var showGuideTextButton:SimpleButton = null;
 		private var intGuidanceToolY:int = intDefaultHeight;
@@ -54,13 +56,15 @@
 		
 		public function create(containerIn:DisplayObjectContainer) {
 			strType = GUIDE_BUTTON_TYPE1;
-			toolContainer = new Sprite();
+			buttonContainer = new Sprite();
 			createGuidanceButton("Long");
-			toolContainer.y = intGuidanceToolY = intDefaultHeight - toolContainer.height;
-			intGuidanceToolHeight = toolContainer.height;
+			buttonContainer.y = intDefaultHeight;
+			buttonContainer.visible = false;
+			intGuidanceToolY = intDefaultHeight - buttonContainer.height;
+			intGuidanceToolHeight = buttonContainer.height;
 			
 			container = containerIn;
-			container.addChild(toolContainer);
+			container.addChild(buttonContainer);
 			language.addEventListener(Language.SET_LANGUAGE_COMPLETE, onSetLanguageComplete);
 		}
 		
@@ -70,12 +74,12 @@
 		
 		public function dispose() {
 			removeGuidanceInputPannel();
-			toolContainer.removeChild(guidanceButton);
+			buttonContainer.removeChild(guidanceButton);
 			guidanceButton.parent.removeChild(guidanceButton);
 			guidanceButton.removeEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
-			toolContainer.parent.removeChild(toolContainer);
+			buttonContainer.parent.removeChild(buttonContainer);
 			guidanceButton = null;
-			toolContainer = null;
+			buttonContainer = null;
 		}
 		
 		private function createButton() {
@@ -92,7 +96,7 @@
 				showGuideTextButton = new ShowGuideTextButton();
 				showGuideTextButton.x = 320;
 				showGuideTextButton.addEventListener(MouseEvent.CLICK, onShowGuideTextButtonClick);
-				toolContainer.addChild(showGuideTextButton);
+				buttonContainer.addChild(showGuideTextButton);
 			}
 		}
 		
@@ -101,25 +105,37 @@
 			setGuidanceButtonLabel();
 			guidanceButton.label.mouseEnabled = false;
 			guidanceButton.addEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
-			toolContainer.addChild(guidanceButton);
+			buttonContainer.addChild(guidanceButton);
 		}
 		
 		private function setGuidanceButtonLabel() {
 			guidanceButton.label.text = (guidanceButton is GuidanceButtonLong) ? i18n.get("Label_InputNumber01") : i18n.get("Label_InputNumber02") ;
-			if (guidanceButton is GuidanceButtonLong) return;
-			if ((guidanceButton.label as TextField).numLines > 1) guidanceButton.label.y = 3;
-			if ((guidanceButton.label as TextField).numLines == 1) guidanceButton.label.y = 24;
+			if (guidanceButton is GuidanceButtonLong) {
+				guidanceButton.label.appendText(" (1~" + String(mappingData.getTotalExhibitNumber()) + ")");
+				var textFormat:TextFormat = guidanceButton.label.getTextFormat();
+				if (language.getLanguageType() == "JPN") {
+					textFormat.size = 30;
+					guidanceButton.label.y = 20;
+				} else {
+					textFormat.size = 35;
+					guidanceButton.label.y = 14;
+				}
+				guidanceButton.label.setTextFormat(textFormat);
+				return;
+			}
+			if ((guidanceButton.label as TextField).numLines > 1) guidanceButton.label.y = 4;
+			if ((guidanceButton.label as TextField).numLines == 1) guidanceButton.label.y = 23;
 		}
 		
 		private function removeGuidanceButton() {
-			toolContainer.removeChild(guidanceButton);
+			buttonContainer.removeChild(guidanceButton);
 			guidanceButton.removeEventListener(MouseEvent.CLICK, onGuidanceButtonClick);
 			guidanceButton = null;
 		}
 		
 		private function removeShowGuideTextButton() {
 			if (showGuideTextButton) {
-				toolContainer.removeChild(showGuideTextButton);
+				buttonContainer.removeChild(showGuideTextButton);
 				showGuideTextButton.removeEventListener(MouseEvent.CLICK, onShowGuideTextButtonClick);
 			}
 			showGuideTextButton = null;
@@ -255,12 +271,14 @@
 		}
 		
 		public function showGuidanceTool() {
-			toolContainer.visible = true;
-			if (toolContainer.y != intGuidanceToolY) TweenLite.to(toolContainer, 0.5, {y:intGuidanceToolY, ease:Strong.easeOut});
+			if (buttonContainer.visible) return;
+			buttonContainer.visible = true;
+			if (buttonContainer.y != intGuidanceToolY) TweenLite.to(buttonContainer, 0.5, {y:intGuidanceToolY, ease:Strong.easeOut});
 		}
 		
 		public function hideGuidanceTool() {
-			if (toolContainer.y != intDefaultHeight) TweenLite.to(toolContainer, 0.5, {y:intDefaultHeight, ease:Strong.easeOut, onComplete:invisibleGuidanceTool});
+			if (!buttonContainer.visible) return;
+			if (buttonContainer.y != intDefaultHeight) TweenLite.to(buttonContainer, 0.5, {y:intDefaultHeight, ease:Strong.easeOut, onComplete:invisibleGuidanceTool});
 		}
 		
 		public function setType(strTypeIn:String) {
@@ -270,7 +288,7 @@
 		}
 		
 		private function invisibleGuidanceTool() {
-			toolContainer.visible = false;
+			buttonContainer.visible = false;
 		}
 
 	}

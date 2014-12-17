@@ -8,9 +8,6 @@
 	import tw.cameo.IAddRemoveListener;
 	import tw.cameo.DragAndSlide;
 	
-	import Titlebar;
-	import GuidanceTool;
-	
 	public class Layout extends MovieClip implements IAddRemoveListener {
 		
 		public static const PHOTO_CLICK:String = "Layout.PHOTO_CLICK";
@@ -19,7 +16,7 @@
 		private var titlebar:Titlebar = Titlebar.getInstance();
 		private var guidanceTool:GuidanceTool = GuidanceTool.getInstance();
 		
-		private var layout:MovieClip = null;
+		private var lstColumn:Array = null;
 		private var lstExhibit:Array = null;
 		private var intPhotoNumber:int = 1;
 		private var dragAndSlide:DragAndSlide = null;
@@ -36,7 +33,6 @@
 		private function init(e:Event) {
 			this.removeEventListener(Event.ADDED_TO_STAGE, init);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
-			this.addChild(layout);
 			addEventListenerFunc();
 			var intViewLength:Number = intDefaultHeight - titlebar.intTitlebarHeight - guidanceTool.intGuidanceToolHeight;
 			dragAndSlide = new DragAndSlide(this, intViewLength, "Vertical", false, 0, true);
@@ -47,41 +43,23 @@
 			dragAndSlide.dispose();
 			dragAndSlide = null;
 			removeEventListenerFunc();
-			this.removeChild(layout);
-			layout = null;
 		}
 		
 		private function initLayout() {
-			switch (intPhotoNumber) {
-				case 1:
-					layout = new Layout1Pics();
-				break;
-				case 2:
-					layout = new Layout2Pics();
-				break;
-				case 3:
-					layout = new Layout3Pics();
-				break;
-				case 4:
-					layout = new Layout4Pics();
-				break;
-				case 5:
-					layout = new Layout5Pics();
-				break;
-				case 6:
-					layout = new Layout6Pics();
-				break;
-			}
-			
-			for (var i:int = 1; i<intPhotoNumber+1; i++) {
-				layout["photo" + String(i)].alpha = 0;
-				(layout["photo" + String(i)] as MovieClip).strGuidanceNumber = lstExhibit[i-1];
+			lstColumn = new Array();
+			for (var i:int = 0; i<intPhotoNumber; i++) {
+				var column:MovieClip = new ExhibitColumn();
+				column.alpha = 0;
+				column.strGuidanceNumber = lstExhibit[i];
+				lstColumn.push(column);
+				column.y = column.height*(i);
+				this.addChild(column);
 			}
 		}
 		
 		public function addEventListenerFunc():void {
-			for (var i:int = 1; i<intPhotoNumber+1; i++) {
-				layout["photo" + String(i)].addEventListener(MouseEvent.MOUSE_DOWN, onPhotoMouseDown);
+			for (var i:int = 0; i<intPhotoNumber; i++) {
+				lstColumn[i].addEventListener(MouseEvent.MOUSE_DOWN, onPhotoMouseDown);
 			}
 		}
 		
@@ -96,9 +74,9 @@
 		}
 		
 		public function removeEventListenerFunc():void {
-			for (var i:int = 1; i<intPhotoNumber+1; i++) {
-				layout["photo" + String(i)].removeEventListener(MouseEvent.MOUSE_DOWN, onPhotoMouseDown);
-				layout["photo" + String(i)].removeEventListener(MouseEvent.MOUSE_UP, onPhotoMouseUp);
+			for (var i:int = 0; i<intPhotoNumber; i++) {
+				lstColumn[i].removeEventListener(MouseEvent.MOUSE_DOWN, onPhotoMouseDown);
+				lstColumn[i].removeEventListener(MouseEvent.MOUSE_UP, onPhotoMouseUp);
 			}
 		}
 		
@@ -107,7 +85,7 @@
 		}
 		
 		public function getPhotoMovieClip(intPhotoIndex:int):MovieClip {
-			return layout["photo" + String(intPhotoIndex)];
+			return lstColumn[intPhotoIndex];
 		}
 	}
 	

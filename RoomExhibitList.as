@@ -10,18 +10,10 @@
 	import tw.cameo.EventChannel;
 	import com.greensock.TweenLite;
 	import tw.cameo.DragAndSlide;
+	import tw.cameo.ILoadData;
+	import flash.display.Shape;
 	
-	import I18n;
-	import Language;
-	import Titlebar;
-	import GuidanceTool;
-	import MappingData;
-	import LoadingScreen;
-	import LoadExhibitWallPhotoIntro;
-	import GuideEvent;
-	import Layout;
-	
-	public class RoomExhibitList extends MovieClip {
+	public class RoomExhibitList extends MovieClip implements ILoadData {
 		
 		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var i18n:I18n = I18n.getInstance();
@@ -41,15 +33,15 @@
 		private var bg:Sprite = null;
 		private var loadingScreen:LoadingScreen = null;
 		private var lstExhibit:Array = null;
+		private var photoWallContainer:Sprite = null;
 		private var photoWall:Layout = null;
 
 		public function RoomExhibitList(lstArgs:Array) {
 			// constructor code
 			strFloor = lstArgs[0];
 			strRoom = lstArgs[1];
-			titlebar.setTitlebar(i18n.get(strFloor) + "-" + i18n.get(strRoom), Titlebar.TITLE_BUTTON_TYPE_SIDE_MENU, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
+			titlebar.setTitlebar(i18n.get(strFloor) + "-" + i18n.get(strRoom), Titlebar.TITLE_BUTTON_TYPE_BACK, Titlebar.TITLE_BUTTON_TYPE_QRCODE);
 			titlebar.showTitlebar();
-			titlebar.setSideMenuColumn(strFloor + "-" + strRoom);
 			guidanceTool.setType(GuidanceTool.GUIDE_BUTTON_TYPE1);
 			guidanceTool.showGuidanceTool();
 			intContentStartY = titlebar.intTitlebarHeight;
@@ -64,7 +56,7 @@
 				changeLayoutForIphone5();
 			}
 			createBackground();
-			loadLayout();
+			initPhotoWallContainer();
 		}
 		
 		private function destructor(e:Event) {
@@ -80,13 +72,33 @@
 		}
 		
 		private function createBackground() {
-			bg = new BackgroundSprite();
+			bg = (isIphone5Layout) ? new ExhibitListBgIphone5() : new ExhibitListBgIphone4();
 			this.addChild(bg);
 		}
 		
 		private function removeBackground() {
 			if (bg) this.removeChild(bg);
 			bg = null;
+		}
+		
+		private function initPhotoWallContainer() {
+			photoWallContainer = new Sprite();
+			var photoWallMask:Shape = new Shape();
+			photoWallMask.graphics.beginFill(0);
+			photoWallMask.graphics.drawRect(0, 0, intDefaultWidth, intDefaultHeight);
+			photoWallMask.graphics.endFill();
+			photoWallMask.cacheAsBitmap = true;
+			photoWallContainer.cacheAsBitmap = true;
+			photoWallContainer.addChild(photoWallMask);
+			photoWallContainer.mask = photoWallMask;
+			photoWallContainer.y = intContentStartY;
+			this.addChild(photoWallContainer);
+		}
+		
+		private function removePhotoWallContainer() {
+			this.removeChild(photoWallContainer);
+			photoWallContainer.mask = null;
+			photoWallContainer = null;
 		}
 		
 		private function initLoadingScreen() {
@@ -98,27 +110,21 @@
 			loadingScreen = null;
 		}
 		
-		private function loadLayout() {
+		private function removePhotoWall() {
+			photoWall.removeEventListener(Layout.PHOTO_CLICK, onPhotoClick);
+			photoWallContainer.removeChild(photoWall);
+			photoWall = null;
+		}
+		
+		public function loadData():void {
 			initLoadingScreen();
 			lstExhibit = mappingData.getExhibitList(strFloor +  "-" + strRoom);
 			photoWall = new Layout(lstExhibit);
 			photoWall.addEventListener(Layout.PHOTO_CLICK, onPhotoClick);
-			photoWall.y = intContentStartY;
+			photoWallContainer.addChild(photoWall);
 			
-			this.addChild(photoWall);
-			var intViewLength:Number = intDefaultHeight - titlebar.intTitlebarHeight - guidanceTool.intGuidanceToolHeight;
-			loadData();
-		}
-		
-		private function removePhotoWall() {
-			photoWall.removeEventListener(Layout.PHOTO_CLICK, onPhotoClick);
-			this.removeChild(photoWall);
-			photoWall = null;
-		}
-		
-		private function loadData() {
 			for (var i:int = 0; i<lstExhibit.length; i++) {
-				var loadExhibitWallPhotoIntro:LoadExhibitWallPhotoIntro = new LoadExhibitWallPhotoIntro(lstExhibit[i], photoWall.getPhotoMovieClip(i+1));
+				var loadExhibitWallPhotoIntro:LoadExhibitWallPhotoIntro = new LoadExhibitWallPhotoIntro(lstExhibit[i], photoWall.getPhotoMovieClip(i));
 				loadExhibitWallPhotoIntro.addEventListener(LoadExhibitWallPhotoIntro.LOAD_INTRO_COMPLETE, onLoadIntroComplete);
 				loadExhibitWallPhotoIntro.loadIntro();
 			}
@@ -132,7 +138,7 @@
 			
 			var photoMovieClip:MovieClip = loadExhibitWallPhotoIntro.getPhotoMovieClip();
 			var strGuidanceNumber:String = photoMovieClip.strGuidanceNumber;
-			if (mappingData.checkIsTopTenCollection(strGuidanceNumber)) photoMovieClip.label.text = "★ " + photoMovieClip.label.text;
+			if (mappingData.checkIsTopTenCollection(strGuidanceNumber)) photoMovieClip.label.text = "[" + i18n.get("Recommend") + "] " + photoMovieClip.label.text;
 			loadExhibitWallPhotoIntro.dispose();
 			loadExhibitWallPhotoIntro = null;
 			
@@ -151,7 +157,7 @@
 		public function reloadExhibitList() {
 			removePhotoWall();
 			titlebar.setTitle(i18n.get(strFloor) + "-" + i18n.get(strRoom));
-			loadLayout();
+			loadData();
 		}
 
 	}

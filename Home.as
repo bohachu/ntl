@@ -14,20 +14,17 @@
 	import tw.cameo.LayoutSettings;
 	import tw.cameo.EventChannel;
 	import tw.cameo.Navigator;
-	import tw.cameo.AppAbout;
+	import tw.cameo.storyMouth.BackgroundMusic;
 	import com.greensock.TweenLite;
-	
-	import I18n;
-	import Language;
-	import Titlebar;
-	import GuidanceTool;
 
 	public class Home extends MovieClip {
 		
+		public static const OPENING_MOVIE_ADDED:String = "Home.OPENING_MOVIE_ADDED";
 		public static const CLICK_INTO_GUIDANCE:String = "Home.CLICK_INTO_GUIDANCE";
 		public static const CLICK_QRCODE:String = "Home.CLICK_QRCODE";
 		public static const CLICK_CHECK_IN:String = "Home.CLICK_CHECK_IN";
 		public static const CLICK_TRAFFIC:String = "Home.CLICK_TRAFFIC";
+		private const strMusicUrl:String = "data/background.mp3";
 		
 		private var sharedObjectSavedStatus:SharedObject = SharedObject.getLocal("SavedStatus");
 		private var eventChannel:EventChannel = EventChannel.getInstance();
@@ -35,6 +32,7 @@
 		private var language:Language = Language.getInstance();
 		private var titlebar:Titlebar = Titlebar.getInstance();
 		private var guidanceTool:GuidanceTool = GuidanceTool.getInstance();
+		private var backgroundMusic:BackgroundMusic = BackgroundMusic.getInstance();
 		
 		private var intDefaultWidth:Number = LayoutSettings.intDefaultWidth;
 		private var intDefaultHeight:Number = LayoutSettings.intDefaultHeight;
@@ -45,32 +43,12 @@
 		private var welcomeSoundChannel:SoundChannel = null;
 		private var isPlayingWelcomeSound:Boolean = false;
 		private var isShowAnimation:Boolean = false;
-		private var bg:Sprite = null;
+		private var homeScreen:MovieClip = null;
+		private var openingMovie:MovieClip = null;
 		
-		private var paintingAnimation:MovieClip = null;
-		private var pointPaintingAnimation:Point = new Point(39, (isIphone5Layout) ? 0 : -170);
-		
-		private var btnChangeLanguage:MovieClip = null;
-		private var pointBtnChangeLanguage:Point = new Point(444, 17);
-		
-		private var appAbout:AppAbout = null;
-		private var pointBtnAbout:Point = new Point(103, 17);
-		
-		private var btnIntoGuidance:MovieClip = null;
-		private var pointBtnIntoGuidance:Point = new Point(208, (isIphone5Layout) ? 315 : 205);
-		
-		private var btnQrCode:MovieClip = null;
-		private var pointBtnQrCode:Point = new Point(423, (isIphone5Layout) ? 315 : 205);
-		
-		private var btnTakePhoto:MovieClip = null;
-		private var pointBtnTakePhoto:Point = new Point(208, (isIphone5Layout) ? 565 : 440);
-		
-		private var btnTraffic:MovieClip = null;
-		private var pointBtnTraffic:Point = new Point(423, (isIphone5Layout) ? 565 : 440);
-		
-		private var btnWelcome:MovieClip = null;
-		private var pointBtnWelcome:Point = new Point(189, (isIphone5Layout) ? 740 : 620);
-		
+		private var isMenuShow:Boolean = false;
+		private var menuContainer:Sprite = null;
+
 		public function Home(isShowAnimationIn:Boolean = false) {
 			// constructor code
 			isShowAnimation = isShowAnimationIn;
@@ -81,21 +59,24 @@
 			this.removeEventListener(Event.ADDED_TO_STAGE, init);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
 			
-			if (!sharedObjectSavedStatus.data.hasOwnProperty("isNotFirstTimeUse")) {
-				sharedObjectSavedStatus.data["isNotFirstTimeUse"] = true;
-				sharedObjectSavedStatus.flush();
-				playWelcomeAudio();
-			}
-			
 			titlebar.hideTitlebar();
 			guidanceTool.setType(GuidanceTool.GUIDE_BUTTON_TYPE1);
-			guidanceTool.showGuidanceTool();
 			
 			if (isIphone5Layout) {
 				changeLayoutForIphone5();
 			}
-			createBackground();
-			createPaintingAnimation();
+			
+			if (isShowAnimation) {
+				showOpeningAnimation();
+				backgroundMusic.playMusic(strMusicUrl, false);
+			} else {
+				showHomeScreen();
+				guidanceTool.showGuidanceTool();
+			}
+		}
+		
+		public function stopBackgroundMusic() {
+			backgroundMusic.stopMusic();
 		}
 		
 		private function playWelcomeAudio(e:MouseEvent = null) {
@@ -120,7 +101,7 @@
 			isPlayingWelcomeSound = true;
 		}
 		
-		private function removeWelcomeSound(e:Event = null) {
+		public function removeWelcomeSound(e:Event = null) {
 			if (welcomeSoundChannel) welcomeSoundChannel.stop();
 			isPlayingWelcomeSound = false;
 			welcomeSoundChannel = null;
@@ -129,193 +110,175 @@
 		
 		private function destructor(e:Event) {
 			this.removeEventListener(Event.REMOVED_FROM_STAGE, destructor);
-			removeButton();
-			removePaintingAnimation();
-			removeBackground();
+			stopBackgroundMusic();
+			removeLanguageMenu();
+			removeHomeScreen();
+			removeOpeningMovie();
 			removeWelcomeSound();
 		}
 		
 		private function changeLayoutForIphone5() {
 		}
 		
-		private function createBackground() {
-			bg = new BackgroundSprite();
-			this.addChild(bg);
+		private function showOpeningAnimation() {
+			openingMovie = (isIphone5Layout) ? new OpeningMovieIphone5() : new OpeningMovieIphone4();
+			openingMovie.addEventListener(MouseEvent.CLICK, skipOpeningMovie);
+			openingMovie.addEventListener("ANIMATION_PLAY_END", onOpeningMoviePlayEnd);
+			this.addChild(openingMovie);
 		}
 		
-		private function removeBackground() {
-			if (bg) this.removeChild(bg);
-			bg = null;
+		private function skipOpeningMovie(e:MouseEvent) {
+			openingMovie.removeEventListener(MouseEvent.CLICK, skipOpeningMovie);
+			openingMovie.removeEventListener("ANIMATION_PLAY_END", onOpeningMoviePlayEnd);
+			showHomeScreen();
 		}
 		
-		private function createPaintingAnimation() {
-			paintingAnimation = new HomePaintingAnimation();
-			paintingAnimation.x = pointPaintingAnimation.x;
-			paintingAnimation.y = pointPaintingAnimation.y;
-			if (isShowAnimation) {
-				paintingAnimation.addEventListener("ANIMATION_PLAY_END", onAnimationPlayEnd);
-				this.addChild(paintingAnimation);
-			} else {
-				this.addChild(paintingAnimation);
-				paintingAnimation.gotoAndStop(paintingAnimation.totalFrames);
-				onAnimationPlayEnd();
+		private function removeOpeningMovie() {
+			if (openingMovie == null)  return;
+			openingMovie.removeEventListener(MouseEvent.CLICK, skipOpeningMovie);
+			openingMovie.removeEventListener("ANIMATION_PLAY_END", onOpeningMoviePlayEnd);
+			this.removeChild(openingMovie);
+			openingMovie = null;
+		}
+		
+		private function onOpeningMoviePlayEnd(e:Event = null) {
+			openingMovie.removeEventListener("ANIMATION_PLAY_END", onOpeningMoviePlayEnd);
+			
+			if (!sharedObjectSavedStatus.data.hasOwnProperty("isNotFirstTimeUse")) {
+				sharedObjectSavedStatus.data["isNotFirstTimeUse"] = true;
+				sharedObjectSavedStatus.flush();
+				playWelcomeAudio();
 			}
+			
+			showHomeScreen();
 		}
 		
-		private function removePaintingAnimation() {
-			paintingAnimation.removeEventListener("ANIMATION_PLAY_END", onAnimationPlayEnd);
-			this.removeChild(paintingAnimation);
-			paintingAnimation = null;
-			pointPaintingAnimation = null;
+		private function showHomeScreen() {
+			eventChannel.writeEvent(new Event(Home.OPENING_MOVIE_ADDED));
+			homeScreen = (isIphone5Layout) ? new HomeIphone5() : new HomeIphone4();
+			homeScreen.alpha = 0;
+			setButtonLabelAndEventListener();
+			this.addChild(homeScreen);
+			guidanceTool.showGuidanceTool();
+			TweenLite.to(homeScreen, 1.5, {alpha:1, onComplete:removeOpeningMovie});
 		}
 		
-		private function onAnimationPlayEnd(e:Event = null) {
-			paintingAnimation.removeEventListener("ANIMATION_PLAY_END", onAnimationPlayEnd);
-			createButton();
+		private function removeHomeScreen() {
+			removeButtonEventListener();
+			this.removeChild(homeScreen);
+			homeScreen = null;
 		}
 		
-		private function createButton() {
-//			appAbout = new AppAbout("Type2");
-//			appAbout.setAppIconPosition(pointBtnAbout.x, pointBtnAbout.y);
-			
-			btnChangeLanguage = new ChangeLanguageButton();
-			btnChangeLanguage.x = pointBtnChangeLanguage.x;
-			btnChangeLanguage.y = pointBtnChangeLanguage.y;
-			
-			btnIntoGuidance = new IntoGuidanceButton();
-			btnIntoGuidance.x = pointBtnIntoGuidance.x;
-			btnIntoGuidance.y = pointBtnIntoGuidance.y;
-			
-			btnQrCode = new QrCodeButton();
-			btnQrCode.x = pointBtnQrCode.x;
-			btnQrCode.y = pointBtnQrCode.y;
-			
-			btnTakePhoto = new TakePhotoButton();
-			btnTakePhoto.x = pointBtnTakePhoto.x;
-			btnTakePhoto.y = pointBtnTakePhoto.y;
-			
-			btnTraffic = new TrafficButton();
-			btnTraffic.x = pointBtnTraffic.x;
-			btnTraffic.y = pointBtnTraffic.y;
-			
-			btnWelcome = new BtnWelcome();
-			btnWelcome.x = pointBtnWelcome.x;
-			btnWelcome.y = pointBtnWelcome.y;
-			
+		private function setButtonLabelAndEventListener() {
 			setButtonLabel();
-			addButtonToStage();
 			addButtonEventListener();
 		}
 		
 		private function setButtonLabel() {
-			btnChangeLanguage.gotoAndStop(language.getLanguageType());
-			btnIntoGuidance.label.text = i18n.get("IntoGuidance");
-			btnQrCode.label.text = i18n.get("QrCode");
-			btnTakePhoto.label.text = i18n.get("CheckIn");
-			btnTraffic.label.text = i18n.get("Traffic");
-			btnWelcome.label.text = i18n.get("Welcome");
-			btnWelcome.label.mouseEnabled = false;
-		}
-		
-		private function addButtonToStage() {
-			btnChangeLanguage.alpha = 0;
-			btnIntoGuidance.alpha = 0;
-			btnQrCode.alpha = 0;
-			btnTakePhoto.alpha = 0;
-			btnTraffic.alpha = 0;
-			btnWelcome.alpha = 0;
-			this.addChild(btnChangeLanguage);
-			this.addChild(btnIntoGuidance);
-			this.addChild(btnQrCode);
-			this.addChild(btnTakePhoto);
-			this.addChild(btnTraffic);
-			this.addChild(btnWelcome);
-			
-			TweenLite.to(btnChangeLanguage, 1, {alpha:1});
-			TweenLite.to(btnIntoGuidance, 1, {alpha:1});
-			TweenLite.to(btnQrCode, 1, {alpha:1});
-			TweenLite.to(btnTakePhoto, 1, {alpha:1});
-			TweenLite.to(btnTraffic, 1, {alpha:1});
-			TweenLite.to(btnWelcome, 1, {alpha:1});
-		}
-		
-		private function removeButtonFromStage() {
-			this.removeChild(btnChangeLanguage);
-			this.removeChild(btnIntoGuidance);
-			this.removeChild(btnQrCode);
-			this.removeChild(btnTakePhoto);
-			this.removeChild(btnTraffic);
-			this.removeChild(btnWelcome);
-			
-			pointBtnChangeLanguage = null;
-			pointBtnIntoGuidance = null;
-			pointBtnQrCode = null;
-			pointBtnTakePhoto = null;
-			pointBtnTraffic = null;
-			pointBtnWelcome = null;
-			btnChangeLanguage = null;
-			btnIntoGuidance = null;
-			btnQrCode = null;
-			btnTakePhoto = null;
-			btnTraffic = null;
-			btnWelcome = null;
-		}
-		
-		private function removeButton() {
-			removeButtonEventListener();
-			removeButtonFromStage();
+			homeScreen.btnChangeLanguage.gotoAndStop(language.getLanguageType());
+			homeScreen.btnIntoGuidance.label.text = i18n.get("IntoGuidance");
+			homeScreen.btnQrCode.label.text = i18n.get("QrCode");
+			homeScreen.btnTakePhoto.label.text = i18n.get("CheckIn");
+			homeScreen.btnTraffic.label.text = i18n.get("Traffic");
+			homeScreen.btnWelcome.label.text = i18n.get("Welcome");
+			homeScreen.btnWelcome.label.mouseEnabled = false;
 		}
 		
 		private function addButtonEventListener() {
-			btnChangeLanguage.addEventListener(MouseEvent.CLICK, onChangeLanguageClick);
-			btnIntoGuidance.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
-			btnQrCode.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
-			btnTakePhoto.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
-			btnTraffic.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
-			btnWelcome.addEventListener(MouseEvent.CLICK, playWelcomeAudio);
+			homeScreen.btnChangeLanguage.addEventListener(MouseEvent.CLICK, onSwitchLanguageClick);
+			homeScreen.btnIntoGuidance.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+			homeScreen.btnQrCode.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+			homeScreen.btnTakePhoto.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+			homeScreen.btnTraffic.addEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+			homeScreen.btnWelcome.addEventListener(MouseEvent.CLICK, playWelcomeAudio);
 		}
 		
 		private function removeButtonEventListener() {
-			btnChangeLanguage.removeEventListener(MouseEvent.CLICK, onChangeLanguageClick);
-			btnIntoGuidance.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
-			btnQrCode.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
-			btnTakePhoto.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
-			btnTraffic.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
-			btnWelcome.removeEventListener(MouseEvent.CLICK, playWelcomeAudio);
-		}
-		
-		private function onShowAppAbout(e:Event) {
-//			appAbout.removeEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
-//			appAbout.addEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
-//			playWelcomeAudio();
-		}
-		
-		private function onHideAppAbout(e:Event) {
-//			appAbout.removeEventListener(AppAbout.HIDE_ABOUT, onHideAppAbout);
-//			appAbout.addEventListener(AppAbout.SHOW_ABOUT, onShowAppAbout);
-//			removeWelcomeSound();
-		}
-		
-		private function onChangeLanguageClick(e:MouseEvent) {
-			switch (language.getLanguageType()) {
-				case "CHT":
-					language.setLanguage("ENU");
-				break;
-				case "ENU":
-					language.setLanguage("JPN");
-				break;
-				case "JPN":
-					language.setLanguage("CHT");
-				break;
-			}
-			setButtonLabel();
+			homeScreen.btnChangeLanguage.removeEventListener(MouseEvent.CLICK, onSwitchLanguageClick);
+			homeScreen.btnIntoGuidance.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+			homeScreen.btnQrCode.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+			homeScreen.btnTakePhoto.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+			homeScreen.btnTraffic.removeEventListener(MouseEvent.CLICK, onHomeMenuButtonClick);
+			homeScreen.btnWelcome.removeEventListener(MouseEvent.CLICK, playWelcomeAudio);
 		}
 		
 		private function onHomeMenuButtonClick(e:MouseEvent) {
-			if (e.target.parent is IntoGuidanceButton) eventChannel.writeEvent(new Event(Home.CLICK_INTO_GUIDANCE));
-			if (e.target.parent is QrCodeButton)       eventChannel.writeEvent(new Event(Home.CLICK_QRCODE));;
-			if (e.target.parent is TakePhotoButton)    eventChannel.writeEvent(new Event(Home.CLICK_CHECK_IN));;
-			if (e.target.parent is TrafficButton)      eventChannel.writeEvent(new Event(Home.CLICK_TRAFFIC));;
+			if (e.target.parent.name == "btnIntoGuidance") eventChannel.writeEvent(new Event(Home.CLICK_INTO_GUIDANCE));
+			if (e.target.parent.name == "btnQrCode")       eventChannel.writeEvent(new Event(Home.CLICK_QRCODE));;
+			if (e.target.parent.name == "btnTakePhoto")    eventChannel.writeEvent(new Event(Home.CLICK_CHECK_IN));;
+			if (e.target.parent.name == "btnTraffic")      eventChannel.writeEvent(new Event(Home.CLICK_TRAFFIC));;
+		}
+		
+		private function onSwitchLanguageClick(e:MouseEvent) {
+			if (isMenuShow) {
+				hideLanguageMenu();
+			} else {
+				showLanguageMenuWithout(language.getLanguageType());
+			}
+		}
+		
+		private function hideLanguageMenu() {
+			isMenuShow = false;
+			if (menuContainer == null) return;
+			
+			TweenLite.killTweensOf(menuContainer);
+			TweenLite.to(menuContainer, 0.5, {alpha:0, onComplete:removeLanguageMenu});
+		}
+		
+		private function removeLanguageMenu() {
+			if (menuContainer == null) return;
+			this.removeChild(menuContainer);
+			while (menuContainer.numChildren > 0) {
+				var child:SimpleButton = menuContainer.getChildAt(0) as SimpleButton;
+				child.removeEventListener(MouseEvent.CLICK, onChangeLanguageClick);
+				menuContainer.removeChild(child);
+				child = null;
+			}
+			menuContainer.removeChildren();
+			menuContainer = null;
+		}
+		
+		private function showLanguageMenuWithout(strLanguageType:String) {
+			isMenuShow = true;
+			
+			if (menuContainer == null) {
+				menuContainer = new Sprite();
+				menuContainer.x = 562.4;
+				menuContainer.y = 90;
+				menuContainer.alpha = 0;
+			
+				if (language.getLanguageType() != "CHT") {
+					var btnCHT:SimpleButton = new BtnCHT();
+					btnCHT.addEventListener(MouseEvent.CLICK, onChangeLanguageClick);
+					menuContainer.addChild(btnCHT);
+				}
+				if (language.getLanguageType() != "ENU") {
+					var btnENU:SimpleButton = new BtnENU();
+					btnENU.addEventListener(MouseEvent.CLICK, onChangeLanguageClick);
+					if (menuContainer.height != 0) btnENU.y = menuContainer.height + 10;
+					menuContainer.addChild(btnENU);
+				}
+				if (language.getLanguageType() != "JPN") {
+					var btnJPN:SimpleButton = new BtnJPN();
+					btnJPN.addEventListener(MouseEvent.CLICK, onChangeLanguageClick);
+					btnJPN.y = menuContainer.height + 10;
+					menuContainer.addChild(btnJPN);
+				}
+			
+				this.addChild(menuContainer);
+			} else {
+				TweenLite.killTweensOf(menuContainer);
+			}
+			
+			TweenLite.to(menuContainer, 0.5, {alpha:1});
+		}
+		
+		private function onChangeLanguageClick(e:MouseEvent) {
+			hideLanguageMenu();
+			if (e.target is BtnCHT) language.setLanguage("CHT");
+			if (e.target is BtnENU) language.setLanguage("ENU");
+			if (e.target is BtnJPN) language.setLanguage("JPN");
+			setButtonLabel();
 		}
 
 	}

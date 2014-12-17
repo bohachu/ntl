@@ -158,6 +158,15 @@
 			}
 			return false;
 		}
+		
+		public function getTotalExhibitNumber():int {
+			var intTotalNumber:int = 0;
+			for (var strKey:String in dicRoomExhibitMapping) {
+				intTotalNumber += dicRoomExhibitMapping[strKey].length;
+			}
+			
+			return intTotalNumber;
+		}
 
 	}
 	

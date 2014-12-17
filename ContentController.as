@@ -13,23 +13,14 @@
 	
 	import tw.cameo.EventChannel;
 	import tw.cameo.Navigator;
-	import Home;
-	import Titlebar;
-	import GuidanceTool;
-	import GuidanceToolEvent;
-	import Traffic;
-	import MappingData;
-	import RoomExhibitList;
-	import GuideEvent;
-	import Guide;
-	import ScanRoomQrCode;
-	import ChosePicture;
-	import TakeAPolaroid;
+	import tw.cameo.TempData;
 	
 	public class ContentController {
 		
 		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var mappingData:MappingData = MappingData.getInstance();
+		private var tempData:TempData = TempData.getInstance();
+		private var mainMovieClip:DisplayObjectContainer = null;
 		private var contentContainer:Sprite = null;
 		private var toolsContainer:Sprite = null;
 		private var navigator:Navigator = null;
@@ -37,10 +28,11 @@
 		private var guidanceTool:GuidanceTool = null;
 		private var scanRoomQrCode:ScanRoomQrCode = null;
 		
-		public function ContentController(mainMovieClip:DisplayObjectContainer) {
+		public function ContentController(mainMovieClipIn:DisplayObjectContainer) {
 			// constructor code
 			contentContainer = new Sprite();
 			toolsContainer = new Sprite();
+			mainMovieClip = mainMovieClipIn;
 			mainMovieClip.addChild(contentContainer);
 			mainMovieClip.addChild(toolsContainer);
 			navigator = new Navigator(contentContainer);
@@ -70,6 +62,7 @@
 		}
 		
 		private function createHome() {
+			eventChannel.addEventListener(Home.OPENING_MOVIE_ADDED, onOpeningMovieAdded);
 			var dicContentParameter = {
 				className: "Home",
 				data: true,
@@ -82,6 +75,11 @@
 			System.gc();
 		}
 		
+		private function onOpeningMovieAdded(e:Event) {
+			eventChannel.removeEventListener(Home.OPENING_MOVIE_ADDED, onOpeningMovieAdded);
+			(mainMovieClip as Main).removeStartScreen();
+		}
+		
 		private function setHomeAnimationDisable() {
 			var dicHomeParameter:Object= navigator.getContentParameter(0);
 			dicHomeParameter.data = false;
@@ -90,21 +88,36 @@
 		}
 		
 		private function onIntoGuidanceClick(e:Event) {
-			var strFloor:String = mappingData.getFloorList()[0];
-			var strRoom:String = mappingData.getRoomList(strFloor)[0];
+			tempData.deleteTempData("intRoomListMoveY");
+			var dicContentParameter:Object = {
+				className: "RoomList",
+				data: null,
+				showDirection: Navigator.FADE_IN,
+				hideDirection: Navigator.FADE_OUT
+			};
 			
-			showContent(getExhibitListPageParameter(strFloor, strRoom));
+			showContent(dicContentParameter);
 		}
 		
-		private function getExhibitListPageParameter(strFloor:String, strRoom:String):Object {
+		private function onRoomListItemClick(e:Event) {
+			var currentContent:MovieClip = navigator.getCurrentContent();
+			var strClickColumnName:String = (currentContent as RoomList).getClickColumnName();
+			var strFloor:String = "";
+			var strRoom:String = "";
+			var intIndexOfDashLine:int = 0;
+			
+			intIndexOfDashLine = strClickColumnName.indexOf("-");
+			strFloor = strClickColumnName.slice(0, intIndexOfDashLine);
+			strRoom = strClickColumnName.slice(intIndexOfDashLine+1);
+			
 			var dicContentParameter:Object = {
 				className: "RoomExhibitList",
 				data: [strFloor, strRoom],
-				showDirection: Navigator.SHOW_LEFT,
-				hideDirection: Navigator.HIDE_RIGHT
+				showDirection: Navigator.FADE_IN,
+				hideDirection: Navigator.FADE_OUT
 			};
 			
-			return dicContentParameter;
+			showContent(dicContentParameter);
 		}
 		
 		private function onQrCodeClick(e:Event = null) {
@@ -131,11 +144,21 @@
 		
 		private function onCheckInClick(e:Event) {
 			trace("ContentController.as / onCheckInClick");
+			var isBackToHome:Boolean = true;
+			tempData.saveTempData("isNavigatorBackToGuide", false);
+			tempData.saveTempData("isFinishToHome", true);
+			
+			if (e.type == Titlebar.CLICK_CAMERA) {
+				isBackToHome = false;
+				tempData.saveTempData("isNavigatorBackToGuide", true);
+				tempData.saveTempData("isFinishToHome", false);
+			}
+			
 			var dicContentParameter = {
 				className: "ChosePicture",
-				data: null,
-				showDirection: Navigator.SHOW_LEFT,
-				hideDirection: Navigator.HIDE_RIGHT
+				data: isBackToHome,
+				showDirection: Navigator.FADE_IN,
+				hideDirection: Navigator.FADE_OUT
 			};
 			
 			showContent(dicContentParameter);
@@ -156,7 +179,13 @@
 		}
 		
 		private function onTakePictureComplete(e:Event) {
-			navigator.popContent(1);
+			if (tempData.getTempData("isFinishToHome")) {
+				navigator.popContent(1);
+			} else {
+				var intContentNumber:int = navigator.getContentNumber();
+				navigator.popContent(intContentNumber-2);
+			}
+			tempData.deleteTempData("isFinishToHome");
 		}
 		
 		private function onTrafficClick(e:Event) {
@@ -175,8 +204,7 @@
 			titlebar.addEventListener(Titlebar.CLICK_BACK, onTitlebarBackClick);
 			titlebar.addEventListener(Titlebar.CLICK_HOME, onTitlebarHomeClick);
 			titlebar.addEventListener(Titlebar.CLICK_QRCODE, onQrCodeClick);
-			titlebar.addEventListener(Titlebar.CLICK_SIDE_MENU_COLUMN, onSideMenuColumnClick);
-			titlebar.addEventListener(Titlebar.SHOW_SIDEMENU, onShowSideMenu);
+			titlebar.addEventListener(Titlebar.CLICK_CAMERA, onCheckInClick);
 			titlebar.initTitleBar(toolsContainer);
 		}
 		
@@ -184,9 +212,7 @@
 			titlebar.removeEventListener(Titlebar.CLICK_BACK, onTitlebarBackClick);
 			titlebar.removeEventListener(Titlebar.CLICK_HOME, onTitlebarHomeClick);
 			titlebar.removeEventListener(Titlebar.CLICK_QRCODE, onQrCodeClick);
-			titlebar.removeEventListener(Titlebar.CLICK_SIDE_MENU_COLUMN, onSideMenuColumnClick);
-			titlebar.removeEventListener(Titlebar.SHOW_SIDEMENU, onShowSideMenu);
-			titlebar.removeEventListener(Titlebar.HIDE_SIDEMENU, onHideSideMenu);
+			titlebar.removeEventListener(Titlebar.CLICK_CAMERA, onCheckInClick);
 			titlebar = null;
 		}
 		
@@ -198,53 +224,6 @@
 			navigatorBackHandler();
 		}
 		
-		private function onSideMenuColumnClick(e:Event) {
-			var currentContent:MovieClip = navigator.getCurrentContent();
-			var strClickColumnName:String = titlebar.getClickSideMenuColumn();
-			var strFloor:String = "";
-			var strRoom:String = "";
-			var intIndexOfDashLine:int = 0;
-			
-			if (navigator.getContentNumber() == 3) { //In Guide page
-				var dicPreviousContentParameter:Object = navigator.getContentParameter(1);
-				strFloor = dicPreviousContentParameter.data[0];
-				strRoom = dicPreviousContentParameter.data[1];
-				if (strClickColumnName != strFloor + "-" + strRoom) {
-					intIndexOfDashLine = strClickColumnName.indexOf("-");
-					dicPreviousContentParameter.data[0] = strClickColumnName.slice(0, intIndexOfDashLine);
-					dicPreviousContentParameter.data[1] = strClickColumnName.slice(intIndexOfDashLine+1);
-					
-					navigator.setContentParameter(1, dicPreviousContentParameter);
-				}
-				navigatorBackHandler();
-			}
-			
-			if (navigator.getContentNumber() == 2) { // In Room Exhibit List page
-				var roomExhibitList:RoomExhibitList = navigator.getCurrentContent() as RoomExhibitList;
-				if (strClickColumnName != roomExhibitList.strFloor + "-" + roomExhibitList.strRoom) {
-					intIndexOfDashLine = strClickColumnName.indexOf("-");
-					strFloor = strClickColumnName.slice(0, intIndexOfDashLine);
-					strRoom = strClickColumnName.slice(intIndexOfDashLine+1);
-					roomExhibitList.resetExhibitList(strFloor, strRoom);
-					eventChannel.addEventListener(Titlebar.SIDEMENU_CLOSE, reloadRoomExhibitList);
-				}
-			}
-		}
-		
-		private function onShowSideMenu(e:Event) {
-			var currentContent:MovieClip = navigator.getCurrentContent();
-			currentContent.visible = false;
-			titlebar.removeEventListener(Titlebar.SHOW_SIDEMENU, onShowSideMenu);
-			titlebar.addEventListener(Titlebar.HIDE_SIDEMENU, onHideSideMenu);
-		}
-		
-		private function onHideSideMenu(e:Event) {
-			var currentContent:MovieClip = navigator.getCurrentContent();
-			currentContent.visible = true;
-			titlebar.addEventListener(Titlebar.SHOW_SIDEMENU, onShowSideMenu);
-			titlebar.removeEventListener(Titlebar.HIDE_SIDEMENU, onHideSideMenu);
-		}
-		
 		private function reloadRoomExhibitList(e:Event) {
 			eventChannel.removeEventListener(Titlebar.SIDEMENU_CLOSE, reloadRoomExhibitList);
 			var roomExhibitList:RoomExhibitList = navigator.getCurrentContent() as RoomExhibitList;
@@ -254,7 +233,7 @@
 		private function createGuidanceTool() {
 			guidanceTool = GuidanceTool.getInstance();
 			guidanceTool.create(toolsContainer);
-			guidanceTool.showGuidanceTool();
+//			guidanceTool.showGuidanceTool();
 			guidanceTool.addEventListener(GuidanceToolEvent.VIEW_GUIDANCE, onStartGuideToolEvent);
 		}
 		
@@ -279,16 +258,6 @@
 			var lstFloorAndRoom:Array = mappingData.getFloorAndRoomFromExhibitNumber(lstExhibitFolder[0]);
 			var strFloor:String = lstFloorAndRoom[0];
 			var strRoom:String = lstFloorAndRoom[1];
-			var strColumnName:String = strFloor + "-" + strRoom;
-			titlebar.setSideMenuColumn(strColumnName);
-			
-			if (currentContent is RoomExhibitList || navigator.getContentNumber() == 3) {
-				// Navigator has ExhibitList Page
-				var dicExhibitListContentParameter:Object = navigator.getContentParameter(1);
-				dicExhibitListContentParameter.data[0] = strFloor;
-				dicExhibitListContentParameter.data[1] = strRoom;
-				navigator.setContentParameter(1, dicExhibitListContentParameter);
-			}
 			
 			if (currentContent is Guide) { // current page is Guide
 				if (String(currentContent.lstExhibitFolder) == String(lstExhibitFolder)) {
@@ -316,16 +285,19 @@
 			eventChannel.addEventListener(Home.CLICK_QRCODE, onQrCodeClick);
 			eventChannel.addEventListener(Home.CLICK_CHECK_IN, onCheckInClick);
 			eventChannel.addEventListener(Home.CLICK_TRAFFIC, onTrafficClick);
+			eventChannel.addEventListener(RoomListItem.COLUMN_CLICK, onRoomListItemClick);
 			eventChannel.addEventListener(GuideEvent.START_GUIDANCE, onStartGuideEvent);
 			eventChannel.addEventListener(ChosePicture.LOAD_PHOTO_COMPLETE, onLoadPhotoComplete);
 			eventChannel.addEventListener(TakeAPolaroid.TAKE_PICTURE_COMPLETE, onTakePictureComplete);
 		}
 		
 		private function removeEventChannelListener() {
+			eventChannel.removeEventListener(Home.OPENING_MOVIE_ADDED, onOpeningMovieAdded);
 			eventChannel.removeEventListener(Home.CLICK_INTO_GUIDANCE, onIntoGuidanceClick);
 			eventChannel.removeEventListener(Home.CLICK_QRCODE, onQrCodeClick);
 			eventChannel.removeEventListener(Home.CLICK_CHECK_IN, onCheckInClick);
 			eventChannel.removeEventListener(Home.CLICK_TRAFFIC, onTrafficClick);
+			eventChannel.removeEventListener(RoomListItem.COLUMN_CLICK, onRoomListItemClick);
 			eventChannel.removeEventListener(GuideEvent.START_GUIDANCE, onStartGuideEvent);
 			eventChannel.removeEventListener(ChosePicture.LOAD_PHOTO_COMPLETE, onLoadPhotoComplete);
 			eventChannel.removeEventListener(TakeAPolaroid.TAKE_PICTURE_COMPLETE, onTakePictureComplete);
@@ -353,11 +325,6 @@
 					ev.preventDefault();
         			ev.stopImmediatePropagation();
 					
-					if (titlebar.isSideMenuOpen()) {
-						titlebar.hideSideMenu();
-						return;
-					}
-					
 					var currentContent:MovieClip = navigator.getCurrentContent();
 					if (currentContent is Guide && (currentContent as Guide).isGuideTextShow()) {
 						(currentContent as Guide).hideGuideText();
@@ -376,11 +343,16 @@
 		
 		private function deactivateHandler(e:Event) {
 			var currentContent = navigator.getCurrentContent();
+			if (currentContent is Home) {
+				(currentContent as Home).removeWelcomeSound();
+				(currentContent as Home).stopBackgroundMusic();
+			}
 			if (currentContent is Guide) (currentContent as Guide).pauseSlideShow();
 		}
 		
 		private function forDynamicCreate() {
 			var home:Home = null;
+			var roomList:RoomList = null;
 			var traffic:Traffic = null;
 			var roomExhibitList:RoomExhibitList = null;
 			var guide:Guide = null;

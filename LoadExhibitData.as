@@ -9,10 +9,14 @@
 	import tw.cameo.file.LoadCsvFileNonSingleton;
 	import tw.cameo.file.LoadImageNonSingleton;
 	import tw.cameo.file.LoadMp3;
+	import tw.cameo.loader.LoaderMaxManager;
+	import tw.cameo.loader.LoaderMaxManagerEvent;
+	import com.greensock.loading.ImageLoader;
 	
 	import I18n;
 	import Language;
 	import MappingData;
+	import flash.net.URLRequest;
 	
 	public class LoadExhibitData extends EventDispatcher {
 		
@@ -22,6 +26,7 @@
 		private var i18n:I18n = I18n.getInstance();
 		private var language:Language = Language.getInstance();
 		private var mappingData:MappingData = MappingData.getInstance();
+		private var loaderMaxManager:LoaderMaxManager = LoaderMaxManager.getInstance();
 		private const strInfoFileName:String = "Info.csv";
 		
 		private var loadCsvFileNonSingleton:LoadCsvFileNonSingleton = null;
@@ -30,15 +35,18 @@
 		private var strFolder:String = "";
 		private var exhibitFolder:File = null;
 		private var isForRoomExhibitList:Boolean = false;
+		private var dicImageWidthHeight:Object = null;
 		private var dicExhibitInfo:Object = null;
 		private var lstImage:Array = new Array();
+		private var dicImageLoaderMappingIndex:Object = new Object();
 		private var soundAudio:Sound = null;
 		private var intCurrentImageIndex:int = 1;
 
-		public function LoadExhibitData(strFolderIn:String, isForRoomExhibitListIn:Boolean = false) {
+		public function LoadExhibitData(strFolderIn:String, isForRoomExhibitListIn:Boolean = false, dicImageWidthHeightIn:Object = null) {
 			// constructor code
-			isForRoomExhibitList = isForRoomExhibitListIn;
 			strFolder = "data/" + strFolderIn;
+			isForRoomExhibitList = isForRoomExhibitListIn;
+			dicImageWidthHeight = dicImageWidthHeightIn;
 			exhibitFolder = getFolder(strFolder);
 		}
 		
@@ -60,6 +68,8 @@
 		}
 		
 		public function dispose() {
+			loaderMaxManager.removeEventListener(LoaderMaxManagerEvent.LOAD_FINISH, onLoadFirstImageComplete);
+			loaderMaxManager.removeEventListener(LoaderMaxManagerEvent.LOAD_FINISH, onLoadImageComplete);
 			loadCsvFileNonSingleton.dispose();
 			loadCsvFileNonSingleton = null;
 			if (loadImage) loadImage.dispose();
@@ -71,6 +81,8 @@
 		
 		private function loadInfoFile() {
 			var infoFile:File = exhibitFolder.resolvePath(strInfoFileName);
+			if (infoFile == null) return;
+			
 			loadCsvFileNonSingleton = new LoadCsvFileNonSingleton();
 			loadCsvFileNonSingleton.addEventListener(LoadCsvFileNonSingleton.LOAD_CSV_COMPLETE, onLoadInfoFileComplete);
 			loadCsvFileNonSingleton.loadFile(infoFile);
@@ -91,12 +103,12 @@
 			
 			var lstImageInfo:Array = new Array();
 			for (var i:int = 3; i<lstResult.length; i++) {
-				var strImageNumber:String = (i-2 >= 10) ? String(i-2) : "0" + String(i-2);
-				var strImageName:String = "Image" + strImageNumber;
+//				var strImageNumber:String = (i-2 >= 10) ? String(i-2) : "0" + String(i-2);
+//				var strImageName:String = "Image" + strImageNumber;
 				var imageInfoObject:Object = new Object();
-				imageInfoObject[strImageName + "_CHT"] = lstResult[i][1];
-				imageInfoObject[strImageName + "_ENU"] = lstResult[i][2];
-				imageInfoObject[strImageName + "_JPN"] = lstResult[i][3];
+				imageInfoObject["CHT"] = Utils.removeDoubleQuote(lstResult[i][1]);
+				imageInfoObject["ENU"] = Utils.removeDoubleQuote(lstResult[i][2]);
+				imageInfoObject["JPN"] = Utils.removeDoubleQuote(lstResult[i][3]);
 				lstImageInfo.push(imageInfoObject);
 			}
 			
@@ -113,13 +125,32 @@
 				imageFile = exhibitFolder.resolvePath("Image01.jpg");
 			}
 			
-			loadImage = new LoadImageNonSingleton();
-			loadImage.addEventListener(LoadImageNonSingleton.LOAD_IMAGE_COMPLETE, onLoadFirstImageComplete);
-			loadImage.loadImage(imageFile);
+			if (imageFile == null) return;
+			
+			var dicImageLoaderParam:Object = {
+				width: dicImageWidthHeight.width,
+				height: dicImageWidthHeight.height,
+				smoothing: true,
+				scaleMode: "proportionalOutside",
+				crop: true
+			};
+			
+			loaderMaxManager.addEventListener(LoaderMaxManagerEvent.LOAD_FINISH, onLoadFirstImageComplete);
+			var strLoaderName:String = loaderMaxManager.addImageLoader(imageFile.url, dicImageLoaderParam);
+			dicImageLoaderMappingIndex[strLoaderName] = 0;
 		}
 		
-		private function onLoadFirstImageComplete(e:Event) {
-			lstImage.push(loadImage.imageBitmap);
+		private function onLoadFirstImageComplete(e:LoaderMaxManagerEvent) {
+			var strLoaderName:String = e.strLoaderName;
+			var imageLoader:ImageLoader = loaderMaxManager.getReturnLoader(strLoaderName) as ImageLoader;
+			
+			if (imageLoader == null) return;
+			if (!dicImageLoaderMappingIndex.hasOwnProperty(strLoaderName)) return;
+			
+			lstImage.push(imageLoader.content);
+			delete(dicImageLoaderMappingIndex[strLoaderName]);
+			loaderMaxManager.diposeLoader(strLoaderName);
+			
 			this.dispatchEvent(new Event(LoadExhibitData.LOAD_EXHIBIT_DATA_COMPLETE));
 		}
 		
@@ -140,13 +171,6 @@
 		private function onLoadImageComplete(e:Event) {
 			loadImage.removeEventListener(LoadImageNonSingleton.LOAD_IMAGE_COMPLETE, onLoadImageComplete);
 			lstImage.push(loadImage.imageBitmap);
-			
-//			if (intCurrentImageIndex == dicExhibitInfo["lstImageInfo"].length) {
-//				loadAudio();
-//			} else {
-//				intCurrentImageIndex++;
-//				loadAllPicture();
-//			}
 
 			intCurrentImageIndex++;
 			loadAllPicture();

@@ -33,11 +33,13 @@
 		
 		private var testTimer:Timer = null;
 		
+		private var isBackToHome:Boolean = true;
 		private var chosePicturePannel:ChosePicturePannelWithNewCameraRollAndCameraUI = null;
 		private var pictureBitmap:Bitmap = null;
 		
-		public function ChosePicture(... args) {
+		public function ChosePicture(isBackToHomeIn:Boolean) {
 			// constructor code
+			isBackToHome = isBackToHomeIn;
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 
@@ -45,7 +47,8 @@
 			this.removeEventListener(Event.ADDED_TO_STAGE, init);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
 			
-			titlebar.setTitlebar(i18n.get("Chose_Picture_Title"), Titlebar.TITLE_BUTTON_TYPE_HOME);
+			var strTitleButtonType:String = (isBackToHome) ? Titlebar.TITLE_BUTTON_TYPE_HOME : Titlebar.TITLE_BUTTON_TYPE_BACK;
+			titlebar.setTitlebar("", strTitleButtonType);
 			titlebar.showTitlebar();
 			guidanceTool.hideGuidanceTool();
 			

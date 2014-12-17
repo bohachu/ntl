@@ -13,7 +13,7 @@
 		
 		private var sound:Sound = null;
 		private var soundChannel:SoundChannel = null;
-		private var intCurrentPosition:Number = 0;
+		private var intSoundStopPosition:Number = 0;
 		private var bgSound:Sound = null;
 		private var bgSoundChannel:SoundChannel = null;
 		private var intCurrentBgSoundPosition:Number = 0;
@@ -47,7 +47,7 @@
 		public function playSound() {
 			if (sound) {
 				soundChannel = new SoundChannel();
-				soundChannel = sound.play(intCurrentPosition);
+				soundChannel = sound.play(intSoundStopPosition);
 				soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundPlayEnd);
 			}
 //			if (soundChannel) {
@@ -67,20 +67,20 @@
 		}
 		
 		public function stopSound() {
-			if (soundChannel) intCurrentPosition = soundChannel.position;
+			if (soundChannel) intSoundStopPosition = soundChannel.position;
 			if (bgSoundChannel) intCurrentBgSoundPosition = bgSoundChannel.position;
 			removeSoundChannel();
 			removeBgSoundChannel();
 		}
 		
 		public function resetAndPlaySound() {
-			intCurrentPosition = 0;
+			intSoundStopPosition = 0;
 			playSound();
 		}
 		
 		private function onSoundPlayEnd(e:Event) {
 			removeSoundChannel();
-			intCurrentPosition = 0;
+			intSoundStopPosition = 0;
 			intCurrentBgSoundPosition = 0;
 			if (bgSoundChannel) {
 				TweenPlugin.activate([VolumePlugin]);
@@ -98,7 +98,7 @@
 		}
 		
 		public function getCurrentAudioPosition():Number {
-			return intCurrentPosition;
+			return soundChannel.position;
 		}
 
 	}

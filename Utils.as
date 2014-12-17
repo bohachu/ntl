@@ -5,13 +5,16 @@
 	
 	public class Utils {
 
-		public static function removeDoubleQuote(textString:String):String {
+		public static function removeDoubleQuote(textString:String, strLanguageType:String = ""):String {
 			if (textString.charAt(0) == "\"") {
 				textString = textString.slice(1, textString.length-1);
 				textString = textString.replace(/\"\"/g, "\"");
 			}
 			if (textString.charAt(0) == "'") {
-				textString = textString.slice(1, textString.length-1);
+				textString = textString.slice(1, textString.length);
+			}
+			if (strLanguageType == "CHT") {
+				textString = textString.replace(/,/g, "，");
 			}
 			return textString;
 		}

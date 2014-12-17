@@ -9,6 +9,7 @@
 	import flash.events.Event;
 	import flash.net.SharedObject;
 	import flash.filesystem.File;
+	import flash.display.Sprite;
 	import tw.cameo.EventChannel;
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
@@ -35,6 +36,7 @@
 		private var eventChannel:EventChannel = EventChannel.getInstance();
 		private var language:Language = Language.getInstance();
 		private var mappingData:MappingData = MappingData.getInstance();
+		public var startScreen:MovieClip;
 		private var splashScreen:SplashScreen = null;
 		private var loadingScreen:LoadingScreen = null;
 		private var checkAppVersion:CheckAppVersion = null;
@@ -48,6 +50,9 @@
 			this.stage.align = StageAlign.TOP_LEFT;
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
+			LayoutManager.setLayout(this);
+			
+			if (LayoutManager.useIphone5Layout()) startScreen.gotoAndStop(2);
 			
 			CAMEO::Debug {
 				sharedObjectSavedStatus.clear();
@@ -62,8 +67,7 @@
 			this.removeEventListener(Event.ADDED_TO_STAGE, init);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, destructor);
 			
-			LayoutManager.setLayout(this);
-			splashScreen = new SplashScreen(this.stage);
+			splashScreen = new SplashScreen(this.stage, 1);
 			splashScreen.addEventListener(SplashScreen.FINISH, onSplashScreenFinish);
 			splashScreen.init();
 			
@@ -195,6 +199,11 @@
 		
 		private function createContent() {
 			contentController = new ContentController(this);
+		}
+		
+		public function removeStartScreen() {
+			this.removeChild(startScreen);
+			startScreen = null;
 		}
 		
 		private function removeContent() {

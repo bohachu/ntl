@@ -36,9 +36,8 @@
 		}
 		
 		private function createHelpScreen() {
-			helpScreen = new GestureHelpPage();
-			helpScreen.btnClose.addEventListener(MouseEvent.CLICK, onBtnCloseClick);
-			if (!LayoutManager.useIphone5Layout()) helpScreen.y = -88;
+			helpScreen = (LayoutManager.useIphone5Layout()) ? new GestureHelpPageIphone5() : new GestureHelpPageIphone4();
+			helpScreen.addEventListener(MouseEvent.CLICK, onBtnCloseClick);
 			helpScreen.rotateTitle.text = i18n.get("Label_Rotate_Title");
 			helpScreen.rotateInstruction.text = i18n.get("Rotate_Instruction");
 			helpScreen.zoomTitle.text = i18n.get("Label_Zoom_Title");
@@ -48,7 +47,7 @@
 		
 		private function removeHelpScreen() {
 			if (helpScreen == null) return;
-			helpScreen.btnClose.removeEventListener(MouseEvent.CLICK, onBtnCloseClick);
+			helpScreen.removeEventListener(MouseEvent.CLICK, onBtnCloseClick);
 			this.removeChild(helpScreen);
 			helpScreen = null;
 		}

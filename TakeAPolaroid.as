@@ -31,6 +31,7 @@
 	import Titlebar;
 	import GuidanceTool;
 	import LoadingScreen;
+	import flash.display.Shape;
 	
 	public class TakeAPolaroid extends MovieClip {
 
@@ -42,6 +43,7 @@
 		private var i18n:I18n = I18n.getInstance();
 		private var titlebar:Titlebar = Titlebar.getInstance();
 		private var guidanceTool:GuidanceTool = GuidanceTool.getInstance();
+		private var language:Language = Language.getInstance();
 		
 		private var isIphone5Layout:Boolean = LayoutManager.useIphone5Layout();
 		private var intDefaultWidth:Number = LayoutSettings.intDefaultWidth;
@@ -58,6 +60,7 @@
 		private var photoGestouchControl:AddGestouchControl = null;
 		private var photoMask:Sprite = null;
 		private var frameContainer:Sprite = null;
+		private var titlebarBg:Shape = null;
 		private var intCurrentSelectFrame = 0;
 		
 		private var prevBtn:SimpleButton = null;
@@ -100,6 +103,7 @@
 			
 			createBackground();
 			initContainer();
+			initTitlebarBg();
 			initPhoto();
 			initFrame();
 			showFrame();
@@ -117,6 +121,7 @@
 			removeCameraRoll();
 			removePhoto();
 			removePhotoMask();
+			removeTitlebarBg();
 			removeContainer();
 			removeBackground();
 			photoContainerPoint = null;
@@ -182,6 +187,19 @@
 			polaroidPhotoContainer = null;
 		}
 		
+		private function initTitlebarBg() {
+			titlebarBg = new Shape();
+			titlebarBg.graphics.beginFill(0, 0.3);
+			titlebarBg.graphics.drawRect(0, 0, 640, titlebar.intTitlebarHeight);
+			titlebarBg.graphics.endFill();
+			this.addChild(titlebarBg);
+		}
+		
+		private function removeTitlebarBg() {
+			this.removeChild(titlebarBg);
+			titlebarBg = null;
+		}
+		
 		private function initPhoto() {
 			photoContainer.x = photoContainerPoint.x;
 			photoContainer.y = photoContainerPoint.y;
@@ -200,10 +218,29 @@
 		private function initFrame() {
 			var date:Date = new Date();
 			var strDate:String = String(date.fullYear) + "." + String(date.month+1) + "." + String(date.date);
-			var frame1:MovieClip = (isIphone5Layout) ? new PolaroidFrame1Iphone5() : new PolaroidFrame1Iphone4();
-			var frame2:MovieClip = (isIphone5Layout) ? new PolaroidFrame2Iphone5() : new PolaroidFrame2Iphone4();
-			var frame3:MovieClip = (isIphone5Layout) ? new PolaroidFrame3Iphone5() : new PolaroidFrame3Iphone4();
-			var frame4:MovieClip = (isIphone5Layout) ? new PolaroidFrame4Iphone5() : new PolaroidFrame4Iphone4();
+			var strLanguageType:String = language.getLanguageType();
+			var frame1:MovieClip = null;
+			var frame2:MovieClip = null;
+			var frame3:MovieClip = null;
+			var frame4:MovieClip = null;
+			if (strLanguageType == "CHT") {
+				frame1 = (isIphone5Layout) ? new PolaroidFrame1Iphone5CHT() : new PolaroidFrame1Iphone4CHT();
+				frame2 = (isIphone5Layout) ? new PolaroidFrame2Iphone5CHT() : new PolaroidFrame2Iphone4CHT();
+				frame3 = (isIphone5Layout) ? new PolaroidFrame3Iphone5CHT() : new PolaroidFrame3Iphone4CHT();
+				frame4 = (isIphone5Layout) ? new PolaroidFrame4Iphone5CHT() : new PolaroidFrame4Iphone4CHT();
+			}
+			if (strLanguageType == "ENU") {
+				frame1 = (isIphone5Layout) ? new PolaroidFrame1Iphone5ENU() : new PolaroidFrame1Iphone4ENU();
+				frame2 = (isIphone5Layout) ? new PolaroidFrame2Iphone5ENU() : new PolaroidFrame2Iphone4ENU();
+				frame3 = (isIphone5Layout) ? new PolaroidFrame3Iphone5ENU() : new PolaroidFrame3Iphone4ENU();
+				frame4 = (isIphone5Layout) ? new PolaroidFrame4Iphone5ENU() : new PolaroidFrame4Iphone4ENU();
+			}
+			if (strLanguageType == "JPN") {
+				frame1 = (isIphone5Layout) ? new PolaroidFrame1Iphone5JPN() : new PolaroidFrame1Iphone4JPN();
+				frame2 = (isIphone5Layout) ? new PolaroidFrame2Iphone5JPN() : new PolaroidFrame2Iphone4JPN();
+				frame3 = (isIphone5Layout) ? new PolaroidFrame3Iphone5JPN() : new PolaroidFrame3Iphone4JPN();
+				frame4 = (isIphone5Layout) ? new PolaroidFrame4Iphone5JPN() : new PolaroidFrame4Iphone4JPN();
+			}
 			frame1.dateLabel.text = frame2.dateLabel.text = frame3.dateLabel.text = frame4.dateLabel.text = strDate;
 			frame1.x = 0;
 			frame2.x = 640;

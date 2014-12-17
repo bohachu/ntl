@@ -1,21 +1,24 @@
 UI Name,中文,英文,日文
 IntoGuidance,進入導覽,Enter Tour,ガイドツアー
-CheckIn,到此一遊,Check in,チェックイン
+CheckIn,拍照留念,Take a photo,写真を撮る
 QrCode,QR Code,QR Code,QR コード
-Traffic,交通指引,Traffic Guide,交通アクセス
-Welcome,歡     迎,Welcome,歓     迎
+Traffic,參觀資訊,Visit Info,参観情報
+Welcome,館長歡迎,Curator's welcome,館長メッセージ
 Ok,確定,OK,決定
 Label_Ok,"確
 定",OK,"決
 定"
 Cancel,取消,Cancel,取り消し
 Home,回首頁,Back to Home,ホームに戻る
+Recommend,推薦,Recommend,推薦
 Label_InputNumber01,輸入編號,Enter the number,番号を入力してください
 Label_InputNumber02,輸入編號,Enter the number,"番号を入力し
 てください"
 Message_ExhibitNumber,展品編號,Exhibit Number,展示物番号
 Message_EmptyExhibitNumber,請輸入展品編號,Please Enter the Exhibit Number,展示物番号を入力して下さい
 Message_WrongExhibitNumber,輸入的展品編號不正確,Incorrect Exhibit Number,入力した展示物番号が不正確です
+Label_Play,播放,Play,再生
+Label_Replay,重播,Replay,再開
 Chose_Picture,"從相簿挑選或
 拍攝照片",Choose from photo library or take a Picture,アルバムから選ぶか写真を撮影
 Label_Rotate_Title,旋轉:,Rotate:,回転:
@@ -29,44 +32,63 @@ Message_SaveToCameraRollSuccess,圖片已儲存到圖庫裡，是否要分享？
 Message_InternetFail,請開啟網路,No Internet Connection,No Internet Connection
 Message_ShareSuccess,Facebook圖片上傳成功！,Image successfully upload to facebook!,アップロードしました！
 Message_ShareFail,Facebook圖片上傳失敗,Image cannot uploaded to facebook,アップロードできませんでした！
-Traffic_Info_Location_Title,館　　址,Address,住所
-Traffic_Info_Location_Content,臺北市北投區陽明路2段15號,"No.15,Yangming Road, Sec,Beitou District,Taipei,Taiwan",台北市北投区陽明路2段15 号
-Traffic_Info_Tel_Title,電　　話,Telephone,電　　話
+Traffic_Info_Location_Title,地址,Address,住所
+Traffic_Info_Location_Content,臺北市北投區陽明路2段15號,"No.15,Yangming Road, Sec, Beitou District, Taipei, Taiwan",台北市北投区陽明路2段15 号
+Traffic_Info_Tel_Title,電話,Telephone,電話
 Traffic_Info_Tel_Content,(02)2861-0565,'+886-2-2861-0565,'+886-2-2861-0565
 Traffic_Info_Title,交通指南,Getting Here,交通アクセス
-Traffic_Info_Content,"(一)捷運－淡水線【劍潭站】１號出口：
+Traffic_Info_Content_1,"(一)捷運－淡水線【劍潭站】１號出口：
 1.沿中山北路往士林方向步行約6分鐘至【銘傳大學】轉乘公車260全程車至【中山樓（正門）】下車。
-2.轉乘公車紅5至【教師研習中心站】下車後步行約5到10分鐘至中山樓正門。
-
-(二)例假日可搭乘假日休閒公車109、111至【教師研習中心站】下車。","1.  Take the MRT Tamsui Line to the Jiantan Station Exit:
+2.轉乘公車紅5至【教師研習中心站】下車後步行約5到10分鐘至中山樓正門。","1.  Take the MRT Tamsui Line to the Jiantan Station Exit:
 (1) Walk 6 min. along Zhongshan N. Rd. toward Shilin and take Bus 260 at the Mingchuan University Stop. Take Bus 260 for around 20 min. and get off at the Chungshan Hall Stop. 
 
-(2) Take Bus Red 5 to the Teacher Training Center Stop and walk about 5 to 10 min. to the Chungshan Hall.
-
-2. On Saturday and Sunday, take Holiday Bus 109 and 110 to Teacher Training Center.","(一)MRT－淡水線【剣潭駅】で下車。１号出口から出てから、
+(2) Take Bus Red 5 to the Teacher Training Center Stop and walk about 5 to 10 min. to the Chungshan Hall.","(一)MRT－淡水線【剣潭駅】で下車。１号出口から出てから、
 1.中山北路を士林方向に徒歩で約6分。バス停【銘伝大学】でバス260路全路線車に乗り【中山楼（正門）】下車。
-2.バス紅5路に乗り【教師研習中心駅】で下車。徒歩約5～10分で中山楼正門に到着。
-
-(二)休日・祝日は假日休日レジャーバス109、111路に乗り【教師研習中心駅】で下車。"
+2.バス紅5路に乗り【教師研習中心駅】で下車。徒歩約5～10分で中山楼正門に到着。"
+Traffic_Info_Content_2,(二)例假日可搭乘假日休閒公車109、111至【教師研習中心站】下車。,"2. During weekends, take Holiday Bus 109 and 111 to Teacher Training Center.",(二)休日・祝日は假日休日レジャーバス109、111路に乗り【教師研習中心駅】で下車。
 Traffic_Info_Open_Title,開放時間,Opening Hours,開館時間
-Traffic_Info_Open_Content,"陽明山中山樓現為市定古蹟，為保管維護場地設施及人力限制，暫不予開放自由參觀。固定開放4個時段（09:00；10:30；13:30；15:00），並提供 1 小時之導覽服務。
+Traffic_Info_Open_Content_1,"陽明山中山樓現為市定古蹟，目前週一至週日，每日提供4個時段供民眾參觀(09:00/10:30/13:30/15:00)
 
-(一) 週一至週日，每日固定四場導覽。（09:00；10:30；13:30；15:00）
 *10人以上團體預約
+","The Chungshan Hall is reserved as Taipei City relic, and only open at the following time: 09:00, 10:30, 13:30,15:00 daily.
 
-(二) 休館日：
+*Applications for tour reservations are accepted for groups of 10 persons at least","陽明山中山楼は、現在では市指定史跡となっており、 (09:00；10:30；13:30；15:00）の4つの指定時間帯に公開し、月～日曜日には、毎日4回の定時ガイドツアーあり。
+
+*10名以上の団体で予約をされた方"
+Traffic_Info_Open_Content_2,"全票：80元 (一般民眾適用)
+優待票：60元 (學生、軍警及十人以上團體適用)
+
+免票：
+1.身心障礙者及其陪同入場者1人
+2.未滿6歲兒童","Regular fee：NTD 80 (General audiences)
+Discount fee：NTD 60
+1.Students with valid international student ID (ISIC,international student identity card)
+2.Youth Travel Card
+3.Groups of 10 persons at least
+
+Free：
+1.Children age under 6
+2. Disabled person with one helper","一般チケット：NTD 80 (一般参観者)
+割引チケット：NTD 60
+1.国際学生証の提示が必要です (ISIC,international student identity card)
+2. ユーストラベルカード
+3.10人以上のグループ
+
+無料チケット：
+1. 就学前の児童
+2. 身体の不自由な方と付き添いの方お一人"
+Traffic_Info_Open_Content_3,"(二) 休館日：
 1、機電保養日、場地租借、國定假日配合本館公告休館日停止開放參觀導覽服務。（將另行公告於本所網站）
-2、如遇颱風、地震等天災宣布停止上班時，亦停止開放參觀導覽服務。","The Chungshan Hall is a protected historical site and only open at the following times: 09:00；10:30；13:30；15:00.  Visitors are required to join a one-hour tour. 
-
-1. Four tours (09:00；10:30；13:30；15:00) from Monday to Sunday. 
-*Applications for tour reservations are accepted for groups of 10 or more
-
-2. Closed: 
+2、如遇颱風、地震等天災宣布停止上班時，亦停止開放參觀導覽服務。","2. Closed: 
 (1) The Building is closed on national holidays, when there is  mechanical maintenance or when the Building is rented for events. These days will be announced on the official website.
 
-(2) The Building will also close when the government announces a day off due to a natural disaster such as a typhoon or earthquake. ","陽明山中山楼は、現在では市指定史跡となっており、敷地・施設の保存・保全の目的で、また人員面で制約があるため、自由参観を一時中止しております。(09:00；10:30；13:30；15:00）の4つの指定時間帯に公開し、 1 時間のガイドツアーを行っています。 
-
-(一) 月～日曜日には、毎日4回の定時ガイドツアーあり。（09:00；10:30；13:30；15:00）
-*10名以上の団体で予約をされた方
-
-(二) 休業日 1、設備保全日、敷地賃貸、祝祭日には当館が告知する休業日に合わせ参観ガイドツアーを中止します。（本所公式サイトに別に告知します） 2、台風、地震などの天災により勤務中止が発令された場合にも、参観ガイドツアーを中止いたします。"
+(2) The Building will also close when the government announces a day off due to a natural disaster such as a typhoon or earthquake. ","(二) 休業日 
+1、設備保全日、敷地賃貸、祝祭日には当館が告知する休業日に合わせ参観ガイドツアーを中止します。（本所公式サイトに別に告知します） 
+2、台風、地震などの天災により勤務中止が発令された場合にも、参観ガイドツアーを中止いたします。"
+Rental_Info_Title,場地租借,Space Rental ,レンタルスペース
+Rental_Info_1,中山樓目前有開放場地租借，包括：一樓文化堂、一樓會議廳、三樓大餐廳及配菜間。詳細租借辦法請連結至：,"The information for Chang-Shan Hall renting areas：Chang-shan Hall has now opened for renting application areas,including 1F the Chinese Cluture Hall,1F Conference Hall,3F Dinging Hall &3F Food Preparing Room.For more information,please vist to the following website：",レンタルスペース：一階文化堂、一階会議室、三階バンケットルーム、三階配膳室。詳細はホームページをご参照下さい：
+Rental_Info_2,http://www.ntl.edu.tw/lp.asp?ctNode=1184&CtUnit=648&BaseDSD=7&mp=13,http://www.ntl.edu.tw/lp.asp?ctNode=1184&CtUnit=648&BaseDSD=7&mp=13,http://www.ntl.edu.tw/lp.asp?ctNode=1184&CtUnit=648&BaseDSD=7&mp=13
+Rental_Info_3,"聯絡電話：(02)2861-6391
+電子郵件：felicia@mail.ntl.edu.tw","Tel: +886-2-2861-6391
+email: felicia@mail.ntl.edu.tw","電話番号：+886-2-2861-6391
+電子メール：felicia@mail.ntl.edu.tw"
