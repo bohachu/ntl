@@ -9,6 +9,7 @@
 	import flash.net.SharedObject;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
+	import flash.filesystem.File;
 
 	import tw.cameo.LayoutManager;
 	import tw.cameo.LayoutSettings;
@@ -68,7 +69,13 @@
 			
 			if (isShowAnimation) {
 				showOpeningAnimation();
-				backgroundMusic.playMusic(strMusicUrl, false);
+				var checkFolder:File = File.applicationStorageDirectory.resolvePath("/sdcard/android/data/air.tw.cameo.NTL/" + strMusicUrl);
+				if (checkFolder.exists) {
+					backgroundMusic.playMusic("/sdcard/android/data/air.tw.cameo.NTL/" + strMusicUrl, false);
+				} else {
+					backgroundMusic.playMusic(strMusicUrl, false);
+				}
+				
 			} else {
 				showHomeScreen();
 				guidanceTool.showGuidanceTool();
@@ -128,6 +135,7 @@
 		}
 		
 		private function skipOpeningMovie(e:MouseEvent) {
+			backgroundMusic.stopMusic();
 			openingMovie.removeEventListener(MouseEvent.CLICK, skipOpeningMovie);
 			openingMovie.removeEventListener("ANIMATION_PLAY_END", onOpeningMoviePlayEnd);
 			showHomeScreen();

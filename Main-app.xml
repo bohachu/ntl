@@ -38,7 +38,5 @@
   </android>
   <extensions>
     <extensionID>com.sbhave.nativeExtensions.zbar</extensionID>
-    <extensionID>tw.cameo.imagehandler</extensionID>
-    <extensionID>com.cameo.flash2videoext</extensionID>
   </extensions>
 </application>
