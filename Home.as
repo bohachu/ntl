@@ -17,6 +17,7 @@
 	import tw.cameo.Navigator;
 	import tw.cameo.storyMouth.BackgroundMusic;
 	import com.greensock.TweenLite;
+	import tw.cameo.GetVersionNumber;
 
 	public class Home extends MovieClip {
 		
@@ -165,6 +166,10 @@
 			eventChannel.writeEvent(new Event(Home.OPENING_MOVIE_ADDED));
 			homeScreen = (isIphone5Layout) ? new HomeIphone5() : new HomeIphone4();
 			homeScreen.alpha = 0;
+			
+			var strVersionNumber:String = GetVersionNumber.getAppVersion();
+			homeScreen.versionLabel.text = "v " + strVersionNumber;
+			
 			setButtonLabelAndEventListener();
 			this.addChild(homeScreen);
 			guidanceTool.showGuidanceTool();
